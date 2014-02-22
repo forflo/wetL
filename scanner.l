@@ -1,16 +1,10 @@
 %top{
-/* Scanner for WETL 
-	Author: Florian Mayer
-	Date: 08.Dez.2013
-	Summary: This file has been generated.
-	Do not edit it!
-	Edit the File "scanner.lex" instead	
-*/
 
 #include "parser.tab.h" 
 #include <glib.h>
+#include "util.h"
+#include "parser.h"
 
-//extern YYSTYPE yylval;
 }
 
 /* [Operators] Arithmetic */
@@ -127,7 +121,8 @@ allowed_symbols   "!"|"#"|"$"|"%"|"&"|"'"|"("|")"|"*"|"+"|"`"|"´"|"-"|"."|"/"|"
 escapes  \\n|\\t|\\a|\\b|\\r|\\v|\\\\|\\\"|\\\'|\\f|\\0 
 dquote  \"
 squote  \'
-nl \n
+
+delim \n\t\v\b" "
 
 /* String is either quoted with single or double quotes */
 string  ({dquote}({letter}|{escapes}|{allowed_symbols}|{digit})+{dquote})|({squote}({letter}|{escapes}|{allowed_symbols}|{digit})+{squote})
@@ -142,14 +137,15 @@ fcelanguage (bash|sh|python|perl)
 
 "[[[" { 
 	/** 
-	 Token: FCECODE
-	 This Token is identified by the unique string "[[[" in the Code.
-	 This Code will move the foreign code into an dynamically growing string structure.
-	*/
+	 * Token: FCECODE
+	 * This Token is identified by the unique string "[[[" in the Code.
+	 * This Code will move the foreign code into an dynamically 
+	 * growing string structure.
+	 */
 	int next;
 	int index = 0, c = 0;
 
-	GString *buffer = g_string_new("");
+	dyn_string_t *buffer = ds_get_string("");
 
 	do {
 		next = input();
@@ -157,16 +153,20 @@ fcelanguage (bash|sh|python|perl)
 			c++;
 		else 
 			c=0;
-		if(NULL == g_string_append_c(buffer, (char) next)){
-			//TODO - Fehlerbehandung
-		}
+		/* Error handling */
+		if(-1 == ds_append_char(buffer, (char) next))
+			con_log("Could not tokenize FCE-Code", "scanner", LOG_ERROR);
 		
 		if(c == 3) 
 			break;
 	} while(!feof(yyin));
 
-//	yylval.fcecode = buffer->str;
-//	free(buffer);
+	/* Passes the FCE-Code as value to the parser for further processing */
+	yylval.v = (struct value *) malloc(sizeof(struct value));
+	yylval.v->c = (void *) buffer->data;
+	yylval.v->type = P_TYPE_STRING;
+
+	free(buffer);
 	return(FCEB_CODE);
 }
 
@@ -268,12 +268,6 @@ fcelanguage (bash|sh|python|perl)
 {number} {return(NUMBER);}
 {id} {return(ID);}   
 
-%%
+{delim} {}
 
-//int main(int argc, char **argv){
-//	int c;
-//	do {
-//		c = yylex();
-//		printf("Das aktuelle Token: %d\n", c);
-//	} while(!feof(stdin));	
-//}
+%%

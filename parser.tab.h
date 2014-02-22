@@ -34,7 +34,7 @@
 # define YY_YY_PARSER_TAB_H_INCLUDED
 /* Enabling traces.  */
 #ifndef YYDEBUG
-# define YYDEBUG 0
+# define YYDEBUG 1
 #endif
 #if YYDEBUG
 extern int yydebug;
@@ -135,15 +135,14 @@ extern int yydebug;
 typedef union YYSTYPE
 {
 /* Line 2053 of yacc.c  */
-#line 13 "parser.y"
+#line 11 "parser.y"
 
-	char *fcecode;
-	long nat_num;
-	double fl_num;
+	struct value *v;
+	struct nary_node *k;
 
 
 /* Line 2053 of yacc.c  */
-#line 147 "parser.tab.h"
+#line 146 "parser.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

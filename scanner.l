@@ -2,7 +2,6 @@
 
 #include "parser.tab.h" 
 #include <glib.h>
-#include "util.h"
 #include "parser.h"
 
 }
@@ -107,8 +106,8 @@ qmark "?"
 /* literals */
 
 digit [0-9]
-digit_not_null  [1-9]
-number  {digit}+|{digit}+"."{digit}+
+number  [1-9]{digit}+|[1-9]{digit}+"."{digit}+
+integer [1-9]{digit}+
 
 /* these are currently unused */
 hexdigit  {digit}|[A-Fa-f]
@@ -261,12 +260,27 @@ fcelanguage (bash|sh|python|perl)
 {longdouble} {return(FFI_LONG_DOUBLE);}
 {voidptr} {return(FFI_VOIDPTR);}
 
- /* has to be placed before id */
+ /* has to be placed before id, because of the
+ 	standard flex rules precedence */
 {fcelanguage} {return(FCELANG);} 
 
-{string} {return(STRING);}
-{number} {return(NUMBER);}
-{id} {return(ID);}   
+{string} {
+	yylval.v = make_valueStr(yytext);
+	return(STRING);
+}
+{number} {
+	yylval.v = make_valueFlt(strtod(yytext, NULL));
+	return(NUMBER);
+}
+{id} {
+	yylval.v = make_valueStr(yytext);
+	return(ID);
+}   
+
+{integer} {
+	yylval.v = make_valueInt(atoi(yytext, NULL));
+	return (INT);
+}
 
 {delim} {}
 

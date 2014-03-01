@@ -1,8 +1,7 @@
 #include <stdio.h>
-#include "util.h"
+#include "parser.h"
 
-//TODO: Priority
 /* Logs message to stdout */
 void con_log(char *msg, char *src, int level){
-	printf("[%s] %s \n", msg, src);
+	printf("[%s] %s \n",  src, msg);
 }

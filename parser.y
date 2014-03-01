@@ -54,274 +54,274 @@ struct nary_node *root;
 
 %%
 
-program 				: stmtlist 
-							{ $$ = make_node(P_OP_STMTLST, NULL, 1, $1); 
-								/*todo: bezeichnertabelle einfügen*/ }
-						;
+program 			: stmtlist 
+						{ $$ = make_node(P_OP_STMTLST, NULL, 1, $1); 
+							/*todo: bezeichnertabelle einfügen*/ }
+					;
 
-block 					: CURLOPEN stmtlist CURLCLOSE 
-							{$$ = make_node(P_OP_STMTLST, NULL, 1, $2);}
-						;
+block 				: CURLOPEN stmtlist CURLCLOSE 
+						{$$ = make_node(P_OP_STMTLST, NULL, 1, $2);}
+					;
 
-switchblock				: CURLOPEN labeled_stmtlist CURLCLOSE 
-							{$$ = make_node(P_OP_SWBLOCK, NULL, 1, $2);}
-						;
+switchblock			: CURLOPEN labeled_stmtlist CURLCLOSE 
+						{$$ = make_node(P_OP_SWBLOCK, NULL, 1, $2);}
+					;
 
-labeled_stmtlist		: labeled_statement 
-							{$$ = make_node(P_OP_LBSTMTLST, NULL, 1, $1);}
-						| labeled_stmtlist labeled_statement 
-							{$$ = make_node(P_OP_LBSTMTLST, NULL, 2, $1, $2);}
-						;
+labeled_stmtlist	: labeled_statement 
+						{$$ = make_node(P_OP_LBSTMTLST, NULL, 1, $1);}
+					| labeled_stmtlist labeled_statement 
+						{$$ = make_node(P_OP_LBSTMTLST, NULL, 2, $1, $2);}
+					;
 
-labeled_statement		: CASE PAROPEN expression PARCLOSE stmtlist 
-							{$$ = make_node(P_OP_LBSTMT, NULL, 2, $3, $5);}
-						;
+labeled_statement	: CASE PAROPEN expression PARCLOSE stmtlist 
+						{$$ = make_node(P_OP_LBSTMT, NULL, 2, $3, $5);}
+					;
 
-explist					: expression 
-							{$$ = make_node(P_OP_EXP, NULL, 1, $1);}
-						| explist COMMA expression 
-							{$$ = make_node(P_OP_EXPLST, NULL, 2, $1, $3);}
-						;
+explist				: expression 
+						{$$ = make_node(P_OP_EXP, NULL, 1, $1);}
+					| explist COMMA expression 
+						{$$ = make_node(P_OP_EXPLST, NULL, 2, $1, $3);}
+					;
 
-varlist 				: var_exp
-							{$$ = make_node(P_OP_VAREXP, NULL, 1, $1);}
-						| varlist COMMA var_exp
-							{$$ = make_node(P_OP_VARLST, NULL, 2, $1, $3);}	
-						;
+varlist 			: var_exp
+						{$$ = make_node(P_OP_VAREXP, NULL, 1, $1);}
+					| varlist COMMA var_exp
+						{$$ = make_node(P_OP_VARLST, NULL, 2, $1, $3);}	
+					;
 
-exp_cast_list			: { }
-						| ffi_cast expression COMMA exp_cast_list /* right associative */
-						;
+exp_cast_list		: { }
+					| ffi_cast expression COMMA exp_cast_list /* right associative */
+					;
 
-parlist 				: PAROPEN idlist PARCLOSE 
-							{ $$ = make_node(P_OP_PARLST, NULL, 1, $2); }
-						| PAROPEN PARCLOSE 
-							{ $$ = make_node(P_OP_PARLST, NULL, 0); }
-						;
+parlist 			: PAROPEN idlist PARCLOSE 
+						{ $$ = make_node(P_OP_PARLST, NULL, 1, $2); }
+					| PAROPEN PARCLOSE 
+						{ $$ = make_node(P_OP_PARLST, NULL, 0); }
+					;
 
-arglist					: PAROPEN explist PARCLOSE 
-							{ $$ = make_node(P_OP_ARGLST, NULL, 1, $2); }
-						| PAROPEN PARCLOSE 
-							{ $$ = make_node(P_OP_ARGLST, NULL, 0); }
-						;
+arglist				: PAROPEN explist PARCLOSE 
+						{ $$ = make_node(P_OP_ARGLST, NULL, 1, $2); }
+					| PAROPEN PARCLOSE 
+						{ $$ = make_node(P_OP_ARGLST, NULL, 0); }
+					;
 
-idlist					: ID 
-							{ printf("debug: %s\n", 
-								(char *)((struct value*)$1)->c);$$ = 
-									make_node(ID, $1, 0); }
-						| idlist COMMA ID 
-							{ $$ = make_node(P_OP_IDLST, NULL, 2, 
-								$1, make_node(ID, $3, 0)); }
-						;
+idlist				: ID 
+						{ printf("debug: %s\n", 
+							(char *)((struct value*)$1)->c);$$ = 
+								make_node(ID, $1, 0); }
+					| idlist COMMA ID 
+						{ $$ = make_node(P_OP_IDLST, NULL, 2, 
+							$1, make_node(ID, $3, 0)); }
+					;
 
-stmtlist 				: statement 
-							{ $$ = make_node(P_OP_STMT, NULL, 1, $1); }
-						| stmtlist statement 
-							{$$ = make_node(P_OP_STMTLST, NULL, 2, $1, $2);}
-						;
+stmtlist 			: statement 
+						{ $$ = make_node(P_OP_STMT, NULL, 1, $1); }
+					| stmtlist statement 
+						{$$ = make_node(P_OP_STMTLST, NULL, 2, $1, $2);}
+					;
 
-assignment 				: varlist ASSOP explist 
-							{ $$ = make_node(P_OP_ASSOP, NULL, 2, $1, $3);}
-						| varlist ASPLUS explist 
-							{$$ = make_node(P_OP_ASPLUS, NULL, 2, $1, $3); }
-						| varlist ASMINUS explist 
-							{$$ = make_node(P_OP_ASMINUS, NULL, 2, $1, $3);}
-						| varlist ASMUL explist 
-							{$$ = make_node(P_OP_ASMUL, NULL, 2, $1, $3);}
-						| varlist ASDIV explist 
-							{$$ = make_node(P_OP_ASDIV, NULL, 2, $1, $3);}
-						| varlist ASMOD explist 
-							{$$ = make_node(P_OP_ASMOD, NULL, 2, $1, $3);}
-						| varlist ASPOW explist 
-							{$$ = make_node(P_OP_ASPOW, NULL, 2, $1, $3);}
-						| varlist ASBINOR explist 
-							{$$ = make_node(P_OP_ASBINOR, NULL, 2, $1, $3);}
-						| varlist ASBINAND explist 
-							{$$ = make_node(P_OP_ASBINAND, NULL, 2, $1, $3);}
-						| varlist ASBINXOR explist 
-							{$$ = make_node(P_OP_ASBINXOR, NULL, 2, $1, $3);}
-						| varlist ASRIGHTSHIFT explist 
-							{$$ = make_node(P_OP_ASRIGHTSHIFT, NULL, 2, $1, $3);}
-						| varlist ASLEFTSHIFT explist 
-							{$$ = make_node(P_OP_ASLEFTSHIFT, NULL, 2, $1, $3);}
-						;
+assignment 			: varlist ASSOP explist 
+						{ $$ = make_node(P_OP_ASSOP, NULL, 2, $1, $3);}
+					| varlist ASPLUS explist 
+						{$$ = make_node(P_OP_ASPLUS, NULL, 2, $1, $3); }
+					| varlist ASMINUS explist 
+						{$$ = make_node(P_OP_ASMINUS, NULL, 2, $1, $3);}
+					| varlist ASMUL explist 
+						{$$ = make_node(P_OP_ASMUL, NULL, 2, $1, $3);}
+					| varlist ASDIV explist 
+						{$$ = make_node(P_OP_ASDIV, NULL, 2, $1, $3);}
+					| varlist ASMOD explist 
+						{$$ = make_node(P_OP_ASMOD, NULL, 2, $1, $3);}
+					| varlist ASPOW explist 
+						{$$ = make_node(P_OP_ASPOW, NULL, 2, $1, $3);}
+					| varlist ASBINOR explist 
+						{$$ = make_node(P_OP_ASBINOR, NULL, 2, $1, $3);}
+					| varlist ASBINAND explist 
+						{$$ = make_node(P_OP_ASBINAND, NULL, 2, $1, $3);}
+					| varlist ASBINXOR explist 
+						{$$ = make_node(P_OP_ASBINXOR, NULL, 2, $1, $3);}
+					| varlist ASRIGHTSHIFT explist 
+						{$$ = make_node(P_OP_ASRIGHTSHIFT, NULL, 2, $1, $3);}
+					| varlist ASLEFTSHIFT explist 
+						{$$ = make_node(P_OP_ASLEFTSHIFT, NULL, 2, $1, $3);}
+					;
 
 
-expression				: expression OR expression 	
-							{ $$ = make_node(P_OP_OR, NULL, 2, $1, $3);}
-						| expression AND expression 
-							{ $$ = make_node(P_OP_AND, NULL, 2, $1, $3);}
-						| expression BINOR expression	
-							{ $$ = make_node(P_OP_BINOR, NULL, 2, $1, $3);}
-						| expression BINXOR expression	
-							{ $$ = make_node(P_OP_BINXOR, NULL, 2, $1, $3); }
-						| expression BINAND expression	
-							{ $$ = make_node(P_OP_BINAND, NULL, 2, $1, $3);}
-						| expression EQUAL expression 	
-							{ $$ = make_node(P_OP_EQUAL, NULL, 2, $1, $3); }
-						| expression NOTEQUAL expression	
-							{ $$ = make_node(P_OP_NOTEQUAL, NULL, 2, $1, $3); }
-						| expression GREATERTHAN expression 
-							{ $$ = make_node(P_OP_GREATERTHAN, NULL, 2, $1, $3);}
-						| expression LESSTHAN expression 	
-							{ $$ = make_node(P_OP_LESSTHAN, NULL, 2, $1, $3);}
-						| expression GREATER expression 	
-							{ $$ = make_node(P_OP_GREATER, NULL, 2, $1, $3);}
-						| expression LESS expression	
-							{ $$ = make_node(P_OP_LESS, NULL, 2, $1, $3);}
-						| expression LEFTSHIFT expression 	
-							{ $$ = make_node(P_OP_LEFTSHIFT, NULL, 2, $1, $3);}
-						| expression RIGHTSHIFT expression	
-							{ $$ = make_node(P_OP_RIGHTSHIFT, NULL, 2, $1, $3);}
-						| expression PLUS expression 	
-							{ $$ = make_node(P_OP_PLUS, NULL, 2, $1, $3);}
-						| expression MINUS expression	
-							{ $$ = make_node(P_OP_MINUS, NULL, 2, $1, $3);}
-						| expression MUL expression 	
-							{ $$ = make_node(P_OP_MUL, NULL, 2, $1, $3);}
-						| expression DIV expression 	
-							{ $$ = make_node(P_OP_DIV, NULL, 2, $1, $3);}
-						| expression MOD expression	
-							{ $$ = make_node(P_OP_MOD, NULL, 2, $1, $3);}
-						| expression POW expression	
-							{ $$ = make_node(P_OP_POW, NULL, 2, $1, $3);}
-						| COMPL expression	
-							{ $$ = make_node(P_OP_COMPL, NULL, 1, $2);}
-						| NOT expression	
-							{ $$ = make_node(P_OP_NOT, NULL,1,  $2);}
-						| listconstructor 
-							{ $$ = make_node(P_OP_LSTCONST, NULL, 1, $1);}
-						| ffi_struct_def 
-							{ $$ = make_node(P_OP_STRDEF, NULL, 1, $1);}
-						| NUMBER 
-							{ $$ = make_node(NUMBER, $1, 0); }
-						| STRING 
-							{ $$ = make_node(STRING, $1, 0); }
-						| TRUE 
-							{ $$ = make_node(TRUE, $1, 0); }
-						| FALSE 
-							{ $$ = make_node(FALSE, $1, 0); }
-						| evalexpression	
-							{ $$ = make_node(P_OP_EVEXP, NULL, 1, $1); }
-						;
+expression			: expression OR expression 	
+						{ $$ = make_node(P_OP_OR, NULL, 2, $1, $3);}
+					| expression AND expression 
+						{ $$ = make_node(P_OP_AND, NULL, 2, $1, $3);}
+					| expression BINOR expression	
+						{ $$ = make_node(P_OP_BINOR, NULL, 2, $1, $3);}
+					| expression BINXOR expression	
+						{ $$ = make_node(P_OP_BINXOR, NULL, 2, $1, $3); }
+					| expression BINAND expression	
+						{ $$ = make_node(P_OP_BINAND, NULL, 2, $1, $3);}
+					| expression EQUAL expression 	
+						{ $$ = make_node(P_OP_EQUAL, NULL, 2, $1, $3); }
+					| expression NOTEQUAL expression	
+						{ $$ = make_node(P_OP_NOTEQUAL, NULL, 2, $1, $3); }
+					| expression GREATERTHAN expression 
+						{ $$ = make_node(P_OP_GREATERTHAN, NULL, 2, $1, $3);}
+					| expression LESSTHAN expression 	
+						{ $$ = make_node(P_OP_LESSTHAN, NULL, 2, $1, $3);}
+					| expression GREATER expression 	
+						{ $$ = make_node(P_OP_GREATER, NULL, 2, $1, $3);}
+					| expression LESS expression	
+						{ $$ = make_node(P_OP_LESS, NULL, 2, $1, $3);}
+					| expression LEFTSHIFT expression 	
+						{ $$ = make_node(P_OP_LEFTSHIFT, NULL, 2, $1, $3);}
+					| expression RIGHTSHIFT expression	
+						{ $$ = make_node(P_OP_RIGHTSHIFT, NULL, 2, $1, $3);}
+					| expression PLUS expression 	
+						{ $$ = make_node(P_OP_PLUS, NULL, 2, $1, $3);}
+					| expression MINUS expression	
+						{ $$ = make_node(P_OP_MINUS, NULL, 2, $1, $3);}
+					| expression MUL expression 	
+						{ $$ = make_node(P_OP_MUL, NULL, 2, $1, $3);}
+					| expression DIV expression 	
+						{ $$ = make_node(P_OP_DIV, NULL, 2, $1, $3);}
+					| expression MOD expression	
+						{ $$ = make_node(P_OP_MOD, NULL, 2, $1, $3);}
+					| expression POW expression	
+						{ $$ = make_node(P_OP_POW, NULL, 2, $1, $3);}
+					| COMPL expression	
+						{ $$ = make_node(P_OP_COMPL, NULL, 1, $2);}
+					| NOT expression	
+						{ $$ = make_node(P_OP_NOT, NULL,1,  $2);}
+					| listconstructor 
+						{ $$ = make_node(P_OP_LSTCONST, NULL, 1, $1);}
+					| ffi_struct_def 
+						{ $$ = make_node(P_OP_STRDEF, NULL, 1, $1);}
+					| NUMBER 
+						{ $$ = make_node(NUMBER, $1, 0); }
+					| STRING 
+						{ $$ = make_node(STRING, $1, 0); }
+					| TRUE 
+						{ $$ = make_node(TRUE, $1, 0); }
+					| FALSE 
+						{ $$ = make_node(FALSE, $1, 0); }
+					| evalexpression	
+						{ $$ = make_node(P_OP_EVEXP, NULL, 1, $1); }
+					;
 
-evalexpression			: fceexp 
-							{ $$ = make_node(P_OP_FCEXP, NULL, 1, $1);}	
-						| fceexp_rc 
-							{ $$ = make_node(P_OP_FCRC, NULL, 1, $1);}
-						| var_exp 
-							{ $$ = make_node(P_OP_VAREXP, NULL, 1, $1);}
-						| functioncall 
-							{ $$ = make_node(P_OP_CALL, NULL, 1, $1);}
-						| PAROPEN expression PARCLOSE
-							{ $$ = make_node(P_OP_EXP, NULL, 1, $2); }
-						;
+evalexpression		: fceexp 
+						{ $$ = make_node(P_OP_FCEXP, NULL, 1, $1);}	
+					| fceexp_rc 
+						{ $$ = make_node(P_OP_FCRC, NULL, 1, $1);}
+					| var_exp 
+						{ $$ = make_node(P_OP_VAREXP, NULL, 1, $1);}
+					| functioncall 
+						{ $$ = make_node(P_OP_CALL, NULL, 1, $1);}
+					| PAROPEN expression PARCLOSE
+						{ $$ = make_node(P_OP_EXP, NULL, 1, $2); }
+					;
 
-functioncall			: evalexpression arglist 
-							{ $$ = make_node(P_OP_EVEXP, NULL, 2, $1, $2); }
-						;
+functioncall		: evalexpression arglist 
+						{ $$ = make_node(P_OP_EVEXP, NULL, 2, $1, $2); }
+					;
 
-var_exp					: ID 
-							{ $$ = make_node(ID, $1, 0); }
-						| evalexpression BOXOPEN expression BOXCLOSE 
-							{ $$ = make_node(P_OP_SEL, NULL, 2, $1, $3);}
-						;
+var_exp				: ID 
+						{ $$ = make_node(ID, $1, 0); }
+					| evalexpression BOXOPEN expression BOXCLOSE 
+						{ $$ = make_node(P_OP_SEL, NULL, 2, $1, $3);}
+					;
 
-functiondef				: FUNCTION ID parlist block 
-							{ $$ = make_node(P_OP_FDEF, NULL, 2, $3, $4); }
-						| FUNCTION ID parlist hotkeydef block 
-							{ $$ = make_node(P_OP_FDEF, NULL, 3, $3, $4, $5); }
-						| FUNCTION ID parlist hotstringdef block 
-							{ $$ = make_node(P_OP_FDEF, NULL, 3, $3, $4, $5); }
-						;
+functiondef			: FUNCTION ID parlist block 
+						{ $$ = make_node(P_OP_FDEF, NULL, 2, $3, $4); }
+					| FUNCTION ID parlist hotkeydef block 
+						{ $$ = make_node(P_OP_FDEF, NULL, 3, $3, $4, $5); }
+					| FUNCTION ID parlist hotstringdef block 
+						{ $$ = make_node(P_OP_FDEF, NULL, 3, $3, $4, $5); }
+					;
 
-hotkeydef				: ON KEYSTROKE expression 
-							{ $$ = make_node(P_OP_HKDEF, NULL, 1, $3); }
-						;
+hotkeydef			: ON KEYSTROKE expression 
+						{ $$ = make_node(P_OP_HKDEF, NULL, 1, $3); }
+					;
 
-hotstringdef			: ON HOTSTRING expression 
-							{ $$ = make_node(P_OP_HSDEF, NULL, 1, $3); } 
-						;
+hotstringdef		: ON HOTSTRING expression 
+						{ $$ = make_node(P_OP_HSDEF, NULL, 1, $3); } 
+					;
 
-ffi_struct_def			: CURLOPEN exp_cast_list CURLCLOSE 
-							{ $$ = make_node(0, NULL, 0); }
-						| MUL CURLOPEN exp_cast_list CURLCLOSE 
-							{ $$ = make_node(0, NULL, 0); }
-						;
+ffi_struct_def		: CURLOPEN exp_cast_list CURLCLOSE 
+						{ $$ = make_node(0, NULL, 0); }
+					| MUL CURLOPEN exp_cast_list CURLCLOSE 
+						{ $$ = make_node(0, NULL, 0); }
+					;
 
-ffi_cast 				: FFI_CHAR  
-							{ $$ = make_node(P_OP_FFICAST, $1, 0);}
-						| FFI_SHORT 
-							{ $$ = make_node(P_OP_FFICAST, $1, 0);} 
-						| FFI_INT   
-							{ $$ = make_node(P_OP_FFICAST, $1, 0);}
-						| FFI_LONG  
-							{ $$ = make_node(P_OP_FFICAST, $1, 0);}
-						| FFI_LONG_LONG 
-							{ $$ = make_node(P_OP_FFICAST, $1, 0);}
-						| FFI_DOUBLE 	
-							{ $$ = make_node(P_OP_FFICAST, $1, 0);}
-						| FFI_FLOAT 	
-							{ $$ = make_node(P_OP_FFICAST, $1, 0);}
-						| FFI_LONG_DOUBLE 
-							{ $$ = make_node(P_OP_FFICAST, $1, 0);}
-						| FFI_VOIDPTR 	  
-							{ $$ = make_node(P_OP_FFICAST, $1, 0);}
-						;
+ffi_cast 			: FFI_CHAR  
+						{ $$ = make_node(P_OP_FFICAST, $1, 0);}
+					| FFI_SHORT 
+						{ $$ = make_node(P_OP_FFICAST, $1, 0);} 
+					| FFI_INT   
+						{ $$ = make_node(P_OP_FFICAST, $1, 0);}
+					| FFI_LONG  
+						{ $$ = make_node(P_OP_FFICAST, $1, 0);}
+					| FFI_LONG_LONG 
+						{ $$ = make_node(P_OP_FFICAST, $1, 0);}
+					| FFI_DOUBLE 	
+						{ $$ = make_node(P_OP_FFICAST, $1, 0);}
+					| FFI_FLOAT 	
+						{ $$ = make_node(P_OP_FFICAST, $1, 0);}
+					| FFI_LONG_DOUBLE 
+						{ $$ = make_node(P_OP_FFICAST, $1, 0);}
+					| FFI_VOIDPTR 	  
+						{ $$ = make_node(P_OP_FFICAST, $1, 0);}
+					;
 
-listconstructor 		: BOXOPEN BOXCLOSE 
-							{ $$ = make_node(P_OP_LSTCONST, NULL, 0); }
-						| BOXOPEN explist BOXCLOSE 
-							{ $$ = make_node(P_OP_LSTCONST, NULL, 1, $2); }
-						;
+listconstructor 	: BOXOPEN BOXCLOSE 
+						{ $$ = make_node(P_OP_LSTCONST, NULL, 0); }
+					| BOXOPEN explist BOXCLOSE 
+						{ $$ = make_node(P_OP_LSTCONST, NULL, 1, $2); }
+					;
 
-statement				: assignment SEMI 
-							{ $$ = make_node(P_OP_ASSIGN, NULL, 1, $1); }
-						| BREAK SEMI 
-							{ $$ = make_node(P_OP_BREAK, NULL, 0); }
-						| CONTINUE SEMI 
-							{ $$ = make_node(P_OP_CONTINUE, NULL, 0); }
-						| block SEMI
-							{ $$ = make_node(P_OP_BLOCK, NULL, 1, $1); }
-						| functioncall SEMI
-							{ $$ = make_node(P_OP_CALL, NULL, 1, $1); }
-						| functiondef 
-							{ /* Kein Knoten. Eintrag in Funktionstabelle */ }
-						| GLOBAL assignment SEMI 
-							{ }
-						| GLOBAL functiondef
-							{ }
-						| IF PAROPEN expression PARCLOSE block 
-							{ $$ = make_node(P_OP_IF, NULL, 2, $3, $5); }
-						| IF PAROPEN expression PARCLOSE block ELSE block 
-							{ /*TODO */}
-						| IF PAROPEN expression PARCLOSE block ELIF PAROPEN expression PARCLOSE block 
-							{/*TODO*/}
-						| FOR PAROPEN assignment SEMI expression SEMI explist PARCLOSE block
-							{ $$ = make_node(P_OP_FOR, NULL, 4, $3, $5, $7, $9); }
-						| FOR idlist IN explist block  
-							{ $$ = make_node(P_OP_FORIN, NULL, 3, $2, $4, $5);} 
-						| WHILE PAROPEN expression PARCLOSE block 
-							{ $$ = make_node(P_OP_WHILE, NULL, 2, $3, $5); }
-						| DO block WHILE PAROPEN expression PARCLOSE SEMI 
-							{ $$ = make_node(P_OP_DOWH, NULL, 2, $2, $5);}
-						| SWITCH PAROPEN expression PARCLOSE switchblock 
-							{ $$ = make_node(P_OP_SWITCH, NULL, 2, $3, $5); }
-						| fceblock 
-							{ $$ = make_node(P_OP_FCEB, NULL, 1, $1); }
-						;
+statement			: assignment SEMI 
+						{ $$ = make_node(P_OP_ASSIGN, NULL, 1, $1); }
+					| BREAK SEMI 
+						{ $$ = make_node(P_OP_BREAK, NULL, 0); }
+					| CONTINUE SEMI 
+						{ $$ = make_node(P_OP_CONTINUE, NULL, 0); }
+					| block SEMI
+						{ $$ = make_node(P_OP_BLOCK, NULL, 1, $1); }
+					| functioncall SEMI
+						{ $$ = make_node(P_OP_CALL, NULL, 1, $1); }
+					| functiondef 
+						{ /* Kein Knoten. Eintrag in Funktionstabelle */ }
+					| GLOBAL assignment SEMI 
+						{ }
+					| GLOBAL functiondef
+						{ }
+					| IF PAROPEN expression PARCLOSE block 
+						{ $$ = make_node(P_OP_IF, NULL, 2, $3, $5); }
+					| IF PAROPEN expression PARCLOSE block ELSE block 
+						{ /*TODO */}
+					| IF PAROPEN expression PARCLOSE block ELIF PAROPEN expression PARCLOSE block 
+						{/*TODO*/}
+					| FOR PAROPEN assignment SEMI expression SEMI explist PARCLOSE block
+						{ $$ = make_node(P_OP_FOR, NULL, 4, $3, $5, $7, $9); }
+					| FOR idlist IN explist block  
+						{ $$ = make_node(P_OP_FORIN, NULL, 3, $2, $4, $5);} 
+					| WHILE PAROPEN expression PARCLOSE block 
+						{ $$ = make_node(P_OP_WHILE, NULL, 2, $3, $5); }
+					| DO block WHILE PAROPEN expression PARCLOSE SEMI 
+						{ $$ = make_node(P_OP_DOWH, NULL, 2, $2, $5);}
+					| SWITCH PAROPEN expression PARCLOSE switchblock 
+						{ $$ = make_node(P_OP_SWITCH, NULL, 2, $3, $5); }
+					| fceblock 
+						{ $$ = make_node(P_OP_FCEB, NULL, 1, $1); }
+					;
 
-fceblock 				: EXTERNAL FCELANG FCEB_CODE 
-							{ $$ = make_node(P_OP_FCEB, $2, 0); }
-						;
+fceblock 			: EXTERNAL FCELANG FCEB_CODE 
+						{ $$ = make_node(P_OP_FCEB, $2, 0); }
+					;
 
-fceexp					: PAROPEN NOT FCELANG PARCLOSE FCEB_CODE 
-							{ $$ = make_node(P_OP_FCEXP, $5, 0); }
-						;
+fceexp				: PAROPEN NOT FCELANG PARCLOSE FCEB_CODE 
+						{ $$ = make_node(P_OP_FCEXP, $5, 0); }
+					;
 
-fceexp_rc				: PAROPEN QMARK FCELANG PARCLOSE FCEB_CODE 
-							{ $$ = make_node(P_OP_FCRC, $5, 0); }
-						;
+fceexp_rc			: PAROPEN QMARK FCELANG PARCLOSE FCEB_CODE 
+						{ $$ = make_node(P_OP_FCRC, $5, 0); }
+					;
 
 %%
 

@@ -40,21 +40,21 @@ struct value *make_valueFlt(double i){
 	return res;
 }
 
-struct value *make_valueStr(char *str){
-	struct value *res = (struct value *) malloc(sizeof(struct value));
-	if(res == NULL || str == NULL)
-		return NULL;
-	res->c = (void *) str;
-	res->type = P_TYPE_STRING;
-	return res;
-}
-
 struct value *make_valueArr(struct dyn_arr *a){
 	struct value *res = (struct value *) malloc(sizeof(struct value));
 	if(res == NULL || a == NULL)
 		return NULL;
 	res->c = (void *) a;
 	res->type = P_TYPE_ARR;
+	return res;
+}
+
+struct value *make_valueStr(char *str){
+	struct value *res = (struct value *) malloc(sizeof(struct value));
+	if(res == NULL || str == NULL)
+		return NULL;
+	res->c = (void *) str;
+	res->type = P_TYPE_STRING;
 	return res;
 }
 

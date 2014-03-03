@@ -294,9 +294,9 @@ statement			: assignment SEMI
 					| IF PAROPEN expression PARCLOSE block 
 						{ $$ = make_node(P_OP_IF, NULL, 2, $3, $5); }
 					| IF PAROPEN expression PARCLOSE block ELSE block 
-						{ /*TODO */}
+						{ /* TODO */}
 					| IF PAROPEN expression PARCLOSE block ELIF PAROPEN expression PARCLOSE block 
-						{/*TODO*/}
+						{ /* TODO */ }
 					| FOR PAROPEN assignment SEMI expression SEMI explist PARCLOSE block
 						{ $$ = make_node(P_OP_FOR, NULL, 4, $3, $5, $7, $9); }
 					| FOR idlist IN explist block  
@@ -337,6 +337,7 @@ int main(int argc, char **argv){
 	yyparse();
 	traverse_preorder(root, callback, NULL);
 	printf("Debugging:\n");
-	interpret(root, NULL);	
+	interpreter_init();
+	parse_program(root);	
 	return EXIT_SUCCESS;
 }

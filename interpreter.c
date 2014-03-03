@@ -6,7 +6,7 @@
 
 /* neccessary global datastructures like the id_table-Stack */
 static struct sstack *id_table_stack;
-
+int *rc;
 
 int get_operation(struct nary_node *node);
 char *get_str(struct nary_node *node);
@@ -14,6 +14,8 @@ struct value *get_value(struct nary_node *node);
 struct dyn_arr *get_arr(struct nary_node *node);
 int *get_num(struct nary_node *node);
 void assign(struct nary_node *node);
+
+int interpreter_init();
 
 void parse_program(struct nary_node *node);
 void parse_stmtlist(struct nary_node *node);
@@ -25,6 +27,7 @@ struct value *parse_exp_cast_list(struct nary_node *node);
 struct value *parse_parlist(struct nary_node *node);
 struct value *parse_idlist(struct nary_node *node);
 struct value *parse_arglist(struct nary_node *node);
+struct value *parse_varlist(struct nary_node *node);
 
 struct value *parse_expression(struct nary_node *node);
 struct value *parse_evalexpression(struct nary_node *node);
@@ -47,18 +50,31 @@ void parse_switch(struct nary_node *node);
 void parse_fceblock(struct nary_node *node); 
 
 int interpreter_init(){
+	con_log("initialize interpreter", "interpreter_init()", LOG_DEBUG);
 	id_table_stack = sstack_init();
 	if(id_table_stack == NULL){
 		con_log("could not initialize the id table stack", 
-										"interpreter_init", LOG_ERROR);
+										"interpreter_init()", LOG_ERROR);
 		return -1;
 	}
 
+	rc = (int *) malloc(sizeof(int));
+	if(rc == NULL) {
+		con_log("could not allocate memory for returncode", 
+					"interpreter_init()", LOG_ERROR);
+		return -1;
+	}
 
 	return 0;	
 }
 
 void parse_program(struct nary_node *node){
+	struct id_tab *newtab = tab_init();
+	if(sstack_push(id_table_stack, (void*) newtab)){
+		con_log("new id table could not be pushed", 
+							"parse_program()", LOG_ERROR);
+		return;
+	}
 	parse_stmtlist(node->nodes[0]);
 }
 
@@ -66,12 +82,58 @@ void parse_stmtlist(struct nary_node *node){
 	if(get_operation(node) == P_OP_STMTLST){
 		parse_stmtlist(node->nodes[0]);
 		parse_stmt(node->nodes[1]);
-	} else {
+	} else { /* last node of a stmtlist equals the 
+				first statement */
 		parse_stmt(node->nodes[0]);
 	}
 }
 
+struct value *parse_explist(struct nary_node *node){
+	if(get_operation(node) == P_OP_EXPLST) {
+		struct value *temp = parse_explist(node->nodes[0]);
+		/* the dynamical array resides in the content of temp */
+		arr_add_value((struct dyn_arr *) temp->c, (void *) 
+							parse_expression(node->nodes[1]));
+		return temp;
+	} else { //node is of type P_OP_EXP
+		/* Create dynamical list and add the first evaluated expression */
+		struct dyn_arr *lst = arr_init();
+		arr_add_value(lst, (void *) parse_expression(node->nodes[0]));
+		return make_valueArr(lst);
+	}
+}
+
+struct value *parse_varlist(struct nary_node *node){
+	if(get_operation(node) == P_OP_VARLST) {
+		struct value *temp = parse_varlist(node->nodes[0]);
+		/* the same as in parse_explist */
+		arr_add_value((struct dyn_arr*) temp->c, (void *) 
+							parse_varexpression(node->nodes[1]));
+		return temp;
+	} else {
+		struct dyn_arr *lst = arr_init();	
+		arr_add_value(lst, (void *) parse_varexpression(node->nodes[0]));
+		return make_valueArr(lst);
+	}
+}
+
 void parse_assignment(struct nary_node *node){
+	struct value *temp1 = parse_varlist(node->nodes[0]);
+	struct value *temp2 = parse_varlist(node->nodes[1]);
+	if(temp1->type != P_TYPE_ARR || temp2->type != P_TYPE_ARR) {
+		con_log("varlist and explist are invalid", 
+					"parse_assignment()", LOG_ERROR);
+		return;
+	}
+	struct dyn_arr *varlist = (struct dyn_arr *) temp1->c;
+	struct dyn_arr *explist = (struct dyn_arr *) temp2->c;
+	
+	if(varlist->num != explist->num) {
+		con_log("len of var and explist differ. Operation not executed.", 
+					"parse_assignment()", LOG_ERROR);
+		return;
+	}
+
 	
 }
 

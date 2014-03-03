@@ -1,21 +1,4 @@
 /*
- ---begin scanner util
- */
-
-struct dyn_arr {
-	int num;
-	void **arr;
-};
-
-struct value *make_valueInt(int i);
-struct value *make_valueFlt(double d);
-struct value *make_valueStr(char *str);
-struct value *make_valueArr(struct dyn_arr *a);
-
-/*
- ---end---
- */
-/*
  ---begin parser informations---
  */
 
@@ -40,6 +23,7 @@ struct node_content {
 #define P_TYPE_FFIS 303
 #define P_TYPE_STRING 304
 #define P_TYPE_NIL 305
+//ARR is an internal type 
 #define P_TYPE_ARR 306
 
 /*
@@ -139,13 +123,10 @@ struct node_content {
 struct nary_node *make_node(int op, struct value *v, int c, ...);
 
 /*
- ---end---
- */
-
-/*
  ---nary tree implementation---
  ---begin---
  */
+
 struct nary_node {
 	void *content; //pointer to the content
 	struct nary_node **nodes; //array of pointers to child nodes
@@ -166,14 +147,12 @@ int traverse_preorder(struct nary_node *node,
 					int (*callback)(void *c, void *u), void *userparam);
 int traverse_postorder(struct nary_node *node, 
 					int (*callback)(void *c, void *u), void *u);
-/*
- ---end---
- */
 
 /*
  ---dynamic string implementation---
  ---begin---
  */
+
 #define DYN_INIT_SIZE 100
 #define DYN_REALLOC_SIZE 1000
 
@@ -269,19 +248,10 @@ int sstack_size(struct sstack *stack);
 #define LOG_NONE 1
 
 void con_log(char *m, char *s, int l);
-/*
- ---end---
- */
 
 /*
  ---begin interpreter declarations---
  */
-
-struct env {
-    int i;
-};
-
-struct value *interpret(struct nary_node *root, struct env *e);
 
 struct id_tab {
 	int num;
@@ -299,13 +269,15 @@ struct value *tab_get_value(struct id_tab *table, char *id);
 int tab_change_value(struct id_tab *table, char *id, struct value *val);
 int tab_free(struct id_tab *table);
 
+struct dyn_arr {
+	int num;
+	void **arr;
+};
+
 struct dyn_arr *arr_init();
 int arr_add_value(struct dyn_arr *arr, void *val);
 int arr_free(struct dyn_arr *arr);
 
-/*
- ---end---
- */
 /*
  ---begin settings.c declarations---
  */
@@ -320,5 +292,10 @@ void set_ec(int e);
 int get_loglevel();
 
 /*
- ---end---
+ ---begin scanner util
  */
+
+struct value *make_valueInt(int i);
+struct value *make_valueFlt(double d);
+struct value *make_valueStr(char *str);
+struct value *make_valueArr(struct dyn_arr *a);

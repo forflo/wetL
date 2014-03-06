@@ -13,7 +13,6 @@ struct node_content {
 	struct value *v; /* value of the operation */
 };
 
-
 /*
  ---types---
  */
@@ -35,6 +34,9 @@ struct node_content {
  ---operations and node types---
  */
 
+
+#define P_OP_PARLSTHS 474
+#define P_OP_PARLSTHK 475
 #define P_OP_VARLST 476
 #define P_OP_FORIN 477
 #define P_OP_EVEXP 478
@@ -101,6 +103,8 @@ struct node_content {
 #define P_OP_POW 540
 #define P_OP_COMPL 541
 #define P_OP_NOT 542
+#define P_OP_UMINUS 543
+
 
 #define P_OP_FCEB 550
 #define P_OP_FCRC 551
@@ -109,6 +113,7 @@ struct node_content {
 #define P_OP_HSDEF 554
 
 #define P_OP_NOOP 560
+#define P_OP_PRINT 561
 
 /*
  ---useful defines---
@@ -253,6 +258,52 @@ void con_log(char *m, char *s, int l);
  ---begin interpreter declarations---
  */
 
+int get_operation(struct nary_node *node);
+char *get_str(struct nary_node *node);
+struct value *get_value(struct nary_node *node);
+struct dyn_arr *get_arr(struct nary_node *node);
+int *get_num(struct nary_node *node);
+void assign(struct nary_node *node);
+
+int interpreter_init();
+
+void parse_program(struct nary_node *node);
+void parse_stmtlist(struct nary_node *node);
+void parse_block(struct nary_node *node);
+void parse_stmt(struct nary_node *node);
+
+struct value *parse_explist(struct nary_node *node);
+struct value *parse_exp_cast_list(struct nary_node *node);
+struct value *parse_parlist(struct nary_node *node);
+struct value *parse_idlist(struct nary_node *node);
+struct value *parse_arglist(struct nary_node *node);
+struct value *parse_varlist(struct nary_node *node);
+
+struct value *parse_expression(struct nary_node *node);
+struct value *parse_evalexpression(struct nary_node *node);
+struct value *parse_functioncall(struct nary_node *node);
+struct value *parse_varexpression(struct nary_node *node);
+
+struct value *parse_fceexp(struct nary_node *node);
+struct value *parse_fceexp_rc(struct nary_node *node);
+
+void parse_assignment(struct nary_node *node);
+void parse_break(struct nary_node *node);
+void parse_print(struct nary_node *node);
+void parse_continue(struct nary_node *node);
+void parse_functiondef(struct nary_node *node);
+void parse_if(struct nary_node *node);
+void parse_forin(struct nary_node *node);
+void parse_for(struct nary_node *node);
+void parse_while(struct nary_node *node);
+void parse_dowhile(struct nary_node *node);
+void parse_switch(struct nary_node *node);
+void parse_fceblock(struct nary_node *node); 
+
+/*
+ ---begin id_table and dyn_arr declarations
+ */
+
 struct id_tab {
 	int num;
 	struct elem **tab;
@@ -268,6 +319,7 @@ int tab_add_value(struct id_tab *table, struct value *val, char *id);
 struct value *tab_get_value(struct id_tab *table, char *id);
 int tab_change_value(struct id_tab *table, char *id, struct value *val);
 int tab_free(struct id_tab *table);
+int tab_exists(struct id_tab *table, char *id);
 
 struct dyn_arr {
 	int num;
@@ -297,5 +349,5 @@ int get_loglevel();
 
 struct value *make_valueInt(int i);
 struct value *make_valueFlt(double d);
-struct value *make_valueStr(char *str);
+struct value *make_valueStr(const char *str);
 struct value *make_valueArr(struct dyn_arr *a);

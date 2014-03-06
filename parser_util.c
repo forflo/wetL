@@ -39,6 +39,7 @@ struct nary_node *make_node(int operation, struct value *v, int childs, ...){
 	struct nary_node *leaf = 
 		new_node((void *) c);
 
+
 	/* if childs = 0 this loop does nothing */
 	for(i=0; i<childs; i++)
 		add_child(leaf, va_arg(args, struct nary_node *));

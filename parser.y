@@ -23,7 +23,7 @@ struct nary_node *root;
 %left PLUS MINUS
 %left MUL DIV MOD
 %left POW
-%left COMPL NOT
+%left COMPL NOT UMINUS
 
 /* Assignment operators */
 %token ASSOP ASPLUS ASMINUS ASMUL ASDIV ASMOD ASPOW ASBINOR ASBINAND 
@@ -31,10 +31,10 @@ struct nary_node *root;
 /* Hot things */
 %token KEYSTROKE HOTSTRING ON
 /* Statements*/
-%token IF GLOBAL ELSE ELIF CONTINUE BREAK UTIL FOR IN WHILE DO SWITCH 
+%token IF GLOBAL ELSE ELIF CONTINUE BREAK UTIL FOR IN WHILE DO SWITCH PRINT
 %token RET CASE FUNCTION EXTERNAL TRUE FALSE
 /* Literals */
-%token STRING NUMBER ID FCELANG FCEB_CODE
+%token STRING NUMBER ID FCELANG FCEB_CODE INT
 /* Token for FFI */
 %token FFI_CHAR FFI_SHORT FFI_INT FFI_LONG FFI_LONG_LONG FFI_DOUBLE 
 %token FFI_FLOAT FFI_LONG_DOUBLE FFI_VOIDPTR
@@ -49,14 +49,13 @@ struct nary_node *root;
 %type <k> functioncall expression evalexpression fceexp fceexp_rc 
 %type <k> listconstructor ffi_struct_def var_exp block stmtlist statement 
 %type <k> fceblock assignment functiondef explist idlist labeled_statement 
-%type <k> switchblock labeled_stmtlist arglist parlist hotstringdef 
+%type <k> switchblock labeled_stmtlist arglist parlist hotstringdef varlist
 %type <k> hotkeydef exp_cast_list program ffi_cast
 
 %%
 
 program 			: stmtlist 
-						{ $$ = make_node(P_OP_STMTLST, NULL, 1, $1); 
-							/*todo: bezeichnertabelle einfügen*/ }
+						{ root = make_node(P_OP_STMTLST, NULL, 1, $1); }
 					;
 
 block 				: CURLOPEN stmtlist CURLCLOSE 
@@ -185,6 +184,8 @@ expression			: expression OR expression
 						{ $$ = make_node(P_OP_MOD, NULL, 2, $1, $3);}
 					| expression POW expression	
 						{ $$ = make_node(P_OP_POW, NULL, 2, $1, $3);}
+					| MINUS expression %prec UMINUS 
+						{ $$ = make_node(P_OP_UMINUS, NULL, 1, $2);}
 					| COMPL expression	
 						{ $$ = make_node(P_OP_COMPL, NULL, 1, $2);}
 					| NOT expression	
@@ -199,6 +200,8 @@ expression			: expression OR expression
 						{ $$ = make_node(STRING, $1, 0); }
 					| TRUE 
 						{ $$ = make_node(TRUE, $1, 0); }
+					| INT
+						{ $$ = make_node(INT, $1, 0); }
 					| FALSE 
 						{ $$ = make_node(FALSE, $1, 0); }
 					| evalexpression	
@@ -228,11 +231,11 @@ var_exp				: ID
 					;
 
 functiondef			: FUNCTION ID parlist block 
-						{ $$ = make_node(P_OP_FDEF, NULL, 2, $3, $4); }
+						{ $$ = make_node(P_OP_PARLST, NULL, 2, $3, $4); }
 					| FUNCTION ID parlist hotkeydef block 
-						{ $$ = make_node(P_OP_FDEF, NULL, 3, $3, $4, $5); }
+						{ $$ = make_node(P_OP_PARLSTHK, NULL, 3, $3, $4, $5); }
 					| FUNCTION ID parlist hotstringdef block 
-						{ $$ = make_node(P_OP_FDEF, NULL, 3, $3, $4, $5); }
+						{ $$ = make_node(P_OP_PARLSTHK, NULL, 3, $3, $4, $5); }
 					;
 
 hotkeydef			: ON KEYSTROKE expression 
@@ -281,12 +284,14 @@ statement			: assignment SEMI
 						{ $$ = make_node(P_OP_BREAK, NULL, 0); }
 					| CONTINUE SEMI 
 						{ $$ = make_node(P_OP_CONTINUE, NULL, 0); }
-					| block SEMI
+					| PRINT expression SEMI
+						{ $$ = make_node(P_OP_PRINT, NULL, 1, $2); }
+					| block
 						{ $$ = make_node(P_OP_BLOCK, NULL, 1, $1); }
 					| functioncall SEMI
 						{ $$ = make_node(P_OP_CALL, NULL, 1, $1); }
 					| functiondef 
-						{ /* Kein Knoten. Eintrag in Funktionstabelle */ }
+						{ $$ = make_node(P_OP_FDEF, NULL, 1, $1); }
 					| GLOBAL assignment SEMI 
 						{ }
 					| GLOBAL functiondef
@@ -334,7 +339,10 @@ int callback(void *c, void *u){
 
 int main(int argc, char **argv){
 	yydebug = 1;
-	yyparse();
+	if(yyparse()){
+		printf("Ein Syntaxfehler ist aufgetreten!\n");
+		return EXIT_FAILURE;
+	}
 	traverse_preorder(root, callback, NULL);
 	printf("Debugging:\n");
 	interpreter_init();

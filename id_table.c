@@ -65,6 +65,21 @@ struct value *tab_get_value(struct id_tab *table, char *id){
 	return NULL;
 }
 
+/* Returns the boolean value 1 if the value associated with id could
+	be found, else 0 is returned */
+int tab_exists(struct id_tab *table, char *id){
+	if(table == NULL || id == NULL)
+		return 0;
+
+	int i;
+	for(i=0; i<table->num; i++){
+		if(!(strcmp(id, table->tab[i]->id))){
+			return 1;
+		}
+	}
+	return 0;
+}
+
 /* Changes the pointer to a value strucutre with the specified identifier id
  	using the given value structurepointer val.
  		Param: val = The new value
@@ -73,10 +88,10 @@ struct value *tab_get_value(struct id_tab *table, char *id){
  		Return: -1 if invalid arguments have been given or the element could
  			not be found. 0 on success */
 int tab_change_value(struct id_tab *table, char *id, struct value *val){
+	int i;
 	if(table == NULL || id == NULL || val == NULL)
 		return -1;
 
-	int i;
 	for(i=0; i<table->num; i++){
 		if(!(strcmp(id, table->tab[i]->id))){
 			table->tab[i]->value = val;
@@ -86,6 +101,9 @@ int tab_change_value(struct id_tab *table, char *id, struct value *val){
 	return -1;
 }
 
+//TODO: The elementlist can contain some pointer to value structrues 
+//which itself point to further values. Freeing just the element pointers
+//produces a memory leak. This has to be fixed!
 /* Frees the memory occupied by the structure referenced by the given 
  	Pointer.
  	Param: table = A Pointer to a valid id_tab structure

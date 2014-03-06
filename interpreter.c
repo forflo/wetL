@@ -4,8 +4,14 @@
 #include "parser.h"
 #include <math.h>
 
+/* An initial naming error was made, thus every parse_xx 
+	can be unterstood as interpret_xx. This propably won't ever
+ 	be changed because parse is much easier to type and much 
+ 	shorter than interpret */
+
 /* neccessary global datastructures like the id_table-Stack */
 static struct sstack *id_table_stack;
+static struct dyn_arr *function_list;
 int *rc;
 
 int get_operation(struct nary_node *node);
@@ -39,6 +45,7 @@ struct value *parse_fceexp_rc(struct nary_node *node);
 
 void parse_assignment(struct nary_node *node);
 void parse_break(struct nary_node *node);
+void parse_print(struct nary_node *node);
 void parse_continue(struct nary_node *node);
 void parse_functiondef(struct nary_node *node);
 void parse_if(struct nary_node *node);
@@ -65,6 +72,8 @@ int interpreter_init(){
 		return -1;
 	}
 
+	con_log("init is done", "interpreter_init()", LOG_DEBUG);
+
 	return 0;	
 }
 
@@ -82,7 +91,7 @@ void parse_stmtlist(struct nary_node *node){
 	if(get_operation(node) == P_OP_STMTLST){
 		parse_stmtlist(node->nodes[0]);
 		parse_stmt(node->nodes[1]);
-	} else { /* last node of a stmtlist equals the 
+	} else { /* last node of a stmtlist subtree equals the 
 				first statement */
 		parse_stmt(node->nodes[0]);
 	}
@@ -98,9 +107,14 @@ struct value *parse_explist(struct nary_node *node){
 	} else { //node is of type P_OP_EXP
 		/* Create dynamical list and add the first evaluated expression */
 		struct dyn_arr *lst = arr_init();
-		arr_add_value(lst, (void *) parse_expression(node->nodes[0]));
+		if(arr_add_value(lst, (void *) parse_expression(node->nodes[0])))
+			con_log("Error while parsing exp in explist", "parse_explist()", LOG_ERROR);
 		return make_valueArr(lst);
 	}
+}
+
+struct value *parse_arglist(struct nary_node *node){
+
 }
 
 struct value *parse_varlist(struct nary_node *node){
@@ -117,9 +131,11 @@ struct value *parse_varlist(struct nary_node *node){
 	}
 }
 
+/* interprets an assignment */
 void parse_assignment(struct nary_node *node){
+	int i, *rc = (int *) malloc(sizeof(int));
 	struct value *temp1 = parse_varlist(node->nodes[0]);
-	struct value *temp2 = parse_varlist(node->nodes[1]);
+	struct value *temp2 = parse_explist(node->nodes[1]);
 	if(temp1->type != P_TYPE_ARR || temp2->type != P_TYPE_ARR) {
 		con_log("varlist and explist are invalid", 
 					"parse_assignment()", LOG_ERROR);
@@ -129,13 +145,87 @@ void parse_assignment(struct nary_node *node){
 	struct dyn_arr *explist = (struct dyn_arr *) temp2->c;
 	
 	if(varlist->num != explist->num) {
-		con_log("len of var and explist differ. Operation not executed.", 
+		con_log("Length of var- and explist differ. Assignment not executed.", 
 					"parse_assignment()", LOG_ERROR);
 		return;
 	}
-
 	
+	/* adds the values from explist to the id_list using the */
+	struct id_tab *head = sstack_head(id_table_stack, rc);
+	for(i=0; i<varlist->num; i++){
+		struct value *cvar = (struct value *) varlist->arr[i];
+		struct value *cval = (struct value *) explist->arr[i];
+
+		if(cvar->type == P_TYPE_STRING)	{
+			/* first we try to change the value, if that fails, the
+				var does not exist and we can add it */
+			if(!tab_exists(head, (char *) cvar->c)){
+				if(tab_add_value(head, cval, (char *) cvar->c)){
+					con_log("Error while adding the variable", 
+							"parse_assingment()", LOG_STRONG);
+				}
+			} else {
+				if(tab_change_value(head, (char *) cvar->c, cval)) {
+					con_log("Error while changing the variable", 
+							"parse_assingment()", LOG_STRONG);
+				}
+			}
+		} else {
+			/* TODO*/
+		}
+	}
 }
+
+void parse_break(struct nary_node *node){
+	printf("[BREAK]\n");	
+}
+
+void parse_continue(struct nary_node *node){
+	printf("[CONTINUE]\n");	
+}
+
+void parse_print(struct nary_node *node){
+	struct value *val = parse_expression(node);	
+
+	switch(val->type){
+		case P_TYPE_STRING:
+			printf("[PRINT] [%s]\n", (char *) val->c);
+			break;
+		case P_TYPE_INT:
+			printf("[PRINT] [%d]\n", *((int *) val->c));
+			break;
+		case P_TYPE_DOUBLE:
+			printf("[PRINT] [%lf]\n", *((double *) val->c));
+			break;
+		default:
+			printf("[PRINT] [unimplemented type]\n");
+			break;
+	}
+}
+
+void parse_if(struct nary_node *node){
+	int tf = *((int *) parse_expression(node->nodes[0])->c );
+	if(tf)
+		parse_block(node->nodes[1]);
+}
+
+void parse_forin(struct nary_node *node);
+void parse_for(struct nary_node *node);
+
+void parse_while(struct nary_node *node){
+	while(*((int *) parse_expression(node->nodes[0])->c)){
+		parse_block(node->nodes[1]);
+	}
+}
+
+void parse_dowhile(struct nary_node *node){
+	do {
+		parse_block(node->nodes[0]);	
+	} while(*((int *) parse_expression(node->nodes[1])->c));
+}
+
+void parse_switch(struct nary_node *node);
+void parse_fceblock(struct nary_node *node); 
 
 void parse_stmt(struct nary_node *node){
 	switch(get_operation(node)){
@@ -143,13 +233,16 @@ void parse_stmt(struct nary_node *node){
 			parse_assignment(node->nodes[0]);
 			break;
 		case P_OP_BREAK:
-
+			parse_break(NULL);
 			break;
 		case P_OP_CONTINUE:
-
+			parse_continue(NULL);
 			break;
 		case P_OP_BLOCK:
-
+			parse_block(node->nodes[0]);
+			break;
+		case P_OP_PRINT:
+			parse_print(node->nodes[0]);
 			break;
 		case P_OP_CALL:
 
@@ -438,6 +531,22 @@ struct value *parse_expression(struct nary_node *node){
 			}
 			return ops[0];
 			break;
+		case P_OP_UMINUS:
+			ops[0] = parse_expression(node->nodes[0]);
+			switch(ops[0]->type){
+				case P_TYPE_INT:
+					*((int*)ops[0]->c) = (-1) * *((int*)ops[0]->c);
+					break;
+				case P_TYPE_DOUBLE:
+					*((double*)ops[0]->c) = (-1) * *((double*)ops[0]->c);
+					break;
+				default:
+					//Error
+					break;
+			}
+			
+			return ops[0];
+			break;
 		case P_OP_COMPL:
 			ops[0] = parse_expression(node->nodes[0]);
 			
@@ -466,6 +575,9 @@ struct value *parse_expression(struct nary_node *node){
 			ops[0] = parse_expression(node->nodes[0]);
 			ops[1] = parse_expression(node->nodes[1]);
 
+			break;
+		case INT:
+			return get_value(node);
 			break;
 		case NUMBER:
 			return get_value(node);
@@ -513,9 +625,28 @@ struct value *parse_evalexpression(struct nary_node *node){
 }
 
 struct value *parse_varexpression(struct nary_node *node){
+	int *rc = (int *) malloc(sizeof(int)), i;
+	struct id_tab *ctab;
+	struct value *idstr;
+	struct value *ret;
 	switch(get_operation(node)){
 		case ID:
-			return get_value(node);
+			/* if we have a value associated with the id, return that */
+			idstr = get_value(node);
+			/* travert the list representing the stack as long as we don't find
+			 	and entry for a variable. This implements scoping */
+			for(i=0; i<id_table_stack->num; i++) {
+				ctab = slist_get_at(i, id_table_stack->stack, rc);
+				if(*rc)
+					con_log("Error while taking new id_table", 
+									"parse_varexpression()", LOG_ERROR);
+				
+				ret = tab_get_value(ctab, (char *) idstr->c);
+				if(ret != NULL)
+					return ret;
+			}
+			return idstr;
+			break;
 		case P_OP_SEL:
 			//Still todo
 			return NULL;
@@ -523,6 +654,14 @@ struct value *parse_varexpression(struct nary_node *node){
 			return NULL;
 			break;
 	}
+}
+
+struct value *parse_fceexp(struct nary_node *node){
+
+}
+
+struct value *parse_fceexp_rc(struct nary_node *node){
+
 }
 
 struct value *parse_functioncall(struct nary_node *node){
@@ -534,6 +673,13 @@ struct value *parse_functioncall(struct nary_node *node){
 }
 
 void parse_block(struct nary_node *node){
+	struct id_tab *newtab = tab_init();
+	if(sstack_push(id_table_stack, (void*) newtab)){
+		con_log("new id table could not be pushed", 
+							"parse_block()", LOG_ERROR);
+		return;
+	}
+
 	parse_stmtlist(node->nodes[0]);
 }
 

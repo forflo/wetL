@@ -1,7 +1,6 @@
 %top{
 
 #include "parser.tab.h" 
-#include <glib.h>
 #include "parser.h"
 
 }
@@ -106,8 +105,8 @@ qmark "?"
 /* literals */
 
 digit [0-9]
-number  [1-9]{digit}+|[1-9]{digit}+"."{digit}+
-integer [1-9]{digit}+
+number  [1-9]{digit}*|[1-9]{digit}*"."{digit}*
+integer [1-9]{digit}*
 
 /* these are currently unused */
 hexdigit  {digit}|[A-Fa-f]
@@ -126,8 +125,10 @@ delim \n\t\v\b" "
 /* String is either quoted with single or double quotes */
 string  ({dquote}({letter}|{escapes}|{allowed_symbols}|{digit})+{dquote})|({squote}({letter}|{escapes}|{allowed_symbols}|{digit})+{squote})
 
-id ({letter}|\-|\_)+
+id {letter}({letter}|{digit}|\-|\_)*
 fcelanguage (bash|sh|python|perl)
+
+print print 
 
 /* Exclusive start conditions */
 %x blockcomment linecomment
@@ -260,6 +261,8 @@ fcelanguage (bash|sh|python|perl)
 {longdouble} {return(FFI_LONG_DOUBLE);}
 {voidptr} {return(FFI_VOIDPTR);}
 
+{print} {return(PRINT);}
+
  /* has to be placed before id, because of the
  	standard flex rules precedence */
 {fcelanguage} {return(FCELANG);} 
@@ -268,19 +271,22 @@ fcelanguage (bash|sh|python|perl)
 	yylval.v = make_valueStr(yytext);
 	return(STRING);
 }
+
+{integer} {
+	yylval.v = make_valueInt(atoi(yytext));
+	return (INT);
+}
+
 {number} {
-	yylval.v = make_valueFlt(strtod(yytext, NULL));
+	yylval.v = make_valueDbl(strtod(yytext, NULL));
 	return(NUMBER);
 }
+
 {id} {
 	yylval.v = make_valueStr(yytext);
 	return(ID);
 }   
 
-{integer} {
-	yylval.v = make_valueInt(atoi(yytext, NULL));
-	return (INT);
-}
 
 {delim} {}
 

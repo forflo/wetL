@@ -1,16 +1,12 @@
 PAR = parser.y
 SCA = scanner.l
-CFLAGS = $(shell pkg-config --cflags --libs glib-2.0) -lfl
+CFLAGS = -lfl
 YFLAGS = $(CFLAGS) -ly
-SRC = interpreter.c lex.yy.c parser.tab.c trim.c symtab.c 
+DS = dyn_arr.c str_dyn.c id_table.c sl_stack.c sl_list.c nary_tree.c
+UTIL = logger.c parser_util.c scanner_util.c
 
-all: 
-	flex $(SCA)
-	bison -d $(PAR)
-	gcc -o interpreter $(SRC) $(CFLAGS) -lfl -ly
-
-get-lines:
-	shell echo $(($(cat *.c | wc -l) - $(cat parser.tab.c lex.yy.c | wc -l)))
+all:
+	-echo use \$ make interpreter instead
 
 util-test:
 	gcc -o str_dyn str_dyn.c -DTEST -lcunit
@@ -36,11 +32,8 @@ scanner: parser
 parser:
 	bison --debug -d $(PAR)
 
-parser-debug: scanner parser
-	gcc -o parserDbg nary_tree.c parser_util.c str_dyn.c logger.c lex.yy.c parser.tab.c $(YFLAGS) 
-
 interpreter: parser scanner
-	gcc -o interpreter dyn_arr.c scanner_util.c nary_tree.c parser_util.c str_dyn.c logger.c lex.yy.c parser.tab.c interpreter.c $(YFLAGS)
+	gcc -g -o interpreter lex.yy.c parser.tab.c interpreter.c $(DS) $(UTIL) $(YFLAGS)
 
 clean:
 	-rm *.o

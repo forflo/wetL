@@ -1,5 +1,6 @@
 #include "parser.h"
 #include <stdlib.h>
+#include <string.h>
 
 #ifdef TESTX
 #include <string.h>
@@ -12,7 +13,7 @@
 	Param: i = An integer to store
 	Return: value * = A valid Pointer to an value structure or
  		NULL on failure. 
- 	The following function do the exact same thing but with other input
+ 	The following function does the exact same thing but with other input
  	data types... */
 struct value *make_valueInt(int i){
 	struct value *res = (struct value *) malloc(sizeof(struct value));
@@ -21,13 +22,13 @@ struct value *make_valueInt(int i){
 	int *tmp = (int *) malloc(sizeof(int));
 	if(tmp == NULL)
 		return NULL;
-	*tmp = (int) i;
+	*tmp = i;
 	res->c = (void *) tmp;
-	res->type = P_TYPE_DOUBLE;
+	res->type = P_TYPE_INT;
 	return res;
 }
 
-struct value *make_valueFlt(double i){
+struct value *make_valueDbl(double i){
 	struct value *res = (struct value *) malloc(sizeof(struct value));
 	if(res == NULL)
 		return NULL;
@@ -49,11 +50,16 @@ struct value *make_valueArr(struct dyn_arr *a){
 	return res;
 }
 
-struct value *make_valueStr(char *str){
+/* Creates a new value object with a string as content
+ 	it manually allocates memory for the contained string
+ 	Param: A valid pointer
+ 	Return: A valid pointer or NULL on failure */
+struct value *make_valueStr(const char *str){
 	struct value *res = (struct value *) malloc(sizeof(struct value));
 	if(res == NULL || str == NULL)
 		return NULL;
-	res->c = (void *) str;
+	res->c = (void *) malloc(sizeof(char) * (strlen(str) + 1));
+	strcpy(res->c, str);
 	res->type = P_TYPE_STRING;
 	return res;
 }

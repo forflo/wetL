@@ -16,6 +16,7 @@ struct node_content {
 /*
  ---types---
  */
+#define P_TYPE_ID 299
 #define P_TYPE_INT 300
 #define P_TYPE_DOUBLE 301
 #define P_TYPE_LIST 302
@@ -104,7 +105,6 @@ struct node_content {
 #define P_OP_COMPL 541
 #define P_OP_NOT 542
 #define P_OP_UMINUS 543
-
 
 #define P_OP_FCEB 550
 #define P_OP_FCRC 551
@@ -348,6 +348,7 @@ int get_loglevel();
  */
 
 struct value *make_valueInt(int i);
-struct value *make_valueFlt(double d);
+struct value *make_valueId(const char *str);
+struct value *make_valueDbl(double d);
 struct value *make_valueStr(const char *str);
 struct value *make_valueArr(struct dyn_arr *a);

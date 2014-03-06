@@ -1,0 +1,13 @@
+a=100;
+b=300;
+{
+	a=200;
+	print "a";
+	print a;	
+	print "b";
+	print b;
+}
+print "a";
+print a;
+a=100;
+print a;

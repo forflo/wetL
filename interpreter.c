@@ -156,22 +156,27 @@ void parse_assignment(struct nary_node *node){
 		struct value *cvar = (struct value *) varlist->arr[i];
 		struct value *cval = (struct value *) explist->arr[i];
 
-		if(cvar->type == P_TYPE_STRING)	{
+		/* Var isn't yet associated with a value */
+		if(cvar->type == P_TYPE_ID)	{
 			/* first we try to change the value, if that fails, the
 				var does not exist and we can add it */
-			if(!tab_exists(head, (char *) cvar->c)){
-				if(tab_add_value(head, cval, (char *) cvar->c)){
-					con_log("Error while adding the variable", 
-							"parse_assingment()", LOG_STRONG);
-				}
-			} else {
-				if(tab_change_value(head, (char *) cvar->c, cval)) {
-					con_log("Error while changing the variable", 
-							"parse_assingment()", LOG_STRONG);
-				}
+			printf("Adding value for id: %s\n", (char*) cvar->c);
+			if(tab_add_value(head, cval, (char *) cvar->c)){
+				con_log("Error while adding the variable", 
+						"parse_assingment()", LOG_STRONG);
+				return;
 			}
+		/* cvar contains the */
 		} else {
-			/* TODO*/
+//			if(tab_change_value(head, (char *) cvar->c, cval)) {
+//				con_log("Error while changing the variable", 
+//						"parse_assingment()", LOG_STRONG);
+//				return;
+//			}
+			cvar->c = cval->c;
+			cvar->type = cval->type;
+	//		printf("New value: %s\n", (char *) cval->c);
+			/* TODO: freein */
 		}
 	}
 }
@@ -203,9 +208,10 @@ void parse_print(struct nary_node *node){
 	}
 }
 
+/* Fehlerhaft */
 void parse_if(struct nary_node *node){
-	int tf = *((int *) parse_expression(node->nodes[0])->c );
-	if(tf)
+	struct value *tf = parse_expression(node->nodes[0]);
+	if(tf->type == P_TYPE_INT && *((int *) tf->c))
 		parse_block(node->nodes[1]);
 }
 
@@ -248,7 +254,7 @@ void parse_stmt(struct nary_node *node){
 
 			break;
 		case P_OP_IF:
-			
+			parse_if(node);	
 			break;
 		case P_OP_FOR:
 
@@ -257,10 +263,10 @@ void parse_stmt(struct nary_node *node){
 
 			break;
 		case P_OP_WHILE:
-
+			parse_while(node);
 			break;
 		case P_OP_DOWH:
-
+			parse_dowhile(node);
 			break;
 		case P_OP_SWITCH:
 
@@ -624,6 +630,9 @@ struct value *parse_evalexpression(struct nary_node *node){
 	}
 }
 
+/* Returns a valure structure representing the id or the value of the id.
+ 	If no value is associated with the identifier, then the identifier itself
+ 	is returned, else the first value tied to it is returned. */
 struct value *parse_varexpression(struct nary_node *node){
 	int *rc = (int *) malloc(sizeof(int)), i;
 	struct id_tab *ctab;
@@ -631,7 +640,6 @@ struct value *parse_varexpression(struct nary_node *node){
 	struct value *ret;
 	switch(get_operation(node)){
 		case ID:
-			/* if we have a value associated with the id, return that */
 			idstr = get_value(node);
 			/* travert the list representing the stack as long as we don't find
 			 	and entry for a variable. This implements scoping */
@@ -654,6 +662,7 @@ struct value *parse_varexpression(struct nary_node *node){
 			return NULL;
 			break;
 	}
+	//TODO free!
 }
 
 struct value *parse_fceexp(struct nary_node *node){
@@ -671,8 +680,10 @@ struct value *parse_functioncall(struct nary_node *node){
 	//check if type of 
 	return NULL;
 }
+void print_tabl_stack();
 
 void parse_block(struct nary_node *node){
+	int *rc = (int *) malloc(sizeof(int));
 	struct id_tab *newtab = tab_init();
 	if(sstack_push(id_table_stack, (void*) newtab)){
 		con_log("new id table could not be pushed", 
@@ -680,7 +691,15 @@ void parse_block(struct nary_node *node){
 		return;
 	}
 
+	/*print_tabl_stack();*/
 	parse_stmtlist(node->nodes[0]);
+	/*print_tabl_stack();*/
+	sstack_pop(id_table_stack, rc);
+	if(*rc){
+		con_log("new id table could not be popped", 
+							"parse_block()", LOG_ERROR);
+		return;
+	}
 }
 
 void assign(struct nary_node *node);
@@ -705,3 +724,19 @@ int *get_num(struct nary_node *node){
 	return (int *) ((struct value *) ((struct node_content * )node->content)->v)->c;
 }
 
+/* prints the whole id_table_stack */
+void print_tabl_stack(){
+	struct id_tab *cur;
+	int i, j, *rc = (int *) malloc(sizeof(int));
+	printf("+Stack hat %d Einträge\n", id_table_stack->num);
+	for (i=0; i<id_table_stack->num; i++){
+		printf("++Hole Element %d vom Stack \n", i);
+		cur = slist_get_at(i, id_table_stack->stack, rc);
+		printf("++Tabelle hat %d Einträge\n", cur->num);
+		printf("++Drucke alle Wert - ID Paare aus\n");
+		for(j=0; j<cur->num; j++){
+			printf("+++Id: [%s] Wert: [%d]", cur->tab[j]->id, 
+					*((int*)cur->tab[j]->value->c));
+		}
+	}
+}

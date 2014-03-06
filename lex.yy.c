@@ -526,7 +526,7 @@ static yyconst flex_int32_t yy_ec[256] =
 static yyconst flex_int32_t yy_meta[67] =
     {   0,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-        1,    1,    1,    1,    1,    1,    1,    1,    2,    1,
+        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    2,    2,    1,    1,    1,    1,    1,    1,    1,
         2,    1,    1,    1,    1,    2,    1,    2,    2,    2,
         2,    2,    2,    2,    2,    2,    2,    2,    2,    2,
@@ -1608,9 +1608,9 @@ case 89:
 YY_RULE_SETUP
 #line 285 "scanner.l"
 {
-	yylval.v = make_valueStr(yytext);
+	yylval.v = make_valueId(yytext);
 	return(ID);
-}   
+} 
 	YY_BREAK
 case 90:
 /* rule 90 can match eol */

@@ -24,15 +24,17 @@ struct sstack *sstack_init(){
 
 /* Returns the top element of the stack
 	Param: stack = A valid pointer to a sstack structure
-	Return: An arbitrary pointer or NULL on failure. If an error
-		occured, the variable referenced by rc is set to -1 */
+	Return: An arbitrary pointer and 0 in rc or -1 in rc on failure. 
+	Note that you have to allocate mamory for rc on your own. Calling
+	the function without that will very likely cause undefined behaviour.
+	*/	
 void *sstack_head(struct sstack *stack, int *rc){
-	if(stack == NULL)
+	if(stack == NULL){
+		*rc = -1;
 		return NULL;
+	}
 
-	void *result =  slist_get_at(0, stack->stack, rc);
-	if(*rc == -1)
-		return NULL;
+	void *result = slist_get_at(0, stack->stack, rc);
 	return result;
 }
 
@@ -44,10 +46,15 @@ void *sstack_head(struct sstack *stack, int *rc){
 	Return: -1 in rc and NULL on failure or 0 in rc and an 
 		arbitrary pointer */
 void *sstack_pop(struct sstack *stack, int *rc){
-	if(stack == NULL || stack->num <= 0) {
+	if(stack == NULL) {
 		*rc = -1;
 		return NULL;
 	}
+	if(stack->num <= 0){
+		*rc = -1;
+		return NULL;
+	}
+
 	void *result = slist_get_at(0, stack->stack, rc);
 	if(slist_rm_at(stack->stack, 0)){
 		*rc = -1;
@@ -135,6 +142,7 @@ void test_usage(void){
 	CU_ASSERT(!strcmp((char*) sstack_pop(stack, rc), "Ein Inhalt 1"));
 	CU_ASSERT(!strcmp((char*) sstack_pop(stack, rc), "Ein Inhalt 0"));
 	CU_ASSERT(sstack_size(stack) == 0);
+	CU_ASSERT(stack->stack->len == 0);
 
 	printf("Finished!\n");
 }

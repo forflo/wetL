@@ -50,6 +50,12 @@ struct value *make_valueArr(struct dyn_arr *a){
 	return res;
 }
 
+struct value *make_valueId(const char *str){
+	struct value *ret = make_valueStr(str);
+	ret->type = P_TYPE_ID;
+	return ret;
+}
+
 /* Creates a new value object with a string as content
  	it manually allocates memory for the contained string
  	Param: A valid pointer

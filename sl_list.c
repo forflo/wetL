@@ -157,7 +157,9 @@ int slist_rm_at(struct slist *list, int index){
 	int i; 
 	struct snode *save;
 
-	if(list == NULL || list->len < 0 || index < 0) 
+	if(list == NULL || index < 0) 
+		return -1;
+	if(list->len < 0)
 		return -1;
 
 	struct snode *temp = list->start, *prev = NULL;

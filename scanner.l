@@ -125,7 +125,7 @@ delim \n\t\v\b" "
 /* String is either quoted with single or double quotes */
 string  ({dquote}({letter}|{escapes}|{allowed_symbols}|{digit})+{dquote})|({squote}({letter}|{escapes}|{allowed_symbols}|{digit})+{squote})
 
-id {letter}({letter}|{digit}|\-|\_)*
+id {letter}({letter}|{digit}|\_)*
 fcelanguage (bash|sh|python|perl)
 
 print print 
@@ -283,9 +283,9 @@ print print
 }
 
 {id} {
-	yylval.v = make_valueStr(yytext);
+	yylval.v = make_valueId(yytext);
 	return(ID);
-}   
+} 
 
 
 {delim} {}

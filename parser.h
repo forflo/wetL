@@ -25,6 +25,7 @@ struct node_content {
 #define P_TYPE_NIL 305
 //ARR is an internal type 
 #define P_TYPE_ARR 306
+#define P_TYPE_VALUE 307
 
 /*
  ---Possible errorcodes---
@@ -352,3 +353,4 @@ struct value *make_valueId(const char *str);
 struct value *make_valueDbl(double d);
 struct value *make_valueStr(const char *str);
 struct value *make_valueArr(struct dyn_arr *a);
+struct value *make_valueVal();

@@ -41,6 +41,16 @@ struct value *make_valueDbl(double i){
 	return res;
 }
 
+struct value *make_valueVal(){
+	struct value *res = (struct value *) malloc(sizeof(struct value));
+	void *content = malloc(sizeof(double));
+	if(res == NULL)
+		return NULL;
+	res->type = P_TYPE_VALUE;
+	res->c = content;
+	return res;	
+}
+
 struct value *make_valueArr(struct dyn_arr *a){
 	struct value *res = (struct value *) malloc(sizeof(struct value));
 	if(res == NULL || a == NULL)

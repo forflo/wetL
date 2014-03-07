@@ -1,13 +1,10 @@
 a=100;
-b=300;
 {
 	a=200;
-	print "a";
+	print "ina";
 	print a;	
-	print "b";
-	print b;
+	a=a-23;
+	print a;	
 }
-print "a";
-print a;
-a=100;
+print "outa:";
 print a;

@@ -9,6 +9,7 @@ struct nary_node *root;
 %union {
 	struct value *v;
 	struct nary_node *k;
+
 }
 
 /* Operators, their precedence and associativity */
@@ -89,7 +90,7 @@ varlist 			: var_exp
 					;
 
 exp_cast_list		: { }
-					| ffi_cast expression COMMA exp_cast_list /* right associative */
+					| exp_cast_list ffi_cast expression COMMA 
 					;
 
 parlist 			: PAROPEN idlist PARCLOSE 
@@ -231,11 +232,11 @@ var_exp				: ID
 					;
 
 functiondef			: FUNCTION ID parlist block 
-						{ $$ = make_node(P_OP_PARLST, NULL, 2, $3, $4); }
+						{$$ = make_node(P_OP_PARLST, NULL, 2, $3, $4);}
 					| FUNCTION ID parlist hotkeydef block 
-						{ $$ = make_node(P_OP_PARLSTHK, NULL, 3, $3, $4, $5); }
+						{$$ = make_node(P_OP_PARLSTHK, NULL, 3, $3, $4, $5);}
 					| FUNCTION ID parlist hotstringdef block 
-						{ $$ = make_node(P_OP_PARLSTHK, NULL, 3, $3, $4, $5); }
+						{$$ = make_node(P_OP_PARLSTHK, NULL, 3, $3, $4, $5);}
 					;
 
 hotkeydef			: ON KEYSTROKE expression 
@@ -300,9 +301,11 @@ statement			: assignment SEMI
 						{ $$ = make_node(P_OP_IF, NULL, 2, $3, $5); }
 					| IF PAROPEN expression PARCLOSE block ELSE block 
 						{ /* TODO */}
-					| IF PAROPEN expression PARCLOSE block ELIF PAROPEN expression PARCLOSE block 
+					| IF PAROPEN expression PARCLOSE block ELIF PAROPEN 
+						expression PARCLOSE block 
 						{ /* TODO */ }
-					| FOR PAROPEN assignment SEMI expression SEMI explist PARCLOSE block
+					| FOR PAROPEN assignment SEMI expression SEMI 
+						explist PARCLOSE block
 						{ $$ = make_node(P_OP_FOR, NULL, 4, $3, $5, $7, $9); }
 					| FOR idlist IN explist block  
 						{ $$ = make_node(P_OP_FORIN, NULL, 3, $2, $4, $5);} 
@@ -314,6 +317,8 @@ statement			: assignment SEMI
 						{ $$ = make_node(P_OP_SWITCH, NULL, 2, $3, $5); }
 					| fceblock 
 						{ $$ = make_node(P_OP_FCEB, NULL, 1, $1); }
+					| error SEMI { printf("Invalid Statement. Skipping until\
+								semicolon") ;yyerrok; }
 					;
 
 fceblock 			: EXTERNAL FCELANG FCEB_CODE 
@@ -338,12 +343,14 @@ int callback(void *c, void *u){
 }
 
 int main(int argc, char **argv){
-	yydebug = 1;
+	if(argc > 1){
+		yydebug = 1;
+	}
 	if(yyparse()){
 		printf("Ein Syntaxfehler ist aufgetreten!\n");
 		return EXIT_FAILURE;
 	}
-	traverse_preorder(root, callback, NULL);
+	//traverse_preorder(root, callback, NULL);
 	printf("Debugging:\n");
 	interpreter_init();
 	parse_program(root);	

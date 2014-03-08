@@ -105,8 +105,8 @@ qmark "?"
 /* literals */
 
 digit [0-9]
-number  [1-9]{digit}*|[1-9]{digit}*"."{digit}*
-integer [1-9]{digit}*
+number  {digit}*|{digit}*"."{digit}*
+integer {digit}*
 
 /* these are currently unused */
 hexdigit  {digit}|[A-Fa-f]

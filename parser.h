@@ -37,6 +37,8 @@ struct node_content {
  */
 
 
+#define P_OP_ELIF 472
+#define P_OP_ELSE 473
 #define P_OP_PARLSTHS 474
 #define P_OP_PARLSTHK 475
 #define P_OP_VARLST 476

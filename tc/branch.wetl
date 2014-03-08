@@ -1,0 +1,13 @@
+print "if:0";
+if(0){
+	print "wahr";
+} else {
+	print "falsch";
+}
+
+print "if:100+33";
+if(100+33){
+	print "wahr";
+} else {
+	print "falsch";
+}

@@ -27,10 +27,10 @@ util-test:
 	./sl_stack
 
 scanner: parser
-	flex --debug $(SCA)
+	flex $(SCA)
 
 parser:
-	bison --debug -d $(PAR)
+	bison -d $(PAR)
 
 interpreter: parser scanner
 	gcc -g -o interpreter lex.yy.c parser.tab.c interpreter.c $(DS) $(UTIL) $(YFLAGS)

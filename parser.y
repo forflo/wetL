@@ -300,12 +300,12 @@ statement			: assignment SEMI
 					| IF PAROPEN expression PARCLOSE block 
 						{ $$ = make_node(P_OP_IF, NULL, 2, $3, $5); }
 					| IF PAROPEN expression PARCLOSE block ELSE block 
-						{ /* TODO */}
+						{ $$ = make_node(P_OP_ELSE, NULL, 3, $3, $5, $7); }
 					| IF PAROPEN expression PARCLOSE block ELIF PAROPEN 
 						expression PARCLOSE block 
 						{ /* TODO */ }
 					| FOR PAROPEN assignment SEMI expression SEMI 
-						explist PARCLOSE block
+						assignment PARCLOSE block
 						{ $$ = make_node(P_OP_FOR, NULL, 4, $3, $5, $7, $9); }
 					| FOR idlist IN explist block  
 						{ $$ = make_node(P_OP_FORIN, NULL, 3, $2, $4, $5);} 
@@ -344,7 +344,7 @@ int callback(void *c, void *u){
 
 int main(int argc, char **argv){
 	if(argc > 1){
-		yydebug = 1;
+//		yydebug = 1;
 	}
 	if(yyparse()){
 		printf("Ein Syntaxfehler ist aufgetreten!\n");

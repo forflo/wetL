@@ -260,6 +260,7 @@ void parse_for(struct nary_node *node){
 	while(*((int *) eval->c)){
 		parse_stmtlist(tmp->nodes[0]);
 		parse_assignment(node->nodes[2]);
+		eval = parse_expression(node->nodes[1]);
 	}
 
 	sstack_pop(id_table_stack, rc);
@@ -330,7 +331,7 @@ void parse_stmt(struct nary_node *node){
 		case P_OP_ELSE:
 			parse_else(node);
 		case P_OP_FOR:
-
+			parse_for(node);
 			break;
 		case P_OP_FORIN:
 

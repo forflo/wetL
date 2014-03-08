@@ -1,3 +1,10 @@
 *.swp
 *.dSYM
 interpreter
+id_table
+str_dyn
+sl_stack
+sl_list
+scanner_util
+nary_tree
+dyn_arr

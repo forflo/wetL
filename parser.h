@@ -1,7 +1,6 @@
 /*
- ---begin parser informations---
+ ---begin parser type declarations---
  */
-
 struct value {
 	void *c;
 	int type;
@@ -23,7 +22,7 @@ struct node_content {
 #define P_TYPE_FFIS 303
 #define P_TYPE_STRING 304
 #define P_TYPE_NIL 305
-//ARR is an internal type 
+/* ARR is an internal type */
 #define P_TYPE_ARR 306
 #define P_TYPE_VALUE 307
 
@@ -35,8 +34,6 @@ struct node_content {
 /*
  ---operations and node types---
  */
-
-
 #define P_OP_ELIF 472
 #define P_OP_ELSE 473
 #define P_OP_PARLSTHS 474
@@ -121,7 +118,6 @@ struct node_content {
 /*
  ---useful defines---
  */
-
 #define MK_CONTENT struct node_content *c = \
     (struct node_content*) malloc(sizeof(struct node_content));
 
@@ -134,7 +130,6 @@ struct nary_node *make_node(int op, struct value *v, int c, ...);
  ---nary tree implementation---
  ---begin---
  */
-
 struct nary_node {
 	void *content; //pointer to the content
 	struct nary_node **nodes; //array of pointers to child nodes
@@ -148,7 +143,7 @@ int free_node(struct nary_node *node);
 int add_child(struct nary_node *parent, struct nary_node *child);
 int destroy_tree(struct nary_node *tree);
 
-/* not implemented */
+/* traverse_inorder not implemented */
 int traverse_inorder(struct nary_node *node, 
 					int (*callback)(void *c, void *userparam));
 int traverse_preorder(struct nary_node *node, 
@@ -160,7 +155,6 @@ int traverse_postorder(struct nary_node *node,
  ---dynamic string implementation---
  ---begin---
  */
-
 #define DYN_INIT_SIZE 100
 #define DYN_REALLOC_SIZE 1000
 
@@ -174,17 +168,16 @@ typedef struct dyn_string dyn_string_t;
 
 struct dyn_string *ds_get();
 struct dyn_string *ds_get_string(char *str);
-int ds_append_string(struct dyn_string *string, char *source);
+int ds_append_string(struct dyn_string *string, const char *source);
 int ds_remove_trailing_char(struct dyn_string *str, char c);
 int ds_remove_trailing_whitespaces(struct dyn_string *string);
-int ds_append_char(struct dyn_string *string, char source);
+int ds_append_char(struct dyn_string *string, const char source);
 int ds_free(struct dyn_string *string);
 
 /*
  ---dynamic single linked list implementation---
  ---begin---
  */
-
 struct slist {
 	int len;
 	struct snode *start;
@@ -226,7 +219,6 @@ int slist_free(struct slist *list);
  ---stack implementation---
  ---begin---
  */
-
 struct sstack {
 	int num;
 	struct slist *stack;
@@ -245,10 +237,9 @@ int sstack_size(struct sstack *stack);
 
 
 /*
- ---dynamic string implementation---
+ ---loggin implementation---
  ---begin---
  */
-
 #define LOG_DEBUG 5
 #define LOG_STRONG 4
 #define LOG_MIDDLE 3
@@ -260,7 +251,6 @@ void con_log(char *m, char *s, int l);
 /*
  ---begin interpreter declarations---
  */
-
 int get_operation(struct nary_node *node);
 char *get_str(struct nary_node *node);
 struct value *get_value(struct nary_node *node);
@@ -306,7 +296,6 @@ void parse_fceblock(struct nary_node *node);
 /*
  ---begin id_table and dyn_arr declarations
  */
-
 struct id_tab {
 	int num;
 	struct elem **tab;
@@ -336,7 +325,6 @@ int arr_free(struct dyn_arr *arr);
 /*
  ---begin settings.c declarations---
  */
-
 struct settings {
 	int loglevel;
 	//more to come
@@ -349,7 +337,6 @@ int get_loglevel();
 /*
  ---begin scanner util
  */
-
 struct value *make_valueInt(int i);
 struct value *make_valueId(const char *str);
 struct value *make_valueDbl(double d);

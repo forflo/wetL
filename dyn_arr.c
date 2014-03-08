@@ -15,7 +15,6 @@
 #endif
 
 /* Initializes a dyn_arr structure 
- 	Param: void
  	Return: a pointer to a valid dyn_arr structure or NULL on 
  		failure */
 struct dyn_arr *arr_init(){
@@ -27,10 +26,10 @@ struct dyn_arr *arr_init(){
 	return arr;
 }
 
-/* Adds a value structure to an specified identifier table 
- 	Param: table = Valid pointer to an id table
- 		val = Pointer to a value structure
- 		id = Pointer to the string which is the id
+/* Adds an arbitrary pointer to an specified identifier table 
+ 	Param: table = Valid pointer to a dynamical array 
+ 		val = Arbitrary pointer 
+ 		arr = Pointer to the array
  	Return: 0 on success or -1 failure */
 int arr_add_value(struct dyn_arr *arr, void *val){
 	if(arr == NULL || val == NULL)
@@ -49,8 +48,8 @@ int arr_add_value(struct dyn_arr *arr, void *val){
  	is as easy as accessing it's arr field with an array selector like
  	Param: arr = Pointer to a valid dyn_arr structure
  		index = Index of the requested object 
- 	Return: void* = the requested object */
-//Untested...
+ 	Return: void* = the requested object. In case of an error, NULL is 
+		returned. */
 void *arr_get_value(struct dyn_arr *arr, int index){
 	if(arr == NULL || index < 0)
 		return NULL;
@@ -60,8 +59,8 @@ void *arr_get_value(struct dyn_arr *arr, int index){
 	return arr->arr[index];
 }
 
-/* Completely frees a dynamic array including all of the pointers stored
- 	in it.
+/* Completely frees a dynamic array including all 
+   	pointers stored in it.
  	Param: arr = Pointer to a valid dyn_arr structure
  	Return: -1 on failure, 0 on success. */
 int arr_free(struct dyn_arr *arr){

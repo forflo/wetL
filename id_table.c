@@ -10,8 +10,8 @@
 
 /* prefix: tab_ */
 
-/* Initializes a Identifier Tab
-	Return: NULL if a error occured otherwise a valid pointer to the
+/* Initializes an identifier table
+	Return: NULL if a error occured. Otherwise a pointer to the
 		requested strucutre */
 struct id_tab *tab_init(){
 	struct id_tab *tab = (struct id_tab *) malloc(sizeof(struct id_tab));
@@ -48,8 +48,8 @@ int tab_add_value(struct id_tab *table, struct value *val, char *id){
 
 /* Searches a given id table for a specified value that is
    linked to the given identifier
-   		Param: table = a Valid pointer to an id table
-			id = a valid pointer to a string
+   		Param: table = A valid pointer to an id table
+			id = A valid pointer to a string
 		Return: A pointer to the requested value on success or
 			NULL on failure */
 struct value *tab_get_value(struct id_tab *table, char *id){
@@ -66,7 +66,10 @@ struct value *tab_get_value(struct id_tab *table, char *id){
 }
 
 /* Returns the boolean value 1 if the value associated with id could
-	be found, else 0 is returned */
+	be found, else 0 is returned 
+ 	Param: table = A valid pointer to an id table
+ 		id = A pointer to the id string
+ 	Return: -1 on failure, 0 on success */
 int tab_exists(struct id_tab *table, char *id){
 	if(table == NULL || id == NULL)
 		return 0;
@@ -74,7 +77,7 @@ int tab_exists(struct id_tab *table, char *id){
 	int i;
 	for(i=0; i<table->num; i++){
 		if(!(strcmp(id, table->tab[i]->id))){
-			return 1;
+			return -1;
 		}
 	}
 	return 0;

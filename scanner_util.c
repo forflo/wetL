@@ -8,10 +8,10 @@
 #include <CUnit/Basic.h>
 #endif
 
-/* Puts the given integer in a instance of the type struct value
+/* Puts the given integer in an instance of the type struct value.
 	The type of the object is automatically set
 	Param: i = An integer to store
-	Return: value * = A valid Pointer to an value structure or
+	Return: value * = A valid pointer to an value structure or
  		NULL on failure. 
  	The following function does the exact same thing but with other input
  	data types... */

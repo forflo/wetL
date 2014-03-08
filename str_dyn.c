@@ -11,7 +11,7 @@
 #endif
 
 /* Initializes a new dynamic string structure 
-	Return: Null on memory failure. Valid Pointer on a dyn_string 
+	Return: Null on memory failure. Valid pointer on a dyn_string 
 		structure on success */
 struct dyn_string *ds_get(){
 	struct dyn_string *string = (struct dyn_string *) 
@@ -25,9 +25,9 @@ struct dyn_string *ds_get(){
 	return string;
 }
 
-/* Initializes a new dynamic string structure and fills ist with an
+/* Initializes a new dynamic string structure and fills it with an
 	initial String
-	Return: Null on memory failure. Valid Pointer on a dyn_string 
+	Return: Null on memory failure. Valid pointer on a dyn_string 
 		structure on success */
 struct dyn_string *ds_get_string(char *str){
 	struct dyn_string *string = ds_get();
@@ -36,7 +36,7 @@ struct dyn_string *ds_get_string(char *str){
 }
 
 /* Adapts a given dynamic string to the memory it consumes 
-	Return: Null on memory failure. Valid Pointer on a dyn_string 
+	Return: Null on memory failure. Valid pointer on a dyn_string 
 		structure on success */
 int ds_adapt_string(struct dyn_string *string){
 	if(NULL != (string->data = (char *) realloc(string->data, 
@@ -51,9 +51,9 @@ int ds_adapt_string(struct dyn_string *string){
 //TODO: make returncode
 /* Appends a given string
 	Param: string = Pointer to a valid dyn_strint structure 
-		source = Strint to copy 
+		source = String to append
 	Return: -1 on failure, 0 on success */
-int ds_append_string(struct dyn_string *string, char *source){
+int ds_append_string(struct dyn_string *string, const char *source){
 	int i, j;
 	int source_len = strlen(source);
 	int future_len = string->chars + source_len;
@@ -151,16 +151,15 @@ int ds_remove_trailing_whitespaces(struct dyn_string *string){
 	Param: string = Pointer to a valid dyn_string structure 
 		source = char to append
 	Return: -1 on failure, 0 on success */
-int ds_append_char(struct dyn_string *string, char source){
+int ds_append_char(struct dyn_string *string, const char source){
 	char buffer[2] = {'\0', '\0'};
 	if(string == NULL)
 		return -1;
 	buffer[0] = source; 
-	ds_append_string(string, buffer);
-	return 0;
+	return ds_append_string(string, buffer);
 }
 
-/* Frees the space occupied by the dynamic string strucutre
+/* Frees the space occupied by a dynamic string strucutre
 	Param: string = Pointer to a valid dyn_string structure
 	Return: -1 on failure, 0 on success */
 int ds_free(struct dyn_string *string){

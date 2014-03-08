@@ -335,6 +335,12 @@ fceexp_rc			: PAROPEN QMARK FCELANG PARCLOSE FCEB_CODE
 
 %%
 
+int yyerror(const char *str){
+	printf("[Parser:] %s\n", str);
+	return 0;
+	return 0;
+}
+
 int callback(void *c, void *u){
 	if(!(c == NULL))
 		printf("Wert des Knotens: %d\n", 

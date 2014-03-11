@@ -271,12 +271,12 @@ void parse_stmtlist(struct nary_node *node);
 void parse_block(struct nary_node *node);
 void parse_stmt(struct nary_node *node);
 
-struct value *parse_explist(struct nary_node *node);
-struct value *parse_exp_cast_list(struct nary_node *node);
-struct value *parse_parlist(struct nary_node *node);
-struct value *parse_idlist(struct nary_node *node);
-struct value *parse_arglist(struct nary_node *node);
-struct value *parse_varlist(struct nary_node *node);
+struct dyn_arr *parse_explist(struct nary_node *node);
+struct dyn_arr *parse_exp_cast_list(struct nary_node *node);
+struct dyn_arr *parse_parlist(struct nary_node *node);
+struct dyn_arr *parse_idlist(struct nary_node *node);
+struct dyn_arr *parse_arglist(struct nary_node *node);
+struct dyn_arr *parse_varlist(struct nary_node *node);
 
 struct value *parse_expression(struct nary_node *node);
 struct value *parse_evalexpression(struct nary_node *node);
@@ -350,3 +350,14 @@ struct value *make_valueStr(const char *str);
 struct value *make_valueArr(struct dyn_arr *a);
 struct value *make_valueCpy(struct value *org);
 struct value *make_valueVal();
+
+/*
+ --- mem_alloc.c
+ */
+int mem_init();
+int mem_reset();
+int mem_free();
+struct value *mem_next();
+struct value *mem_nextValInt();
+struct value *mem_nextValDbl();
+struct value *mem_nextValX(int byte);

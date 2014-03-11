@@ -3,7 +3,6 @@
 
 #define MAX_INIT 8000 
 
-#define TEST
 #ifdef TEST
 #include <CUnit/Cunit.h>
 #include <Cunit/Basic.h>
@@ -72,13 +71,33 @@ struct value *mem_next(){
 									sizeof(struct value)));
 }
 
+struct value *mem_nextValInt(){
+	struct value *temp = mem_next();
+	temp->c = (void *) malloc(sizeof(int));
+	temp->type = P_TYPE_INT;
+	return temp;
+}
+
+struct value *mem_nextValDbl(){
+	struct value *temp = mem_next();
+	temp->c = (void *) malloc(sizeof(double));
+	temp->type = P_TYPE_DOUBLE;
+	return temp;
+}
+
+struct value *mem_nextValX(int byte){
+	struct value *temp = mem_next();
+	temp->c = (void *) malloc(byte);
+	return temp;
+}
+
 #ifdef TEST
 
 int dummy(void){
 	return 0;
 }
 
-void test_init(){
+void test_init(void){
 	CU_ASSERT(mem_init() == 0);
 	CU_ASSERT(mem_next()->type == P_TYPE_VALUE);
 	CU_ASSERT(mem_next()->c == NULL);
@@ -96,6 +115,20 @@ void test_init(){
 	CU_ASSERT(mem_free() == 0);
 }
 
+void test_mem(void){
+	mem_reset();
+	int i;
+
+	while(1){
+		for(i=0; i<20000; i++){
+			CU_ASSERT(mem_next()->flag == P_FLAG_NONE);
+			CU_ASSERT(mem_next()->type == P_TYPE_VALUE);
+		}
+		mem_reset();
+		break;
+	}
+}
+
 int main(int argc, char **argv){
 	CU_pSuite suite = NULL;
 
@@ -108,7 +141,8 @@ int main(int argc, char **argv){
 		return CU_get_error();
 	}
 
-	if((NULL == CU_add_test(suite, "Initialisierungstest", test_init))
+	if((NULL == CU_add_test(suite, "Initialisierungstest", test_init))||
+		(NULL == CU_add_test(suite, "memtest", test_mem))
 	){
 		CU_cleanup_registry();
 		return CU_get_error();

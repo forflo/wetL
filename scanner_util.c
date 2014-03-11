@@ -71,11 +71,11 @@ struct value *make_valueId(const char *str){
 	return ret;
 }
 
-/* Returns a copy of the given structure value */
+/* Returns a copy of the given structure value. */
 struct value *make_valueCpy(struct value *org){
+	struct value *temp;
 	switch (org->type){
 		case P_TYPE_INT:
-			printf("---Int: %d\n", *((int *) org->c));
 			return make_valueInt(*((int *)org->c));
 			break;
 		case P_TYPE_STRING:
@@ -85,6 +85,12 @@ struct value *make_valueCpy(struct value *org){
 			return make_valueDbl(*((double *) org->c));
 			break;
 		default:
+			temp = (struct value *) malloc(sizeof(struct value));
+			if(temp == NULL)
+				return NULL;
+			temp->type = org->type;
+			temp->flag = org->flag;
+			temp->c = org->c;
 			return NULL;
 	}
 }

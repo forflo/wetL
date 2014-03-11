@@ -440,8 +440,7 @@ struct value *parse_expression(struct nary_node *node){
 			ops[0] = parse_expression(node->nodes[0]);
 			ops[1] = parse_expression(node->nodes[1]);
 			if(ops[0]->flag == P_FLAG_RO) {
-				result = make_valueVal();
-				result->type = P_TYPE_INT;
+				result = mem_nextValInt();
 			} else {
 				result = ops[0];
 			}
@@ -453,17 +452,19 @@ struct value *parse_expression(struct nary_node *node){
 			} else if(ops[0]->type == P_TYPE_DOUBLE && ops[1]->type == P_TYPE_INT) {
 				*((int *) result->c) = *((double *) ops[0]->c) || *((int *) ops[1]->c);
 			} else {
-				*((double *) result->c) = *((double *) ops[0]->c) || *((double *) ops[1]->c);
+				*((int *) result->c) = *((double *) ops[0]->c) || *((double *) ops[1]->c);
 			}
 
+			/* prevent a memory leak */
+			if(ops[1]->flag == P_FLAG_NONE)
+				free(ops[1]->c);
 			return result;
 			break;
 		case P_OP_AND:
 			ops[0] = parse_expression(node->nodes[0]);
 			ops[1] = parse_expression(node->nodes[1]);
 			if(ops[0]->flag == P_FLAG_RO) {
-				result = make_valueVal();
-				result->type = P_TYPE_INT;
+				result = mem_nextValInt();
 			} else {
 				result = ops[0];
 			}
@@ -478,19 +479,21 @@ struct value *parse_expression(struct nary_node *node){
 				*((int *) result->c) = *((double *) ops[0]->c) && *((double *) ops[1]->c);
 			}
 			
+			/* prevent a memory leak */
+			if(ops[1]->flag == P_FLAG_NONE)
+				free(ops[1]->c);
 			return result;
 			break;
 		case P_OP_BINOR:
 			ops[0] = parse_expression(node->nodes[0]);
 			ops[1] = parse_expression(node->nodes[1]);
 			if(ops[0]->flag == P_FLAG_RO) {
-				result = make_valueVal();
+				result = mem_nextValInt();
 			} else {
 				result = ops[0];
 			}
 
 			if(ops[0]->type == P_TYPE_INT && ops[1]->type == P_TYPE_INT) {
-				result->type = P_TYPE_INT;
 				*((int *) result->c) = *((int *) ops[0]->c) | *((int *) ops[1]->c);
 				return result;
 			} else {
@@ -498,19 +501,21 @@ struct value *parse_expression(struct nary_node *node){
 						"parse_expression()", LOG_ERROR);	
 			}
 			
+			/* prevent a memory leak */
+			if(ops[1]->flag == P_FLAG_NONE)
+				free(ops[1]->c);
 			return NULL;
 			break;
 		case P_OP_BINXOR:
 			ops[0] = parse_expression(node->nodes[0]);
 			ops[1] = parse_expression(node->nodes[1]);
 			if(ops[0]->flag == P_FLAG_RO) {
-				result = make_valueVal();
+				result = mem_nextValInt();
 			} else {
 				result = ops[0];
 			}
 
 			if(ops[0]->type == P_TYPE_INT && ops[1]->type == P_TYPE_INT) {
-				result->type = P_TYPE_INT;
 				*((int *) result->c) = *((int *) ops[0]->c) ^ *((int *) ops[1]->c);
 				return result;
 			} else {
@@ -518,19 +523,21 @@ struct value *parse_expression(struct nary_node *node){
 						"parse_expression()", LOG_ERROR);	
 			}
 			
+			/* prevent a memory leak */
+			if(ops[1]->flag == P_FLAG_NONE)
+				free(ops[1]->c);
 			return NULL;
 			break;
 		case P_OP_BINAND:
 			ops[0] = parse_expression(node->nodes[0]);
 			ops[1] = parse_expression(node->nodes[1]);
 			if(ops[0]->flag == P_FLAG_RO) {
-				result = make_valueVal();
+				result = mem_nextValInt();
 			} else {
 				result = ops[0];
 			}
 
 			if(ops[0]->type == P_TYPE_INT && ops[1]->type == P_TYPE_INT) {
-				result->type = P_TYPE_INT;
 				*((int *) result->c) = *((int *) ops[0]->c) & *((int *) ops[1]->c);
 				return result;
 			} else {
@@ -538,13 +545,16 @@ struct value *parse_expression(struct nary_node *node){
 						"parse_expression()", LOG_ERROR);	
 			}
 
+			/* prevent a memory leak */
+			if(ops[1]->flag == P_FLAG_NONE)
+				free(ops[1]->c);
 			return NULL;
 			break;
 		case P_OP_EQUAL:
 			ops[0] = parse_expression(node->nodes[0]);
 			ops[1] = parse_expression(node->nodes[1]);
 			if(ops[0]->flag == P_FLAG_RO) {
-				result = make_valueVal();
+				result = mem_nextValInt();
 			} else {
 				result = ops[0];
 			}
@@ -552,7 +562,6 @@ struct value *parse_expression(struct nary_node *node){
 			/* evaluation rules for integer or floating point numbers */
 			if((ops[0]->type == P_TYPE_INT || ops[0]->type == P_TYPE_DOUBLE) &&
 				(ops[1]->type == P_TYPE_INT || ops[1]->type == P_TYPE_DOUBLE)) {
-				result->type = P_TYPE_INT;
 
 				if(ops[0]->type == P_TYPE_INT && ops[1]->type == P_TYPE_INT) {
 					*((int *) result->c) = *((int *) ops[0]->c) == *((int *) ops[1]->c);
@@ -569,13 +578,16 @@ struct value *parse_expression(struct nary_node *node){
 				//TODO
 			}
 			
+			/* prevent a memory leak */
+			if(ops[1]->flag == P_FLAG_NONE)
+				free(ops[1]->c);
 			return NULL;
 			break;
 		case P_OP_NOTEQUAL:
 			ops[0] = parse_expression(node->nodes[0]);
 			ops[1] = parse_expression(node->nodes[1]);
 			if(ops[0]->flag == P_FLAG_RO) {
-				result = make_valueVal();
+				result = mem_nextValInt();
 			} else {
 				result = ops[0];
 			}
@@ -583,7 +595,6 @@ struct value *parse_expression(struct nary_node *node){
 			/* evaluation rules for integer or floating point numbers */
 			if((ops[0]->type == P_TYPE_INT || ops[0]->type == P_TYPE_DOUBLE) &&
 				(ops[1]->type == P_TYPE_INT || ops[1]->type == P_TYPE_DOUBLE)) {
-				result->type = P_TYPE_INT;
 
 				if(ops[0]->type == P_TYPE_INT && ops[1]->type == P_TYPE_INT) {
 					*((int *) result->c) = *((int *) ops[0]->c) != *((int *) ops[1]->c);
@@ -600,13 +611,16 @@ struct value *parse_expression(struct nary_node *node){
 				//TODO
 			}
 
+			/* prevent a memory leak */
+			if(ops[1]->flag == P_FLAG_NONE)
+				free(ops[1]->c);
 			return NULL;
 			break;
 		case P_OP_GREATERTHAN:
 			ops[0] = parse_expression(node->nodes[0]);
 			ops[1] = parse_expression(node->nodes[1]);
 			if(ops[0]->flag == P_FLAG_RO) {
-				result = make_valueVal();
+				result = mem_nextValInt();
 			} else {
 				result = ops[0];
 			}
@@ -614,7 +628,6 @@ struct value *parse_expression(struct nary_node *node){
 			/* evaluation rules for integer or floating point numbers */
 			if((ops[0]->type == P_TYPE_INT || ops[0]->type == P_TYPE_DOUBLE) &&
 				(ops[1]->type == P_TYPE_INT || ops[1]->type == P_TYPE_DOUBLE)) {
-				result->type = P_TYPE_INT;
 
 				if(ops[0]->type == P_TYPE_INT && ops[1]->type == P_TYPE_INT) {
 					*((int *) result->c) = *((int *) ops[0]->c) >= *((int *) ops[1]->c);
@@ -631,13 +644,16 @@ struct value *parse_expression(struct nary_node *node){
 				//TODO
 			}
 			
+			/* prevent a memory leak */
+			if(ops[1]->flag == P_FLAG_NONE)
+				free(ops[1]->c);
 			return NULL;
 			break;
 		case P_OP_LESSTHAN:
 			ops[0] = parse_expression(node->nodes[0]);
 			ops[1] = parse_expression(node->nodes[1]);
 			if(ops[0]->flag == P_FLAG_RO) {
-				result = make_valueVal();
+				result = mem_nextValInt();
 			} else {
 				result = ops[0];
 			}
@@ -645,7 +661,6 @@ struct value *parse_expression(struct nary_node *node){
 			/* evaluation rules for integer or floating point numbers */
 			if((ops[0]->type == P_TYPE_INT || ops[0]->type == P_TYPE_DOUBLE) &&
 				(ops[1]->type == P_TYPE_INT || ops[1]->type == P_TYPE_DOUBLE)) {
-				result->type = P_TYPE_INT;
 
 				if(ops[0]->type == P_TYPE_INT && ops[1]->type == P_TYPE_INT) {
 					*((int *) result->c) = *((int *) ops[0]->c) <= *((int *) ops[1]->c);
@@ -662,13 +677,16 @@ struct value *parse_expression(struct nary_node *node){
 				//TODO
 			}
 			
+			/* prevent a memory leak */
+			if(ops[1]->flag == P_FLAG_NONE)
+				free(ops[1]->c);
 			return NULL;
 			break;
 		case P_OP_LESS:
 			ops[0] = parse_expression(node->nodes[0]);
 			ops[1] = parse_expression(node->nodes[1]);
 			if(ops[0]->flag == P_FLAG_RO) {
-				result = make_valueVal();
+				result = mem_nextValInt();
 			} else {
 				result = ops[0];
 			}
@@ -677,7 +695,6 @@ struct value *parse_expression(struct nary_node *node){
 			if((ops[0]->type == P_TYPE_INT || ops[0]->type == P_TYPE_DOUBLE) &&
 				(ops[1]->type == P_TYPE_INT || ops[1]->type == P_TYPE_DOUBLE)) {
 
-				result->type = P_TYPE_INT;
 				if(ops[0]->type == P_TYPE_INT && ops[1]->type == P_TYPE_INT) {
 					*((int *) result->c) = *((int *) ops[0]->c) < *((int *) ops[1]->c);
 				} else if(ops[0]->type == P_TYPE_INT && ops[1]->type == P_TYPE_DOUBLE) {
@@ -693,13 +710,16 @@ struct value *parse_expression(struct nary_node *node){
 				//TODO
 			}
 
+			/* prevent a memory leak */
+			if(ops[1]->flag == P_FLAG_NONE)
+				free(ops[1]->c);
 			return NULL;
 			break;
 		case P_OP_GREATER:
 			ops[0] = parse_expression(node->nodes[0]);
 			ops[1] = parse_expression(node->nodes[1]);
 			if(ops[0]->flag == P_FLAG_RO) {
-				result = make_valueVal();
+				result = mem_nextValInt();
 			} else {
 				result = ops[0];
 			}
@@ -707,7 +727,6 @@ struct value *parse_expression(struct nary_node *node){
 			/* evaluation rules for integer or floating point numbers */
 			if((ops[0]->type == P_TYPE_INT || ops[0]->type == P_TYPE_DOUBLE) &&
 				(ops[1]->type == P_TYPE_INT || ops[1]->type == P_TYPE_DOUBLE)) {
-				result->type = P_TYPE_INT;
 
 				if(ops[0]->type == P_TYPE_INT && ops[1]->type == P_TYPE_INT) {
 					*((int *) result->c) = *((int *) ops[0]->c) > *((int *) ops[1]->c);
@@ -724,46 +743,53 @@ struct value *parse_expression(struct nary_node *node){
 				//TODO
 			}
 
+			/* prevent a memory leak */
+			if(ops[1]->flag == P_FLAG_NONE)
+				free(ops[1]->c);
 			return NULL;
 			break;
 		case P_OP_LEFTSHIFT:
 			ops[0] = parse_expression(node->nodes[0]);
 			ops[1] = parse_expression(node->nodes[1]);
 			if(ops[0]->flag == P_FLAG_RO) {
-				result = make_valueVal();
+				result = mem_nextValInt();
 			} else {
 				result = ops[0];
 			}
 			
 			/* calculation rules for integers only */
 			if(ops[0]->type == P_TYPE_INT && ops[0]->type == P_TYPE_INT) {
-				result->type = P_TYPE_INT;
 				*((int *) result->c) = *((int *) ops[0]->c) << *((int *) ops[1]->c);
 			} else {
 				con_log("This Operation only works on integral types", 
 						"parse_expression()", LOG_ERROR);
 			}
 
+			/* prevent a memory leak */
+			if(ops[1]->flag == P_FLAG_NONE)
+				free(ops[1]->c);
 			return result;
 			break;
 		case P_OP_RIGHTSHIFT:
 			ops[0] = parse_expression(node->nodes[0]);
 			ops[1] = parse_expression(node->nodes[1]);
 			if(ops[0]->flag == P_FLAG_RO) {
-				result = make_valueVal();
+				result = mem_nextValInt();
 			} else {
 				result = ops[0];
 			}
 			
 			/* calculation rules for integer or floating point numbers */
 			if(ops[0]->type == P_TYPE_INT && ops[0]->type == P_TYPE_INT) {
-				result->type = P_TYPE_INT;
 				*((int *) result->c) = *((int *) ops[0]->c) >> *((int *) ops[1]->c);
 			} else {
 				con_log("This Operation only works on integral types", 
 						"parse_expression()", LOG_ERROR);
 			}
 
+			/* prevent a memory leak */
+			if(ops[1]->flag == P_FLAG_NONE)
+				free(ops[1]->c);
 			return result;
 			break;
 		case P_OP_PLUS:
@@ -840,7 +866,7 @@ struct value *parse_expression(struct nary_node *node){
 		case P_OP_MUL:
 			ops[0] = parse_expression(node->nodes[0]);
 			ops[1] = parse_expression(node->nodes[1]);
-			if(ops[0]->flag == P_FLAG_RO){
+			if(ops[0]->flag == P_FLAG_RO) {
 				result = mem_nextValDbl();
 			} else {
 				result = ops[0];
@@ -873,8 +899,8 @@ struct value *parse_expression(struct nary_node *node){
 		case P_OP_DIV:
 			ops[0] = parse_expression(node->nodes[0]);
 			ops[1] = parse_expression(node->nodes[1]);
-			if(ops[0]->flag == P_FLAG_RO){
-				result = make_valueVal();
+			if(ops[0]->flag == P_FLAG_RO) {
+				result = mem_nextValDbl();
 			} else {
 				result = ops[0];
 			}
@@ -902,13 +928,16 @@ struct value *parse_expression(struct nary_node *node){
 				//Errorhandling!
 			}
 
+			/* prevent a memory leak */
+			if(ops[1]->flag == P_FLAG_NONE)
+				free(ops[1]->c);
 			return result;
 			break;
 		case P_OP_MOD:
 			ops[0] = parse_expression(node->nodes[0]);
 			ops[1] = parse_expression(node->nodes[1]);
-			if(ops[0]->flag == P_FLAG_RO){
-				result = make_valueVal();
+			if(ops[0]->flag == P_FLAG_RO) {
+				result = mem_nextValDbl();
 			} else {
 				result = ops[0];
 			}
@@ -922,13 +951,16 @@ struct value *parse_expression(struct nary_node *node){
 						"parse_expression()", LOG_ERROR);
 			}
 
+			/* prevent a memory leak */
+			if(ops[1]->flag == P_FLAG_NONE)
+				free(ops[1]->c);
 			return result; 
 			break;
 		case P_OP_POW:
 			ops[0] = parse_expression(node->nodes[0]);
 			ops[1] = parse_expression(node->nodes[1]);
-			if(ops[0]->flag == P_FLAG_RO){
-				result = make_valueVal();
+			if(ops[0]->flag == P_FLAG_RO) {
+				result = mem_nextValDbl();
 			} else {
 				result = ops[0];
 			}
@@ -955,12 +987,16 @@ struct value *parse_expression(struct nary_node *node){
 			} else {
 				//Errorhandling!
 			}
+
+			/* prevent a memory leak */
+			if(ops[1]->flag == P_FLAG_NONE)
+				free(ops[1]->c);
 			return result;
 			break;
 		case P_OP_UMINUS:
 			ops[0] = parse_expression(node->nodes[0]);
-			if(ops[0]->flag == P_FLAG_RO){
-				result = make_valueVal();
+			if(ops[0]->flag == P_FLAG_RO) {
+				result = mem_nextValDbl();
 			} else {
 				result = ops[0];
 			}
@@ -983,33 +1019,32 @@ struct value *parse_expression(struct nary_node *node){
 			break;
 		case P_OP_COMPL:
 			ops[0] = parse_expression(node->nodes[0]);
-			if(ops[0]->flag == P_FLAG_RO){
-				result = make_valueVal();
+			if(ops[0]->flag == P_FLAG_RO) {
+				result = mem_nextValInt();
 			} else {
 				result = ops[0];
 			}
 			
 			switch(ops[0]->type){
 				case P_TYPE_INT:
-					result->type = P_TYPE_INT;
 					*((int*) result->c) = ~ *((int*)ops[0]->c);
 					break;
 				default:
 					//Error
 					break;
 			}
+
 			return result;
 			break;
 		case P_OP_NOT:
 			ops[0] = parse_expression(node->nodes[0]);
 			if(ops[0]->flag == P_FLAG_RO) {
-				result = make_valueVal();
+				result = mem_nextValInt();
 			} else {
 				result = ops[0];
 			}
 
 			if(ops[0]->type == P_TYPE_INT && ops[1]->type == P_TYPE_INT) {
-				result->type = P_TYPE_INT;
 				*((int *) result->c) = ! *((int *) ops[0]->c);
 			} else {
 				con_log("This Operation currently only works whith integral types !", 
@@ -1017,14 +1052,6 @@ struct value *parse_expression(struct nary_node *node){
 			}
 
 			return result;
-			break;
-		case P_OP_LSTCONST:
-			return parse_lstconst(node->nodes[0]);
-
-			break;
-		case P_OP_STRDEF:
-			return parse_fficonst(node->nodes[0]);
-
 			break;
 		case INT:
 			return get_value(node);
@@ -1040,6 +1067,12 @@ struct value *parse_expression(struct nary_node *node){
 			break;
 		case FALSE:
 			return get_value(node);
+			break;
+		case P_OP_LSTCONST:
+			return parse_lstconst(node->nodes[0]);
+			break;
+		case P_OP_STRDEF:
+			return parse_fficonst(node->nodes[0]);
 			break;
 		case P_OP_EVEXP:
 			return parse_evalexpression(node->nodes[0]);

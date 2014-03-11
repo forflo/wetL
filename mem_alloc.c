@@ -3,7 +3,12 @@
 
 #define MAX_INIT 8000 
 
+#ifdef DEBUG
+#include <stdio.h>
+#endif
+
 #ifdef TEST
+#include 
 #include <CUnit/Cunit.h>
 #include <Cunit/Basic.h>
 #endif

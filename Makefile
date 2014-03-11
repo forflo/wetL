@@ -28,16 +28,15 @@ util-test:
 	./sl_stack
 	./mem_alloc
 
-scanner: parser
-	flex $(SCA)
 
-parser:
-	bison -d $(PAR)
-
-interpreter: parser scanner
+interpreter: interpreter.c parser.y scanner.l
+	flex --debug $(SCA)
+	bison --debug -d $(PAR)
 	gcc -g -o interpreter lex.yy.c parser.tab.c interpreter.c $(DS) $(UTIL) $(YFLAGS) -DDEBUG
 
-optimized: parser scanner
+optimized: 
+	flex $(SCA)
+	bison --debug -d $(PAR)
 	gcc -O3 -o interpreter lex.yy.c parser.tab.c interpreter.c $(DS) $(UTIL) $(YFLAGS)
 
 clean:

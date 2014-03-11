@@ -29,6 +29,7 @@ static void print_tabl_stack();
 int interpreter_init();
 
 void parse_program(struct nary_node *node);
+void parse_program_interactive(struct nary_node *node);
 void parse_stmtlist(struct nary_node *node);
 void parse_block(struct nary_node *node);
 void parse_stmt(struct nary_node *node);
@@ -104,6 +105,16 @@ void parse_program(struct nary_node *node){
 		return;
 	}
 	parse_stmtlist(node->nodes[0]);
+}
+
+void parse_program_interactive(struct nary_node *node){
+	struct id_tab *newtab = tab_init();
+	if(sstack_push(id_table_stack, (void*) newtab)){
+		con_log("new id table could not be pushed", 
+				"parse_program()", LOG_ERROR);
+		return;
+	}
+	parse_stmt(node->nodes[0]);
 }
 
 void parse_stmtlist(struct nary_node *node){
@@ -376,6 +387,7 @@ void parse_dowhile(struct nary_node *node){
 
 void parse_switch(struct nary_node *node);
 void parse_fceblock(struct nary_node *node); 
+
 
 void parse_stmt(struct nary_node *node){
 	switch(get_operation(node)){

@@ -9,7 +9,6 @@ struct nary_node *root;
 %union {
 	struct value *v;
 	struct nary_node *k;
-
 }
 
 /* Operators, their precedence and associativity */
@@ -42,6 +41,7 @@ struct nary_node *root;
 /* Symbols*/
 %token CURLOPEN CURLCLOSE PAROPEN PARCLOSE BOXOPEN BOXCLOSE SEMI DP POINT 
 %token COMMA SHARP DOLLAR QMARK
+%token NL
 
 %type <v> FFI_CHAR FFI_SHORT FFI_INT FFI_LONG FFI_LONG_LONG FFI_DOUBLE 
 %type <v> FFI_FLOAT FFI_LONG_DOUBLE FFI_VOIDPTR
@@ -55,8 +55,10 @@ struct nary_node *root;
 
 %%
 
-program 			: stmtlist 
-						{ root = make_node(P_OP_STMTLST, NULL, 1, $1); }
+program 			: 
+					/* enable interpreter */
+					| program statement 
+						{ root = make_node(P_OP_STMT, NULL, 1, $1); YYACCEPT; }
 					;
 
 block 				: CURLOPEN stmtlist CURLCLOSE 
@@ -279,50 +281,51 @@ listconstructor 	: BOXOPEN BOXCLOSE
 						{ $$ = make_node(P_OP_LSTCONST, NULL, 1, $2); }
 					;
 
-statement			: assignment SEMI 
+statement			: assignment SEMI NL
 						{ $$ = make_node(P_OP_ASSIGN, NULL, 1, $1); }
-					| BREAK SEMI 
+					| BREAK SEMI NL
 						{ $$ = make_node(P_OP_BREAK, NULL, 0); }
-					| CONTINUE SEMI 
+					| CONTINUE SEMI NL
 						{ $$ = make_node(P_OP_CONTINUE, NULL, 0); }
-					| INC var_exp SEMI
+					| INC var_exp SEMI NL
 						{ $$ = make_node(P_OP_INC, NULL, 1, $2); }
-					| DEC var_exp SEMI
+					| DEC var_exp SEMI NL
 						{ $$ = make_node(P_OP_DEC, NULL, 1, $2); }
-					| PRINT expression SEMI
+					| PRINT expression SEMI NL
 						{ $$ = make_node(P_OP_PRINT, NULL, 1, $2); }
-					| block
+					| block NL
 						{ $$ = make_node(P_OP_BLOCK, NULL, 1, $1); }
-					| functioncall SEMI
+					| functioncall SEMI NL
 						{ $$ = make_node(P_OP_CALL, NULL, 1, $1); }
-					| functiondef 
+					| functiondef NL
 						{ $$ = make_node(P_OP_FDEF, NULL, 1, $1); }
-					| GLOBAL assignment SEMI 
+					| GLOBAL assignment SEMI NL
 						{ }
-					| GLOBAL functiondef
+					| GLOBAL functiondef NL
 						{ }
-					| IF PAROPEN expression PARCLOSE block 
+					| IF PAROPEN expression PARCLOSE block NL
 						{ $$ = make_node(P_OP_IF, NULL, 2, $3, $5); }
-					| IF PAROPEN expression PARCLOSE block ELSE block 
+					| IF PAROPEN expression PARCLOSE block ELSE block NL
 						{ $$ = make_node(P_OP_ELSE, NULL, 3, $3, $5, $7); }
-					| IF PAROPEN expression PARCLOSE block ELIF PAROPEN 
-						expression PARCLOSE block 
+					| IF PAROPEN expression PARCLOSE block ELIF PAROPEN NL
+						expression PARCLOSE block NL
 						{ /* TODO */ }
 					| FOR PAROPEN assignment SEMI expression SEMI 
-						assignment PARCLOSE block
+						assignment PARCLOSE block NL
 						{ $$ = make_node(P_OP_FOR, NULL, 4, $3, $5, $7, $9); }
-					| FOR idlist IN explist block  
+					| FOR idlist IN explist block NL
 						{ $$ = make_node(P_OP_FORIN, NULL, 3, $2, $4, $5);} 
-					| WHILE PAROPEN expression PARCLOSE block 
+					| WHILE PAROPEN expression PARCLOSE block NL
 						{ $$ = make_node(P_OP_WHILE, NULL, 2, $3, $5); }
-					| DO block WHILE PAROPEN expression PARCLOSE SEMI 
+					| DO block WHILE PAROPEN expression PARCLOSE SEMI NL
 						{ $$ = make_node(P_OP_DOWH, NULL, 2, $2, $5);}
-					| SWITCH PAROPEN expression PARCLOSE switchblock 
+					| SWITCH PAROPEN expression PARCLOSE switchblock NL
 						{ $$ = make_node(P_OP_SWITCH, NULL, 2, $3, $5); }
-					| fceblock 
+					| fceblock NL
 						{ $$ = make_node(P_OP_FCEB, NULL, 1, $1); }
-					| error SEMI { printf("Invalid Statement. Skipping until\
-								semicolon") ;yyerrok; }
+					| error SEMI NL
+						{ printf("Invalid Statement. Skipping until semicolon\n");
+							yyerrok; }
 					;
 
 fceblock 			: EXTERNAL FCELANG FCEB_CODE 
@@ -352,17 +355,19 @@ int callback(void *c, void *u){
 	return 0;
 }
 
+
 int main(int argc, char **argv){
-	if(argc > 1){
-//		yydebug = 1;
-	}
-	if(yyparse()){
-		printf("Ein Syntaxfehler ist aufgetreten!\n");
-		return EXIT_FAILURE;
-	}
+#ifdef DEBUG
+	yydebug = 1;
+#endif
 	//traverse_preorder(root, callback, NULL);
-	printf("Debugging:\n");
 	interpreter_init();
-	parse_program(root);	
+	while(1){
+		if(yyparse()){
+			printf("Ein Syntaxfehler ist aufgetreten!\n");
+			break;
+		}
+		parse_program_interactive(root);	
+	}
 	return EXIT_SUCCESS;
 }

@@ -34,7 +34,7 @@
 # define YY_YY_PARSER_TAB_H_INCLUDED
 /* Enabling traces.  */
 #ifndef YYDEBUG
-# define YYDEBUG 0
+# define YYDEBUG 1
 #endif
 #if YYDEBUG
 extern int yydebug;
@@ -131,7 +131,8 @@ extern int yydebug;
      COMMA = 340,
      SHARP = 341,
      DOLLAR = 342,
-     QMARK = 343
+     QMARK = 343,
+     NL = 344
    };
 #endif
 
@@ -144,7 +145,6 @@ typedef union YYSTYPE
 
 	struct value *v;
 	struct nary_node *k;
-
 
 
 /* Line 2053 of yacc.c  */

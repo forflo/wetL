@@ -120,7 +120,8 @@ escapes  \\n|\\t|\\a|\\b|\\r|\\v|\\\\|\\\"|\\\'|\\f|\\0
 dquote  \"
 squote  \'
 
-delim \n\t\v\b" "
+delim \t\v\b" "
+newline \n
 
 /* String is either quoted with single or double quotes */
 string  ({dquote}({letter}|{escapes}|{allowed_symbols}|{digit})+{dquote})|({squote}({letter}|{escapes}|{allowed_symbols}|{digit})+{squote})
@@ -291,5 +292,6 @@ print print
 } 
 
 {delim} {}
+{newline} {return(NL);}
 
 %%

@@ -267,6 +267,7 @@ void assign(struct nary_node *node);
 int interpreter_init();
 
 void parse_program(struct nary_node *node);
+void parse_program_interactive(struct nary_node *node);
 void parse_stmtlist(struct nary_node *node);
 void parse_block(struct nary_node *node);
 void parse_stmt(struct nary_node *node);

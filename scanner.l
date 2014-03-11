@@ -23,8 +23,8 @@ rightshift ">>"
 /* [Operators] Assignment */
 
 assop "="
-inc "++"
-dec "--"
+inc "inc"
+dec "dec"
 asplus "+="
 asminus "-="
 asmul "*="
@@ -193,6 +193,9 @@ print print
 {binxor} {return(BINXOR);}
 {leftshift} {return(LEFTSHIFT);}
 {rightshift} {return(RIGHTSHIFT);}
+
+{inc} {return(INC);}
+{dec} {return(DEC);}
 
 {assop} {return(ASSOP);}
 {asplus} {return(ASPLUS);}

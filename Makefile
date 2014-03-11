@@ -17,6 +17,7 @@ util-test:
 	gcc -g -o scanner_util dyn_arr.c scanner_util.c -DTESTX -lcunit
 	gcc -g -o sl_list sl_list.c -DTEST -lcunit
 	gcc -g -o sl_stack sl_stack.c sl_list.c -DTESTU -lcunit
+	gcc -g -o mem_alloc mem_alloc.c -DTEST -lcunit
 	./nary_tree
 	./str_dyn
 	./parser_util
@@ -25,6 +26,7 @@ util-test:
 	./scanner_util
 	./sl_list
 	./sl_stack
+	./mem_alloc
 
 scanner: parser
 	flex $(SCA)
@@ -33,7 +35,10 @@ parser:
 	bison -d $(PAR)
 
 interpreter: parser scanner
-	gcc -g -o interpreter lex.yy.c parser.tab.c interpreter.c $(DS) $(UTIL) $(YFLAGS)
+	gcc -g -o interpreter lex.yy.c parser.tab.c interpreter.c $(DS) $(UTIL) $(YFLAGS) -DDEBUG
+
+optimized: parser scanner
+	gcc -O3 -o interpreter lex.yy.c parser.tab.c interpreter.c $(DS) $(UTIL) $(YFLAGS)
 
 clean:
 	-rm *.o

@@ -1,0 +1,15 @@
+a = 1 + 3 * (45 > 46);
+b = ~(35 * 0);
+c = 35 * 2;
+print "abc";
+print a;
+print b;
+print c;
+print a*b*c;
+
+print " ";
+
+print "abc";
+print a;
+print b;
+print c;

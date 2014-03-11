@@ -1,5 +1,6 @@
 #include "parser.h"
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 
 #ifdef TESTX
@@ -25,6 +26,7 @@ struct value *make_valueInt(int i){
 	*tmp = i;
 	res->c = (void *) tmp;
 	res->type = P_TYPE_INT;
+	res->flag = P_FLAG_RO;
 	return res;
 }
 
@@ -38,16 +40,18 @@ struct value *make_valueDbl(double i){
 	*tmp = i;
 	res->c = (void *) tmp;
 	res->type = P_TYPE_DOUBLE;
+	res->flag = P_FLAG_RO;
 	return res;
 }
 
 struct value *make_valueVal(){
 	struct value *res = (struct value *) malloc(sizeof(struct value));
 	void *content = malloc(sizeof(double));
-	if(res == NULL)
+	if(res == NULL || content == NULL)
 		return NULL;
 	res->type = P_TYPE_VALUE;
 	res->c = content;
+	res->flag = P_FLAG_NONE;
 	return res;	
 }
 
@@ -63,7 +67,26 @@ struct value *make_valueArr(struct dyn_arr *a){
 struct value *make_valueId(const char *str){
 	struct value *ret = make_valueStr(str);
 	ret->type = P_TYPE_ID;
+	ret->flag = P_FLAG_RO;
 	return ret;
+}
+
+/* Returns a copy of the given structure value */
+struct value *make_valueCpy(struct value *org){
+	switch (org->type){
+		case P_TYPE_INT:
+			printf("---Int: %d\n", *((int *) org->c));
+			return make_valueInt(*((int *)org->c));
+			break;
+		case P_TYPE_STRING:
+			return make_valueStr(((char *)org->c));
+			break;
+		case P_TYPE_DOUBLE:
+			return make_valueDbl(*((double *) org->c));
+			break;
+		default:
+			return NULL;
+	}
 }
 
 /* Creates a new value object with a string as content

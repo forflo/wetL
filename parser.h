@@ -4,8 +4,12 @@
 struct value {
 	void *c;
 	int type;
+	int flag;
 	//Maybe additional stuff
 };
+
+#define P_FLAG_RO 120
+#define P_FLAG_NONE 121
 
 struct node_content {
 	int operation; /* specifies the type of the node */
@@ -114,6 +118,8 @@ struct node_content {
 
 #define P_OP_NOOP 560
 #define P_OP_PRINT 561
+#define P_OP_INC 562
+#define P_OP_DEC 563
 
 /*
  ---useful defines---
@@ -342,4 +348,5 @@ struct value *make_valueId(const char *str);
 struct value *make_valueDbl(double d);
 struct value *make_valueStr(const char *str);
 struct value *make_valueArr(struct dyn_arr *a);
+struct value *make_valueCpy(struct value *org);
 struct value *make_valueVal();

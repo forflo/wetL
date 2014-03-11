@@ -1,4 +1,5 @@
 *.swp
+*.swo
 *.dSYM
 interpreter
 id_table
@@ -8,3 +9,5 @@ sl_list
 scanner_util
 nary_tree
 dyn_arr
+mem_alloc
+parser_util

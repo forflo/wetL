@@ -32,7 +32,7 @@ struct nary_node *root;
 /* Hot things */
 %token KEYSTROKE HOTSTRING ON
 /* Statements*/
-%token IF GLOBAL ELSE ELIF CONTINUE BREAK UTIL FOR IN WHILE DO SWITCH PRINT
+%token IF GLOBAL ELSE ELIF CONTINUE BREAK UTIL FOR IN WHILE DO SWITCH PRINT INC DEC
 %token RET CASE FUNCTION EXTERNAL TRUE FALSE
 /* Literals */
 %token STRING NUMBER ID FCELANG FCEB_CODE INT
@@ -285,6 +285,10 @@ statement			: assignment SEMI
 						{ $$ = make_node(P_OP_BREAK, NULL, 0); }
 					| CONTINUE SEMI 
 						{ $$ = make_node(P_OP_CONTINUE, NULL, 0); }
+					| INC var_exp SEMI
+						{ $$ = make_node(P_OP_INC, NULL, 1, $2); }
+					| DEC var_exp SEMI
+						{ $$ = make_node(P_OP_DEC, NULL, 1, $2); }
 					| PRINT expression SEMI
 						{ $$ = make_node(P_OP_PRINT, NULL, 1, $2); }
 					| block

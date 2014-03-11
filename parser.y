@@ -55,9 +55,7 @@ struct nary_node *root;
 
 %%
 
-program 			: 
-					/* enable interpreter */
-					| program statement 
+program 			: statement 
 						{ root = make_node(P_OP_STMT, NULL, 1, $1); YYACCEPT; }
 					;
 
@@ -323,6 +321,7 @@ statement			: assignment SEMI NL
 						{ $$ = make_node(P_OP_SWITCH, NULL, 2, $3, $5); }
 					| fceblock NL
 						{ $$ = make_node(P_OP_FCEB, NULL, 1, $1); }
+					| NL {}
 					| error SEMI NL
 						{ printf("Invalid Statement. Skipping until semicolon\n");
 							yyerrok; }
@@ -362,12 +361,14 @@ int main(int argc, char **argv){
 #endif
 	//traverse_preorder(root, callback, NULL);
 	interpreter_init();
+	int first = 1;
 	while(1){
 		if(yyparse()){
 			printf("Ein Syntaxfehler ist aufgetreten!\n");
 			break;
 		}
-		parse_program_interactive(root);	
+		parse_program_interactive(root, first);	
+		first = 0;
 	}
 	return EXIT_SUCCESS;
 }

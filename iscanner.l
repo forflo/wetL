@@ -6,8 +6,8 @@
 }
 
 %option reentrant
-%option outfile="wetlex.c"
-%option prefix="wet"
+%option outfile="iwetlex.c"
+%option prefix="iwet"
 
 /* [Operators] Arithmetic */
 

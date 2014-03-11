@@ -1,7 +1,4 @@
 %{
-/* This is the parser for non interactive usage.
-	
-*/
 #include "parser.h"
 #include <stdlib.h>
 
@@ -13,11 +10,11 @@ struct nary_node *root;
 	struct value *v;
 	struct nary_node *k;
 }
-/* Make the generated parser reentrant */
-%define api.pure full
-%define api.prefix "wet"
 
-%output "wetparse.c"
+%define api.prefix "iwet"
+%define api.pure full
+
+%output "iwetparse.c"
 
 /* Operators, their precedence and associativity */
 %left OR
@@ -60,8 +57,6 @@ struct nary_node *root;
 %type <k> fceblock assignment functiondef explist idlist labeled_statement 
 %type <k> switchblock labeled_stmtlist arglist parlist hotstringdef varlist
 %type <k> hotkeydef exp_cast_list program ffi_cast
-
-%start program
 
 %%
 
@@ -350,4 +345,3 @@ fceexp_rc			: PAROPEN QMARK FCELANG PARCLOSE FCEB_CODE
 					;
 
 %%
-

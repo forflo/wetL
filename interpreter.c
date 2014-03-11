@@ -165,11 +165,6 @@ void parse_assignment(struct nary_node *node){
 	assign_flag = 0;
 	struct dyn_arr *explist = parse_explist(node->nodes[1]);
 
-	/* We have to empty the mem_alloc list because we don't need
-	 	the temporarily created value structures in parse_expression()
-	 	anymore */
-	mem_reset();
-
 	if(varlist == NULL|| explist == NULL) {
 		con_log("varlist and explist are invalid", 
 				"parse_assignment()", LOG_ERROR);
@@ -193,9 +188,12 @@ void parse_assignment(struct nary_node *node){
 
 		/* Var isn't yet associated with a value */
 		if(cvar->type == P_TYPE_ID)	{
+#ifdef DEBUG
+			printf("Adding value\n");
+#endif
 			/* We have to mark the value as non_writable for the parse
-			 	expression routine*/
-			cval->flag = P_FLAG_RO;
+			 	expression routine. This happens by calling make_valueCpy */
+
 			/* first we try to change the value, if that fails, the
 				var does not exist and we can add it. */
 			if(tab_add_value(head, make_valueCpy(cval), (char *) cvar->c)){
@@ -204,7 +202,6 @@ void parse_assignment(struct nary_node *node){
 				return;
 			}
 
-			free(cval);
 		/* cvar contains the old value that has to be altered */
 		} else {
 #ifdef DEBUG
@@ -215,6 +212,11 @@ void parse_assignment(struct nary_node *node){
 			cvar->type = cval->type;
 		}
 	}
+
+	/* We have to reset the mem_alloc list because we don't need
+	 	the temporarily created value structures in parse_expression()
+	 	anymore */
+	mem_reset();
 
 	free(varlist->arr);
 	free(explist->arr);
@@ -307,6 +309,7 @@ void parse_while(struct nary_node *node){
 	printf("++Entering While\n");
 #endif
 	struct nary_node *tmp = node->nodes[1];
+	struct value *eval;
 
 	struct id_tab *newtab = tab_init();
 	if(sstack_push(id_table_stack, (void*) newtab)){
@@ -315,9 +318,14 @@ void parse_while(struct nary_node *node){
 		return;
 	}
 
-	/* leak */
-	while(*((int *) parse_expression(node->nodes[0])->c)){
+	eval = parse_expression(node->nodes[0]);
+	while(*((int *) eval->c)){
 		parse_stmtlist(tmp->nodes[0]);
+		if(eval->flag == P_FLAG_NONE){
+			free(eval->c);
+			mem_reset();
+		}
+		eval = parse_expression(node->nodes[0]);
 	}
 
 	sstack_pop(id_table_stack, &rc);
@@ -332,9 +340,38 @@ void parse_while(struct nary_node *node){
 }
 
 void parse_dowhile(struct nary_node *node){
+	int rc;
+#ifdef DEBUG
+	printf("++Entering Do-while\n");
+#endif
+	struct nary_node *tmp = node->nodes[1];
+	struct value *eval = mem_nextValInt();
+
+	struct id_tab *newtab = tab_init();
+	if(sstack_push(id_table_stack, (void*) newtab)){
+		con_log("new id table could not be pushed", 
+				"parse_dowhile()", LOG_ERROR);
+		return;
+	}
+
 	do {
-		parse_block(node->nodes[0]);	
-	} while(*((int *) parse_expression(node->nodes[1])->c));
+		parse_stmtlist(tmp->nodes[0]);
+		if(eval->flag == P_FLAG_NONE){
+			free(eval->c);
+			mem_reset();
+		}
+		eval = parse_expression(node->nodes[0]);
+	} while(*((int *) eval->c));
+
+	sstack_pop(id_table_stack, &rc);
+	if(rc){
+		con_log("new id table could not be popped", 
+				"parse_dowhile()", LOG_ERROR);
+		return;
+	}
+#ifdef DEBUG
+	printf("++Leaving Do-while\n");
+#endif
 }
 
 void parse_switch(struct nary_node *node);
@@ -867,6 +904,9 @@ struct value *parse_expression(struct nary_node *node){
 			ops[0] = parse_expression(node->nodes[0]);
 			ops[1] = parse_expression(node->nodes[1]);
 			if(ops[0]->flag == P_FLAG_RO) {
+#ifdef DEBUG
+				printf("Objekt ist readonly. Erstelle Kopie\n");
+#endif
 				result = mem_nextValDbl();
 			} else {
 				result = ops[0];

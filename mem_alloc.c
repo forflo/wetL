@@ -52,6 +52,9 @@ struct value *mem_next(){
 	int i, start, end;
 	struct value *temp;
 	if(usage_counter == MAX_INIT * (mem_cnt - 1)){
+#ifdef DEBUG
+		printf("mem_alloc: Reallocate\n");
+#endif
 		mem_val = (char *) realloc(mem_val, 
 						sizeof(struct value) * MAX_INIT * mem_cnt);
 

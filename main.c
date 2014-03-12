@@ -24,7 +24,7 @@ int main(int argc, char **argv){
 	if(get_interactive()){
 		interpreter_init();
 		int first = 1;
-		while(1){
+		for(;;){
 			if(yyparse()){
 				printf("Ein Syntaxfehler ist aufgetreten!\n");
 				break;

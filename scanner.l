@@ -8,6 +8,17 @@
 %option reentrant
 %option outfile="wetlex.c"
 %option prefix="wet"
+/* The following ensures, that we generate 
+	the function wetlex(YYSTYPE *lvalp, wetscan_t scanner); 
+	which is needet for proper bison interaction. See
+	http://flex.sourceforge.net/manual/Bison-Bridge.html,
+	http://www.lemoda.net/c/reentrant-parser/index.html and
+	http://www.phpcompiler.org/articles/reentrantparser.html
+	for the gory details */
+%option bison-bridge
+%option noyywrap 
+/* We can't use the standard impl
+					and we don't need it either */
 
 /* [Operators] Arithmetic */
 

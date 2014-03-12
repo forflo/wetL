@@ -13,11 +13,18 @@ struct nary_node *root;
 	struct value *v;
 	struct nary_node *k;
 }
+
 /* Make the generated parser reentrant */
-%define api.pure full
 %define api.prefix "wet"
+%define api.pure full
 
 %output "wetparse.c"
+
+/* Adjust the calling conventions for the lexter. See
+	http://www.phpcompiler.org/articles/reentrantparser.html for
+	more details */
+%parse-param {void *scan}
+%lex-param {void *scan}
 
 /* Operators, their precedence and associativity */
 %left OR

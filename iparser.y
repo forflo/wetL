@@ -11,10 +11,17 @@ struct nary_node *root;
 	struct nary_node *k;
 }
 
+/* Make the generated parser reentrant */
 %define api.prefix "iwet"
 %define api.pure full
 
 %output "iwetparse.c"
+
+/* Adjust the calling conventions for the lexter. See
+	http://www.phpcompiler.org/articles/reentrantparser.html for
+	more details */
+%parse-param {void *scan}
+%lex-param {void *scan}
 
 /* Operators, their precedence and associativity */
 %left OR

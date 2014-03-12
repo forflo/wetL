@@ -267,7 +267,7 @@ void assign(struct nary_node *node);
 int interpreter_init();
 
 void parse_program(struct nary_node *node);
-void parse_program_interactive(struct nary_node *node, int first);
+void parse_program_interactive(struct nary_node *node, int *first);
 void parse_stmtlist(struct nary_node *node);
 void parse_block(struct nary_node *node);
 void parse_stmt(struct nary_node *node);
@@ -287,6 +287,9 @@ struct value *parse_varexpression(struct nary_node *node);
 struct value *parse_fceexp(struct nary_node *node);
 struct value *parse_fceexp_rc(struct nary_node *node);
 
+struct value *parse_lstconst(struct nary_node *node);
+struct value *parse_fficonst(struct nary_node *node);
+
 void parse_assignment(struct nary_node *node);
 void parse_break(struct nary_node *node);
 void parse_print(struct nary_node *node);
@@ -299,6 +302,8 @@ void parse_while(struct nary_node *node);
 void parse_dowhile(struct nary_node *node);
 void parse_switch(struct nary_node *node);
 void parse_fceblock(struct nary_node *node); 
+void parse_inc(struct nary_node *node);
+void parse_dec(struct nary_node *node);
 
 /*
  ---begin id_table and dyn_arr declarations
@@ -334,12 +339,17 @@ int arr_free(struct dyn_arr *arr);
  */
 struct settings {
 	int loglevel;
-	//more to come
+	int interactive;
+	char *file;
+	char *prompt;
 };
 
 int get_ec();
 void set_ec(int e);
 int get_loglevel();
+char *get_file();
+char *get_prompt();
+int get_flgInteractive();
 
 /*
  ---begin scanner util

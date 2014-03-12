@@ -8,6 +8,7 @@
 %option reentrant
 %option outfile="iwetlex.c"
 %option prefix="iwet"
+%option bison-bridge
 
 /* [Operators] Arithmetic */
 

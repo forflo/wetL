@@ -30,22 +30,30 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
-#ifndef YY_YY_PARSER_TAB_H_INCLUDED
-# define YY_YY_PARSER_TAB_H_INCLUDED
+#ifndef YY_WET_WETPARSE_H_INCLUDED
+# define YY_WET_WETPARSE_H_INCLUDED
 /* Enabling traces.  */
-#ifndef YYDEBUG
-# define YYDEBUG 1
-#endif
-#if YYDEBUG
-extern int yydebug;
+#ifndef WETDEBUG
+# if defined YYDEBUG
+#  if YYDEBUG
+#   define WETDEBUG 1
+#  else
+#   define WETDEBUG 0
+#  endif
+# else /* ! defined YYDEBUG */
+#  define WETDEBUG 0
+# endif /* ! defined YYDEBUG */
+#endif  /* ! defined WETDEBUG */
+#if WETDEBUG
+extern int wetdebug;
 #endif
 
 /* Tokens.  */
-#ifndef YYTOKENTYPE
-# define YYTOKENTYPE
+#ifndef WETTOKENTYPE
+# define WETTOKENTYPE
    /* Put the tokens into the symbol table, so that GDB and other debuggers
       know about them.  */
-   enum yytokentype {
+   enum wettokentype {
      OR = 258,
      AND = 259,
      BINOR = 260,
@@ -137,38 +145,37 @@ extern int yydebug;
 #endif
 
 
-#if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef union YYSTYPE
+#if ! defined WETSTYPE && ! defined WETSTYPE_IS_DECLARED
+typedef union WETSTYPE
 {
 /* Line 2053 of yacc.c  */
-#line 9 "parser.y"
+#line 12 "parser.y"
 
 	struct value *v;
 	struct nary_node *k;
 
 
 /* Line 2053 of yacc.c  */
-#line 152 "parser.tab.h"
-} YYSTYPE;
-# define YYSTYPE_IS_TRIVIAL 1
-# define yystype YYSTYPE /* obsolescent; will be withdrawn */
-# define YYSTYPE_IS_DECLARED 1
+#line 160 "wetparse.h"
+} WETSTYPE;
+# define WETSTYPE_IS_TRIVIAL 1
+# define wetstype WETSTYPE /* obsolescent; will be withdrawn */
+# define WETSTYPE_IS_DECLARED 1
 #endif
 
-extern YYSTYPE yylval;
 
 #ifdef YYPARSE_PARAM
 #if defined __STDC__ || defined __cplusplus
-int yyparse (void *YYPARSE_PARAM);
+int wetparse (void *YYPARSE_PARAM);
 #else
-int yyparse ();
+int wetparse ();
 #endif
 #else /* ! YYPARSE_PARAM */
 #if defined __STDC__ || defined __cplusplus
-int yyparse (void);
+int wetparse (void *scan);
 #else
-int yyparse ();
+int wetparse ();
 #endif
 #endif /* ! YYPARSE_PARAM */
 
-#endif /* !YY_YY_PARSER_TAB_H_INCLUDED  */
+#endif /* !YY_WET_WETPARSE_H_INCLUDED  */

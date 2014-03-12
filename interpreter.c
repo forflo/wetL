@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "parser.tab.h"
+#include "wetparse.h"
 #include <stdlib.h>
 #include "parser.h"
 #include <math.h>
@@ -12,13 +12,13 @@
 /* necessary global datastructures like the id_table-Stack */
 static struct sstack *id_table_stack;
 static struct dyn_arr *glob_function_list;
-static struct value *glob_temp; /* used by parse_expression 
-							  for value traversiong*/
+
 int *rc;
 
 /* necessary global flags */
 static int assign_flag = 0;
 
+/* functions that are only used within this file*/
 int get_operation(struct nary_node *node);
 char *get_str(struct nary_node *node);
 struct value *get_value(struct nary_node *node);
@@ -26,47 +26,6 @@ struct dyn_arr *get_arr(struct nary_node *node);
 int *get_num(struct nary_node *node);
 static void print_tabl_stack();
 
-int interpreter_init();
-
-void parse_program(struct nary_node *node);
-void parse_program_interactive(struct nary_node *node, int first);
-void parse_stmtlist(struct nary_node *node);
-void parse_block(struct nary_node *node);
-void parse_stmt(struct nary_node *node);
-
-struct dyn_arr *parse_explist(struct nary_node *node);
-struct dyn_arr *parse_exp_cast_list(struct nary_node *node);
-struct dyn_arr *parse_parlist(struct nary_node *node);
-struct dyn_arr *parse_idlist(struct nary_node *node);
-struct dyn_arr *parse_arglist(struct nary_node *node);
-struct dyn_arr *parse_varlist(struct nary_node *node);
-
-struct value *parse_expression(struct nary_node *node);
-struct value *parse_evalexpression(struct nary_node *node);
-struct value *parse_functioncall(struct nary_node *node);
-struct value *parse_varexpression(struct nary_node *node);
-
-struct value *parse_lstconst(struct nary_node *node);
-struct value *parse_fficonst(struct nary_node *node);
-
-struct value *parse_fceexp(struct nary_node *node);
-struct value *parse_fceexp_rc(struct nary_node *node);
-
-void parse_assignment(struct nary_node *node);
-void parse_break(struct nary_node *node);
-void parse_print(struct nary_node *node);
-void parse_continue(struct nary_node *node);
-void parse_functiondef(struct nary_node *node);
-void parse_if(struct nary_node *node);
-void parse_else(struct nary_node *node);
-void parse_forin(struct nary_node *node);
-void parse_for(struct nary_node *node);
-void parse_while(struct nary_node *node);
-void parse_dowhile(struct nary_node *node);
-void parse_switch(struct nary_node *node);
-void parse_fceblock(struct nary_node *node); 
-void parse_inc(struct nary_node *node);
-void parse_dec(struct nary_node *node);
 
 int interpreter_init(){
 	con_log("initialize interpreter", 
@@ -107,14 +66,15 @@ void parse_program(struct nary_node *node){
 	parse_stmtlist(node->nodes[0]);
 }
 
-void parse_program_interactive(struct nary_node *node, int first){
+void parse_program_interactive(struct nary_node *node, int *first){
 	struct id_tab *newtab = tab_init();
-	if(first){
+	if(*first){
 		if(sstack_push(id_table_stack, (void*) newtab)){
 			con_log("new id table could not be pushed", 
 					"parse_program()", LOG_ERROR);
 			return;
 		}
+		*first = 0;
 	}
 	parse_stmt(node->nodes[0]);
 }

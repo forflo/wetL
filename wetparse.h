@@ -47,6 +47,15 @@
 #if WETDEBUG
 extern int wetdebug;
 #endif
+/* "%code requires" blocks.  */
+/* Line 2053 of yacc.c  */
+#line 25 "parser.y"
+
+#define YYSTYPE IWETSTYPE
+
+
+/* Line 2053 of yacc.c  */
+#line 59 "wetparse.h"
 
 /* Tokens.  */
 #ifndef WETTOKENTYPE
@@ -139,8 +148,7 @@ extern int wetdebug;
      COMMA = 340,
      SHARP = 341,
      DOLLAR = 342,
-     QMARK = 343,
-     NL = 344
+     QMARK = 343
    };
 #endif
 
@@ -149,14 +157,14 @@ extern int wetdebug;
 typedef union WETSTYPE
 {
 /* Line 2053 of yacc.c  */
-#line 12 "parser.y"
+#line 7 "parser.y"
 
 	struct value *v;
 	struct nary_node *k;
 
 
 /* Line 2053 of yacc.c  */
-#line 160 "wetparse.h"
+#line 168 "wetparse.h"
 } WETSTYPE;
 # define WETSTYPE_IS_TRIVIAL 1
 # define wetstype WETSTYPE /* obsolescent; will be withdrawn */
@@ -172,7 +180,7 @@ int wetparse ();
 #endif
 #else /* ! YYPARSE_PARAM */
 #if defined __STDC__ || defined __cplusplus
-int wetparse (void *scan);
+int wetparse (struct nary_node **root, void *scan);
 #else
 int wetparse ();
 #endif

@@ -2,8 +2,6 @@
 #include "parser.h"
 #include <stdlib.h>
 
-struct nary_node *root;
-
 %}
 
 %union {
@@ -20,8 +18,13 @@ struct nary_node *root;
 /* Adjust the calling conventions for the lexter. See
 	http://www.phpcompiler.org/articles/reentrantparser.html for
 	more details */
+%parse-param {struct nary_node **root}
 %parse-param {void *scan}
 %lex-param {void *scan}
+
+%code requires {
+#define YYSTYPE IWETSTYPE
+}
 
 /* Operators, their precedence and associativity */
 %left OR

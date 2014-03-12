@@ -2,6 +2,7 @@
 
 #include "wetparse.h" 
 #include "parser.h"
+#define 
 
 }
 

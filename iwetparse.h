@@ -47,6 +47,15 @@
 #if IWETDEBUG
 extern int iwetdebug;
 #endif
+/* "%code requires" blocks.  */
+/* Line 2053 of yacc.c  */
+#line 25 "iparser.y"
+
+#define YYSTYPE IWETSTYPE
+
+
+/* Line 2053 of yacc.c  */
+#line 59 "iwetparse.h"
 
 /* Tokens.  */
 #ifndef IWETTOKENTYPE
@@ -149,14 +158,14 @@ extern int iwetdebug;
 typedef union IWETSTYPE
 {
 /* Line 2053 of yacc.c  */
-#line 9 "iparser.y"
+#line 7 "iparser.y"
 
 	struct value *v;
 	struct nary_node *k;
 
 
 /* Line 2053 of yacc.c  */
-#line 160 "iwetparse.h"
+#line 169 "iwetparse.h"
 } IWETSTYPE;
 # define IWETSTYPE_IS_TRIVIAL 1
 # define iwetstype IWETSTYPE /* obsolescent; will be withdrawn */
@@ -172,7 +181,7 @@ int iwetparse ();
 #endif
 #else /* ! YYPARSE_PARAM */
 #if defined __STDC__ || defined __cplusplus
-int iwetparse (void *scan);
+int iwetparse (struct nary_node **root, void *scan);
 #else
 int iwetparse ();
 #endif

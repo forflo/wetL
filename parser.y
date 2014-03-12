@@ -1,11 +1,6 @@
 %{
-/* This is the parser for non interactive usage.
-	
-*/
 #include "parser.h"
 #include <stdlib.h>
-
-struct nary_node *root;
 
 %}
 
@@ -23,6 +18,7 @@ struct nary_node *root;
 /* Adjust the calling conventions for the lexter. See
 	http://www.phpcompiler.org/articles/reentrantparser.html for
 	more details */
+%parse-param {struct nary_node **root}
 %parse-param {void *scan}
 %lex-param {void *scan}
 
@@ -56,7 +52,6 @@ struct nary_node *root;
 /* Symbols*/
 %token CURLOPEN CURLCLOSE PAROPEN PARCLOSE BOXOPEN BOXCLOSE SEMI DP POINT 
 %token COMMA SHARP DOLLAR QMARK
-%token NL
 
 %type <v> FFI_CHAR FFI_SHORT FFI_INT FFI_LONG FFI_LONG_LONG FFI_DOUBLE 
 %type <v> FFI_FLOAT FFI_LONG_DOUBLE FFI_VOIDPTR
@@ -296,50 +291,49 @@ listconstructor 	: BOXOPEN BOXCLOSE
 						{ $$ = make_node(P_OP_LSTCONST, NULL, 1, $2); }
 					;
 
-statement			: assignment SEMI NL
+statement			: assignment SEMI
 						{ $$ = make_node(P_OP_ASSIGN, NULL, 1, $1); }
-					| BREAK SEMI NL
+					| BREAK SEMI
 						{ $$ = make_node(P_OP_BREAK, NULL, 0); }
-					| CONTINUE SEMI NL
+					| CONTINUE SEMI
 						{ $$ = make_node(P_OP_CONTINUE, NULL, 0); }
-					| INC var_exp SEMI NL
+					| INC var_exp SEMI
 						{ $$ = make_node(P_OP_INC, NULL, 1, $2); }
-					| DEC var_exp SEMI NL
+					| DEC var_exp SEMI
 						{ $$ = make_node(P_OP_DEC, NULL, 1, $2); }
-					| PRINT expression SEMI NL
+					| PRINT expression SEMI
 						{ $$ = make_node(P_OP_PRINT, NULL, 1, $2); }
-					| block NL
+					| block 
 						{ $$ = make_node(P_OP_BLOCK, NULL, 1, $1); }
-					| functioncall SEMI NL
+					| functioncall SEMI 
 						{ $$ = make_node(P_OP_CALL, NULL, 1, $1); }
-					| functiondef NL
+					| functiondef 
 						{ $$ = make_node(P_OP_FDEF, NULL, 1, $1); }
-					| GLOBAL assignment SEMI NL
+					| GLOBAL assignment SEMI 
 						{ }
-					| GLOBAL functiondef NL
+					| GLOBAL functiondef 
 						{ }
-					| IF PAROPEN expression PARCLOSE block NL
+					| IF PAROPEN expression PARCLOSE block
 						{ $$ = make_node(P_OP_IF, NULL, 2, $3, $5); }
-					| IF PAROPEN expression PARCLOSE block ELSE block NL
+					| IF PAROPEN expression PARCLOSE block ELSE block 
 						{ $$ = make_node(P_OP_ELSE, NULL, 3, $3, $5, $7); }
-					| IF PAROPEN expression PARCLOSE block ELIF PAROPEN NL
-						expression PARCLOSE block NL
+					| IF PAROPEN expression PARCLOSE block ELIF PAROPEN 
+						expression PARCLOSE block 
 						{ /* TODO */ }
 					| FOR PAROPEN assignment SEMI expression SEMI 
-						assignment PARCLOSE block NL
+						assignment PARCLOSE block 
 						{ $$ = make_node(P_OP_FOR, NULL, 4, $3, $5, $7, $9); }
-					| FOR idlist IN explist block NL
+					| FOR idlist IN explist block 
 						{ $$ = make_node(P_OP_FORIN, NULL, 3, $2, $4, $5);} 
-					| WHILE PAROPEN expression PARCLOSE block NL
+					| WHILE PAROPEN expression PARCLOSE block
 						{ $$ = make_node(P_OP_WHILE, NULL, 2, $3, $5); }
-					| DO block WHILE PAROPEN expression PARCLOSE SEMI NL
+					| DO block WHILE PAROPEN expression PARCLOSE SEMI
 						{ $$ = make_node(P_OP_DOWH, NULL, 2, $2, $5);}
-					| SWITCH PAROPEN expression PARCLOSE switchblock NL
+					| SWITCH PAROPEN expression PARCLOSE switchblock
 						{ $$ = make_node(P_OP_SWITCH, NULL, 2, $3, $5); }
-					| fceblock NL
+					| fceblock
 						{ $$ = make_node(P_OP_FCEB, NULL, 1, $1); }
-					| NL {}
-					| error SEMI NL
+					| error SEMI
 						{ printf("Invalid Statement. Skipping until semicolon\n");
 							yyerrok; }
 					;

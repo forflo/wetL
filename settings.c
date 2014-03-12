@@ -26,6 +26,7 @@ int parse_args(int argc, char **argv){
 	s = (struct settings *) malloc(sizeof(struct settings));
 	s->loglevel = LOG_DEBUG;
 	s->interactive = 0;
+	s->prompt = NULL;
 	s->file = NULL;
 	static struct option opts[] = {
 		{"interactive", no_argument, 0, 'i'},
@@ -50,7 +51,7 @@ int parse_args(int argc, char **argv){
 				break;
 			default:
 				usage();
-				exit(EXIT_SUCCESS);
+				return -1;
 				break;
 		}
 	}

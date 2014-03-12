@@ -265,6 +265,7 @@ int *get_num(struct nary_node *node);
 void assign(struct nary_node *node);
 
 int interpreter_init();
+int interpreter_cleanup();
 
 void parse_program(struct nary_node *node);
 void parse_program_interactive(struct nary_node *node, int *first);

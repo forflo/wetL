@@ -1,6 +1,6 @@
 %top{
 
-#include "parser.tab.h" 
+#include "wetparse.h" 
 #include "parser.h"
 
 }
@@ -287,22 +287,22 @@ print print
 {fcelanguage} {return(FCELANG);} 
 
 {string} {
-	yylval.v = make_valueStr(yytext);
+	yylval->v = make_valueStr(yytext);
 	return(STRING);
 }
 
 {integer} {
-	yylval.v = make_valueInt(atoi(yytext));
+	yylval->v = make_valueInt(atoi(yytext));
 	return (INT);
 }
 
 {number} {
-	yylval.v = make_valueDbl(strtod(yytext, NULL));
+	yylval->v = make_valueDbl(strtod(yytext, NULL));
 	return(NUMBER);
 }
 
 {id} {
-	yylval.v = make_valueId(yytext);
+	yylval->v = make_valueId(yytext);
 	return(ID);
 } 
 

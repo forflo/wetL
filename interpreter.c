@@ -56,6 +56,13 @@ int interpreter_init(){
 	return 0;	
 }
 
+int interpreter_cleanup(){
+	con_log("Freeing the ressources the interpreter needet",
+			"interpreter_cleanup()", LOG_DEBUG);
+	//TODO
+	return 0;
+}
+
 void parse_program(struct nary_node *node){
 	struct id_tab *newtab = tab_init();
 	if(sstack_push(id_table_stack, (void*) newtab)){

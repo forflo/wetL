@@ -1,0 +1,95 @@
+iwetlex.c:800:5: error: unknown type name 'YYSTYPE'
+    YYSTYPE * yylval_r;
+    ^
+iwetlex.c:859:1: error: unknown type name 'YYSTYPE'
+YYSTYPE * iwetget_lval (yyscan_t yyscanner );
+^
+iwetlex.c:861:20: error: unknown type name 'YYSTYPE'
+void iwetset_lval (YYSTYPE * yylval_param ,yyscan_t yyscanner );
+                   ^
+iwetlex.c:1010:17: error: unknown type name 'YYSTYPE'
+               (YYSTYPE * yylval_param ,yyscan_t yyscanner);
+                ^
+iwetlex.c:1039:1: error: unknown type name 'YYSTYPE'
+YY_DECL
+^
+iwetlex.c:1013:17: note: expanded from macro 'YY_DECL'
+               (YYSTYPE * yylval_param , yyscan_t yyscanner)
+                ^
+iscanner.l:157:16: error: too few arguments to function call, single argument 'yyscanner' was not specified
+                next = input();
+                       ~~~~~ ^
+iwetlex.c:900:1: note: 'input' declared here
+static int input (yyscan_t yyscanner );
+^
+iwetlex.c:2787:1: error: unknown type name 'YYSTYPE'
+YYSTYPE * iwetget_lval  (yyscan_t yyscanner)
+^
+iwetlex.c:2793:20: error: unknown type name 'YYSTYPE'
+void iwetset_lval (YYSTYPE *  yylval_param , yyscan_t yyscanner)
+                   ^
+8 errors generated.
+wetlex.c:812:5: error: unknown type name 'YYSTYPE'
+    YYSTYPE * yylval_r;
+    ^
+wetlex.c:871:1: error: unknown type name 'YYSTYPE'
+YYSTYPE * wetget_lval (yyscan_t yyscanner );
+^
+wetlex.c:873:19: error: unknown type name 'YYSTYPE'
+void wetset_lval (YYSTYPE * yylval_param ,yyscan_t yyscanner );
+                  ^
+wetlex.c:1022:17: error: unknown type name 'YYSTYPE'
+               (YYSTYPE * yylval_param ,yyscan_t yyscanner);
+                ^
+wetlex.c:1051:1: error: unknown type name 'YYSTYPE'
+YY_DECL
+^
+wetlex.c:1025:17: note: expanded from macro 'YY_DECL'
+               (YYSTYPE * yylval_param , yyscan_t yyscanner)
+                ^
+scanner.l:167:16: error: too few arguments to function call, single argument 'yyscanner' was not specified
+                next = input();
+                       ~~~~~ ^
+wetlex.c:912:1: note: 'input' declared here
+static int input (yyscan_t yyscanner );
+^
+wetlex.c:2799:1: error: unknown type name 'YYSTYPE'
+YYSTYPE * wetget_lval  (yyscan_t yyscanner)
+^
+wetlex.c:2805:19: error: unknown type name 'YYSTYPE'
+void wetset_lval (YYSTYPE *  yylval_param , yyscan_t yyscanner)
+                  ^
+8 errors generated.
+wetparse.c:1736:16: warning: implicit declaration of function 'wetlex' is invalid in C99 [-Wimplicit-function-declaration]
+      yychar = YYLEX;
+               ^
+wetparse.c:1066:16: note: expanded from macro 'YYLEX'
+# define YYLEX yylex (&yylval, scan)
+               ^
+wetparse.c:65:25: note: expanded from macro 'yylex'
+#define yylex           wetlex
+                        ^
+wetparse.c:2542:7: warning: implicit declaration of function 'weterror' is invalid in C99 [-Wimplicit-function-declaration]
+      yyerror (scan, YY_("syntax error"));
+      ^
+wetparse.c:66:25: note: expanded from macro 'yyerror'
+#define yyerror         weterror
+                        ^
+2 warnings generated.
+iwetparse.c:1733:16: warning: implicit declaration of function 'iwetlex' is invalid in C99 [-Wimplicit-function-declaration]
+      yychar = YYLEX;
+               ^
+iwetparse.c:1063:16: note: expanded from macro 'YYLEX'
+# define YYLEX yylex (&yylval, scan)
+               ^
+iwetparse.c:65:25: note: expanded from macro 'yylex'
+#define yylex           iwetlex
+                        ^
+iwetparse.c:2539:7: warning: implicit declaration of function 'iweterror' is invalid in C99 [-Wimplicit-function-declaration]
+      yyerror (scan, YY_("syntax error"));
+      ^
+iwetparse.c:66:25: note: expanded from macro 'yyerror'
+#define yyerror         iweterror
+                        ^
+2 warnings generated.
+make: *** [debug] Error 1

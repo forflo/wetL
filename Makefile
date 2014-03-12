@@ -1,12 +1,10 @@
-PAR = parser.y
-SCA = scanner.l
+SCA = scanner.l iscanner.l
+PAR = parser.y iparser.y
 CFLAGS = -lfl
 YFLAGS = $(CFLAGS) -ly
 DS = dyn_arr.c str_dyn.c id_table.c sl_stack.c sl_list.c nary_tree.c
 UTIL = logger.c parser_util.c scanner_util.c mem_alloc.c
-
-all:
-	-echo use \$ make interpreter instead
+GEN = iwetlex.c wetlex.c wetparse.c iwetparse.c
 
 util-test:
 	gcc -o str_dyn str_dyn.c -DTEST -lcunit
@@ -28,24 +26,35 @@ util-test:
 	./sl_stack
 	./mem_alloc
 
+debug: interpreter.c $(PAR) $(SCA) $(DS) $(UTIL)
+	for i in $(PAR); do \
+		bison --debug -d $$i; \
+	done
+	for i in $(SCA); do \
+		flex --debug $$i; \
+	done
+	gcc -g -o wetL interpreter.c $(GEN) $(DS) $(UTIL) $(YFLAGS) -DDEBUG
 
-interpreter: interpreter.c parser.y scanner.l
-	flex --debug $(SCA)
-	bison --debug -d $(PAR)
-	gcc -g -o interpreter lex.yy.c parser.tab.c interpreter.c $(DS) $(UTIL) $(YFLAGS) -DDEBUG
-
-optimized: 
-	flex $(SCA)
-	bison --debug -d $(PAR)
-	gcc -O3 -o interpreter lex.yy.c parser.tab.c interpreter.c $(DS) $(UTIL) $(YFLAGS)
+optimized: interpreter.c $(PAR) $(SCA) $(DS) $(UTIL)
+	for i in $(PAR); do \
+		bison -d $$i; \
+	done
+	for i in $(SCA); do \
+		flex $$i; \
+	done
+	gcc -Ofast -o wetL interpreter.c $(GEN) $(DS) $(UTIL) $(YFLAGS)
 
 clean:
 	-rm *.o
-	-rm scannerDbg
-	-rm lex.yy.c
-	-rm parser.tab.c
-	-rm parser.tab.h
-	-rm parserDbg
+	-rm wetL
+	-rm $(GEN)
 	-rm nary_tree
 	-rm str_dyn
+	-rm parser_util
+	-rm dyn_arr
+	-rm id_table
+	-rm scanner_util
+	-rm sl_list
+	-rm sl_stack
+	-rm mem_alloc
 

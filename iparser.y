@@ -4,7 +4,7 @@
 #include <stdio.h>
 
 void yyerror(struct nary_node **root, void *scanner, const char *str){
-	fprintf(stderr, "[Non-Interactive] %s\n", str);
+	fprintf(stderr, "[Interactive] %s\n", str);
 }
 
 %}
@@ -341,10 +341,14 @@ statement			: assignment SEMI NL
 						{ $$ = make_node(P_OP_SWITCH, NULL, 2, $3, $5); }
 					| fceblock NL
 						{ $$ = make_node(P_OP_FCEB, NULL, 1, $1); }
-					| NL {}
-					| error SEMI NL
+					| NL 
+						{ $$ = make_node(P_OP_NOOP, NULL, 0); }
+					| error SEMI
 						{ printf("Invalid Statement. Skipping until semicolon\n");
-							yyerrok; }
+							YYABORT; }
+					| error NL
+						{ printf("Invalid Statement. Skipping until newline\n");
+							YYABORT; }
 					;
 
 fceblock 			: EXTERNAL FCELANG FCEB_CODE 

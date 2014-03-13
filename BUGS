@@ -1,0 +1,11 @@
+1) Newlinezeichen im interaktiven modus
+
+Code:
+if(1){
+
+
+
+} else {
+	print 12;
+}
+

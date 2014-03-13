@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <unistd.h>
 #include <string.h>
 #include <getopt.h>
 #include <stdlib.h>
@@ -24,6 +25,8 @@ int parse_args(int argc, char **argv){
 		return -1;
 	}
 	s = (struct settings *) malloc(sizeof(struct settings));
+	if(s == NULL || argv == NULL)
+		return -1;
 	s->loglevel = LOG_DEBUG;
 	s->interactive = 0;
 	s->prompt = NULL;
@@ -35,7 +38,7 @@ int parse_args(int argc, char **argv){
 		{"log-level", required_argument, 0, 'l'}
 	};
 
-	while((c = getopt_long(argc, argv, OPTSTRING, opts, &opt_i) != -1)){
+	while((c = getopt_long(argc, argv, OPTSTRING, opts, &opt_i)) != -1){
 		switch(c){
 			case 'i': s->interactive = 1; break;
 			case 'l': s->loglevel = atoi(optarg); break;
@@ -50,6 +53,7 @@ int parse_args(int argc, char **argv){
 				strcpy(s->prompt, optarg);
 				break;
 			default:
+				print_args();
 				usage();
 				return -1;
 				break;
@@ -86,6 +90,14 @@ int get_loglevel(){
 		return -1;	
 	else
 		return s->loglevel;
+}
+
+void print_args(){
+	printf("-i: %d -f: %s -p: %s -l: %d", 
+			s->interactive, 
+			s->file, 
+			s->prompt, 
+			s->loglevel);	
 }
 
 static void usage(){

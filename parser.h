@@ -345,7 +345,8 @@ struct settings {
 	char *prompt;
 };
 
-int parse_args(int argc, char **argv);
+void print_args();
+int parse_args();
 
 int get_ec();
 void set_ec(int e);

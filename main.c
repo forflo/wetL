@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <errno.h>
 #include "parser.h"
 
 extern int wetdebug;
@@ -73,12 +75,14 @@ int main(int argc, char **argv){
 			exit(EXIT_FAILURE);
 		}
 
+		/* If a filename was given. Open the file and
+			take that as input for the flex lexer */
 		if(get_file() != NULL){
 			pfile = fopen(get_file(), "r");
 			if(pfile == NULL){
 				con_log("Error while opening the file",
 						"main()", LOG_ERROR);
-				perror("main()");
+				con_log(strerror(errno), "main()", LOG_ERROR);
 				exit(EXIT_FAILURE);
 			}
 			wetset_in(pfile, wetscan);

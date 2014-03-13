@@ -64,7 +64,9 @@ int interpreter_cleanup(){
 }
 
 void parse_program(struct nary_node *node){
-	con_log("Begin parsing program", "parse_program()", LOG_DEBUG);
+#ifdef DEBUG
+	printf("Interpret AST non-interactively\n");
+#endif
 	struct id_tab *newtab = tab_init();
 	if(sstack_push(id_table_stack, (void*) newtab)){
 		con_log("new id table could not be pushed", 
@@ -75,6 +77,9 @@ void parse_program(struct nary_node *node){
 }
 
 void parse_program_interactive(struct nary_node *node, int *first){
+#ifdef DEBUG
+	printf("Interpret AST interaktively\n");
+#endif
 	struct id_tab *newtab = tab_init();
 	if(*first){
 		if(sstack_push(id_table_stack, (void*) newtab)){
@@ -229,6 +234,11 @@ void parse_print(struct nary_node *node){
 		default:
 			printf("[PRINT] [unimplemented type]\n");
 			break;
+	}
+
+	if(val->flag == P_FLAG_NONE){
+		mem_reset();
+		free(val->c);
 	}
 }
 
@@ -408,6 +418,9 @@ void parse_stmt(struct nary_node *node){
 		case P_OP_FCEB:
 
 			break;
+		case P_OP_NOOP:
+			/* No operation used int interactie mode*/
+			break;
 		default:
 			break;
 	}
@@ -464,14 +477,21 @@ struct value *parse_expression(struct nary_node *node){
 				result = ops[0];
 			}
 
-			if(ops[0]->type == P_TYPE_INT && ops[1]->type == P_TYPE_INT) {
-				*((int *) result->c) = *((int *) ops[0]->c) || *((int *) ops[1]->c);
-			} else if(ops[0]->type == P_TYPE_INT && ops[1]->type == P_TYPE_DOUBLE) {
-				*((int *) result->c) = *((int *) ops[0]->c) || *((double *) ops[1]->c);
-			} else if(ops[0]->type == P_TYPE_DOUBLE && ops[1]->type == P_TYPE_INT) {
-				*((int *) result->c) = *((double *) ops[0]->c) || *((int *) ops[1]->c);
+			if(ops[0]->type == P_TYPE_INT 
+			&& ops[1]->type == P_TYPE_INT) {
+				*((int *) result->c) = *((int *) ops[0]->c) || 
+										*((int *) ops[1]->c);
+			} else if(ops[0]->type == P_TYPE_INT 
+			&& ops[1]->type == P_TYPE_DOUBLE) {
+				*((int *) result->c) = *((int *) ops[0]->c) || 
+										*((double *) ops[1]->c);
+			} else if(ops[0]->type == P_TYPE_DOUBLE 
+			&& ops[1]->type == P_TYPE_INT) {
+				*((int *) result->c) = *((double *) ops[0]->c) || 
+										*((int *) ops[1]->c);
 			} else {
-				*((int *) result->c) = *((double *) ops[0]->c) || *((double *) ops[1]->c);
+				*((int *) result->c) = *((double *) ops[0]->c) || 
+										*((double *) ops[1]->c);
 			}
 
 			/* prevent a memory leak */
@@ -488,14 +508,21 @@ struct value *parse_expression(struct nary_node *node){
 				result = ops[0];
 			}
 
-			if(ops[0]->type == P_TYPE_INT && ops[1]->type == P_TYPE_INT) {
-				*((int *) result->c) = *((int *) ops[0]->c) && *((int *) ops[1]->c);
-			} else if(ops[0]->type == P_TYPE_INT && ops[1]->type == P_TYPE_DOUBLE) {
-				*((int *) result->c) = *((int *) ops[0]->c) && *((double *) ops[1]->c);
-			} else if(ops[0]->type == P_TYPE_DOUBLE && ops[1]->type == P_TYPE_INT) {
-				*((int *) result->c) = *((double *) ops[0]->c) && *((int *) ops[1]->c);
+			if(ops[0]->type == P_TYPE_INT 
+			&& ops[1]->type == P_TYPE_INT) {
+				*((int *) result->c) = *((int *) ops[0]->c) && 
+										*((int *) ops[1]->c);
+			} else if(ops[0]->type == P_TYPE_INT 
+			&& ops[1]->type == P_TYPE_DOUBLE) {
+				*((int *) result->c) = *((int *) ops[0]->c) && 
+										*((double *) ops[1]->c);
+			} else if(ops[0]->type == P_TYPE_DOUBLE 
+			&& ops[1]->type == P_TYPE_INT) {
+				*((int *) result->c) = *((double *) ops[0]->c) && 
+										*((int *) ops[1]->c);
 			} else {
-				*((int *) result->c) = *((double *) ops[0]->c) && *((double *) ops[1]->c);
+				*((int *) result->c) = *((double *) ops[0]->c) && 
+										*((double *) ops[1]->c);
 			}
 			
 			/* prevent a memory leak */

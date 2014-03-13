@@ -55,7 +55,9 @@ int parse_args(int argc, char **argv){
 				break;
 		}
 	}
-	
+
+	con_log("Finished argument parsing", 
+			"parse_args()", LOG_DEBUG);	
 	return 0;
 }
 

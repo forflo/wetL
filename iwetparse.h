@@ -49,7 +49,7 @@ extern int iwetdebug;
 #endif
 /* "%code requires" blocks.  */
 /* Line 2053 of yacc.c  */
-#line 25 "iparser.y"
+#line 30 "iparser.y"
 
 #define YYSTYPE IWETSTYPE
 
@@ -158,7 +158,7 @@ extern int iwetdebug;
 typedef union IWETSTYPE
 {
 /* Line 2053 of yacc.c  */
-#line 7 "iparser.y"
+#line 12 "iparser.y"
 
 	struct value *v;
 	struct nary_node *k;

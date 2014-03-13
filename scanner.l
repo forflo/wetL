@@ -2,7 +2,6 @@
 
 #include "wetparse.h" 
 #include "parser.h"
-#define 
 
 }
 
@@ -136,8 +135,7 @@ escapes  \\n|\\t|\\a|\\b|\\r|\\v|\\\\|\\\"|\\\'|\\f|\\0
 dquote  \"
 squote  \'
 
-delim \t\v\b" "
-newline \n
+delim \n\t\v\b" "
 
 /* String is either quoted with single or double quotes */
 string  ({dquote}({letter}|{escapes}|{allowed_symbols}|{digit})+{dquote})|({squote}({letter}|{escapes}|{allowed_symbols}|{digit})+{squote})
@@ -165,7 +163,7 @@ print print
 	dyn_string_t *buffer = ds_get_string("");
 
 	do {
-		next = input();
+		next = input(yylval_param);
 		if(next == ']') 
 			c++;
 		else 
@@ -179,9 +177,9 @@ print print
 	} while(!feof(yyin));
 
 	/* Passes the FCE-Code as value to the parser for further processing */
-	yylval.v = (struct value *) malloc(sizeof(struct value));
-	yylval.v->c = (void *) buffer->data;
-	yylval.v->type = P_TYPE_STRING;
+	yylval_param->v = (struct value *) malloc(sizeof(struct value));
+	yylval_param->v->c = (void *) buffer->data;
+	yylval_param->v->type = P_TYPE_STRING;
 
 	free(buffer);
 	return(FCEB_CODE);
@@ -288,26 +286,25 @@ print print
 {fcelanguage} {return(FCELANG);} 
 
 {string} {
-	yylval->v = make_valueStr(yytext);
+	yylval_param->v = make_valueStr(yytext);
 	return(STRING);
 }
 
 {integer} {
-	yylval->v = make_valueInt(atoi(yytext));
+	yylval_param->v = make_valueInt(atoi(yytext));
 	return (INT);
 }
 
 {number} {
-	yylval->v = make_valueDbl(strtod(yytext, NULL));
+	yylval_param->v = make_valueDbl(strtod(yytext, NULL));
 	return(NUMBER);
 }
 
 {id} {
-	yylval->v = make_valueId(yytext);
+	yylval_param->v = make_valueId(yytext);
 	return(ID);
 } 
 
 {delim} {}
-{newline} {return(NL);}
 
 %%

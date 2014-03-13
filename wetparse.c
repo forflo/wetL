@@ -74,11 +74,16 @@
 #line 1 "parser.y"
 
 #include "parser.h"
+#include <stdio.h>
 #include <stdlib.h>
+
+void yyerror(struct nary_node **root, void *scanner, const char *str){
+	fprintf(stderr, "[Non-Interactive] %s\n", str);
+}
 
 
 /* Line 371 of yacc.c  */
-#line 82 "wetparse.c"
+#line 87 "wetparse.c"
 
 # ifndef YY_NULL
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -117,13 +122,13 @@ extern int wetdebug;
 #endif
 /* "%code requires" blocks.  */
 /* Line 387 of yacc.c  */
-#line 25 "parser.y"
+#line 30 "parser.y"
 
-#define YYSTYPE IWETSTYPE
+#define YYSTYPE WETSTYPE
 
 
 /* Line 387 of yacc.c  */
-#line 127 "wetparse.c"
+#line 132 "wetparse.c"
 
 /* Tokens.  */
 #ifndef WETTOKENTYPE
@@ -225,14 +230,14 @@ extern int wetdebug;
 typedef union WETSTYPE
 {
 /* Line 387 of yacc.c  */
-#line 7 "parser.y"
+#line 12 "parser.y"
 
 	struct value *v;
 	struct nary_node *k;
 
 
 /* Line 387 of yacc.c  */
-#line 236 "wetparse.c"
+#line 241 "wetparse.c"
 } WETSTYPE;
 # define WETSTYPE_IS_TRIVIAL 1
 # define wetstype WETSTYPE /* obsolescent; will be withdrawn */
@@ -259,7 +264,7 @@ int wetparse ();
 /* Copy the second part of user declarations.  */
 
 /* Line 390 of yacc.c  */
-#line 263 "wetparse.c"
+#line 268 "wetparse.c"
 
 #ifdef short
 # undef short
@@ -615,18 +620,18 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,    74,    74,    78,    82,    86,    88,    92,    96,    98,
-     102,   104,   108,   109,   112,   114,   118,   120,   124,   128,
-     133,   135,   139,   141,   143,   145,   147,   149,   151,   153,
-     155,   157,   159,   161,   166,   168,   170,   172,   174,   176,
-     178,   180,   182,   184,   186,   188,   190,   192,   194,   196,
-     198,   200,   202,   204,   206,   208,   210,   212,   214,   216,
-     218,   220,   222,   224,   228,   230,   232,   234,   236,   240,
-     244,   246,   250,   252,   254,   258,   262,   266,   268,   272,
-     274,   276,   278,   280,   282,   284,   286,   288,   292,   294,
-     298,   300,   302,   304,   306,   308,   310,   312,   314,   316,
-     318,   320,   322,   324,   327,   330,   332,   334,   336,   338,
-     340,   345,   349,   353
+       0,    79,    79,    83,    87,    91,    93,    97,   101,   103,
+     107,   109,   113,   114,   117,   119,   123,   125,   129,   133,
+     138,   140,   144,   146,   148,   150,   152,   154,   156,   158,
+     160,   162,   164,   166,   171,   173,   175,   177,   179,   181,
+     183,   185,   187,   189,   191,   193,   195,   197,   199,   201,
+     203,   205,   207,   209,   211,   213,   215,   217,   219,   221,
+     223,   225,   227,   229,   233,   235,   237,   239,   241,   245,
+     249,   251,   255,   257,   259,   263,   267,   271,   273,   277,
+     279,   281,   283,   285,   287,   289,   291,   293,   297,   299,
+     303,   305,   307,   309,   311,   313,   315,   317,   319,   321,
+     323,   325,   327,   329,   332,   335,   337,   339,   341,   343,
+     345,   350,   354,   358
 };
 #endif
 
@@ -1811,97 +1816,97 @@ yyreduce:
     {
         case 2:
 /* Line 1787 of yacc.c  */
-#line 75 "parser.y"
-    { root = make_node(P_OP_STMT, NULL, 1, (yyvsp[(1) - (1)].k)); YYACCEPT; }
+#line 80 "parser.y"
+    { *root = make_node(P_OP_STMT, NULL, 1, (yyvsp[(1) - (1)].k)); YYACCEPT; }
     break;
 
   case 3:
 /* Line 1787 of yacc.c  */
-#line 79 "parser.y"
+#line 84 "parser.y"
     {(yyval.k) = make_node(P_OP_STMTLST, NULL, 1, (yyvsp[(2) - (3)].k));}
     break;
 
   case 4:
 /* Line 1787 of yacc.c  */
-#line 83 "parser.y"
+#line 88 "parser.y"
     {(yyval.k) = make_node(P_OP_SWBLOCK, NULL, 1, (yyvsp[(2) - (3)].k));}
     break;
 
   case 5:
 /* Line 1787 of yacc.c  */
-#line 87 "parser.y"
+#line 92 "parser.y"
     {(yyval.k) = make_node(P_OP_LBSTMTLST, NULL, 1, (yyvsp[(1) - (1)].k));}
     break;
 
   case 6:
 /* Line 1787 of yacc.c  */
-#line 89 "parser.y"
+#line 94 "parser.y"
     {(yyval.k) = make_node(P_OP_LBSTMTLST, NULL, 2, (yyvsp[(1) - (2)].k), (yyvsp[(2) - (2)].k));}
     break;
 
   case 7:
 /* Line 1787 of yacc.c  */
-#line 93 "parser.y"
+#line 98 "parser.y"
     {(yyval.k) = make_node(P_OP_LBSTMT, NULL, 2, (yyvsp[(3) - (5)].k), (yyvsp[(5) - (5)].k));}
     break;
 
   case 8:
 /* Line 1787 of yacc.c  */
-#line 97 "parser.y"
+#line 102 "parser.y"
     {(yyval.k) = make_node(P_OP_EXP, NULL, 1, (yyvsp[(1) - (1)].k));}
     break;
 
   case 9:
 /* Line 1787 of yacc.c  */
-#line 99 "parser.y"
+#line 104 "parser.y"
     {(yyval.k) = make_node(P_OP_EXPLST, NULL, 2, (yyvsp[(1) - (3)].k), (yyvsp[(3) - (3)].k));}
     break;
 
   case 10:
 /* Line 1787 of yacc.c  */
-#line 103 "parser.y"
+#line 108 "parser.y"
     {(yyval.k) = make_node(P_OP_VAREXP, NULL, 1, (yyvsp[(1) - (1)].k));}
     break;
 
   case 11:
 /* Line 1787 of yacc.c  */
-#line 105 "parser.y"
+#line 110 "parser.y"
     {(yyval.k) = make_node(P_OP_VARLST, NULL, 2, (yyvsp[(1) - (3)].k), (yyvsp[(3) - (3)].k));}
     break;
 
   case 12:
 /* Line 1787 of yacc.c  */
-#line 108 "parser.y"
+#line 113 "parser.y"
     { }
     break;
 
   case 14:
 /* Line 1787 of yacc.c  */
-#line 113 "parser.y"
+#line 118 "parser.y"
     { (yyval.k) = make_node(P_OP_PARLST, NULL, 1, (yyvsp[(2) - (3)].k)); }
     break;
 
   case 15:
 /* Line 1787 of yacc.c  */
-#line 115 "parser.y"
+#line 120 "parser.y"
     { (yyval.k) = make_node(P_OP_PARLST, NULL, 0); }
     break;
 
   case 16:
 /* Line 1787 of yacc.c  */
-#line 119 "parser.y"
+#line 124 "parser.y"
     { (yyval.k) = make_node(P_OP_ARGLST, NULL, 1, (yyvsp[(2) - (3)].k)); }
     break;
 
   case 17:
 /* Line 1787 of yacc.c  */
-#line 121 "parser.y"
+#line 126 "parser.y"
     { (yyval.k) = make_node(P_OP_ARGLST, NULL, 0); }
     break;
 
   case 18:
 /* Line 1787 of yacc.c  */
-#line 125 "parser.y"
+#line 130 "parser.y"
     { printf("debug: %s\n", 
 							(char *)((struct value*)(yyvsp[(1) - (1)].v))->c);(yyval.k) = 
 								make_node(ID, (yyvsp[(1) - (1)].v), 0); }
@@ -1909,579 +1914,579 @@ yyreduce:
 
   case 19:
 /* Line 1787 of yacc.c  */
-#line 129 "parser.y"
+#line 134 "parser.y"
     { (yyval.k) = make_node(P_OP_IDLST, NULL, 2, 
 							(yyvsp[(1) - (3)].k), make_node(ID, (yyvsp[(3) - (3)].v), 0)); }
     break;
 
   case 20:
 /* Line 1787 of yacc.c  */
-#line 134 "parser.y"
+#line 139 "parser.y"
     { (yyval.k) = make_node(P_OP_STMT, NULL, 1, (yyvsp[(1) - (1)].k)); }
     break;
 
   case 21:
 /* Line 1787 of yacc.c  */
-#line 136 "parser.y"
+#line 141 "parser.y"
     {(yyval.k) = make_node(P_OP_STMTLST, NULL, 2, (yyvsp[(1) - (2)].k), (yyvsp[(2) - (2)].k));}
     break;
 
   case 22:
 /* Line 1787 of yacc.c  */
-#line 140 "parser.y"
+#line 145 "parser.y"
     { (yyval.k) = make_node(P_OP_ASSOP, NULL, 2, (yyvsp[(1) - (3)].k), (yyvsp[(3) - (3)].k));}
     break;
 
   case 23:
 /* Line 1787 of yacc.c  */
-#line 142 "parser.y"
+#line 147 "parser.y"
     {(yyval.k) = make_node(P_OP_ASPLUS, NULL, 2, (yyvsp[(1) - (3)].k), (yyvsp[(3) - (3)].k)); }
     break;
 
   case 24:
 /* Line 1787 of yacc.c  */
-#line 144 "parser.y"
+#line 149 "parser.y"
     {(yyval.k) = make_node(P_OP_ASMINUS, NULL, 2, (yyvsp[(1) - (3)].k), (yyvsp[(3) - (3)].k));}
     break;
 
   case 25:
 /* Line 1787 of yacc.c  */
-#line 146 "parser.y"
+#line 151 "parser.y"
     {(yyval.k) = make_node(P_OP_ASMUL, NULL, 2, (yyvsp[(1) - (3)].k), (yyvsp[(3) - (3)].k));}
     break;
 
   case 26:
 /* Line 1787 of yacc.c  */
-#line 148 "parser.y"
+#line 153 "parser.y"
     {(yyval.k) = make_node(P_OP_ASDIV, NULL, 2, (yyvsp[(1) - (3)].k), (yyvsp[(3) - (3)].k));}
     break;
 
   case 27:
 /* Line 1787 of yacc.c  */
-#line 150 "parser.y"
+#line 155 "parser.y"
     {(yyval.k) = make_node(P_OP_ASMOD, NULL, 2, (yyvsp[(1) - (3)].k), (yyvsp[(3) - (3)].k));}
     break;
 
   case 28:
 /* Line 1787 of yacc.c  */
-#line 152 "parser.y"
+#line 157 "parser.y"
     {(yyval.k) = make_node(P_OP_ASPOW, NULL, 2, (yyvsp[(1) - (3)].k), (yyvsp[(3) - (3)].k));}
     break;
 
   case 29:
 /* Line 1787 of yacc.c  */
-#line 154 "parser.y"
+#line 159 "parser.y"
     {(yyval.k) = make_node(P_OP_ASBINOR, NULL, 2, (yyvsp[(1) - (3)].k), (yyvsp[(3) - (3)].k));}
     break;
 
   case 30:
 /* Line 1787 of yacc.c  */
-#line 156 "parser.y"
+#line 161 "parser.y"
     {(yyval.k) = make_node(P_OP_ASBINAND, NULL, 2, (yyvsp[(1) - (3)].k), (yyvsp[(3) - (3)].k));}
     break;
 
   case 31:
 /* Line 1787 of yacc.c  */
-#line 158 "parser.y"
+#line 163 "parser.y"
     {(yyval.k) = make_node(P_OP_ASBINXOR, NULL, 2, (yyvsp[(1) - (3)].k), (yyvsp[(3) - (3)].k));}
     break;
 
   case 32:
 /* Line 1787 of yacc.c  */
-#line 160 "parser.y"
+#line 165 "parser.y"
     {(yyval.k) = make_node(P_OP_ASRIGHTSHIFT, NULL, 2, (yyvsp[(1) - (3)].k), (yyvsp[(3) - (3)].k));}
     break;
 
   case 33:
 /* Line 1787 of yacc.c  */
-#line 162 "parser.y"
+#line 167 "parser.y"
     {(yyval.k) = make_node(P_OP_ASLEFTSHIFT, NULL, 2, (yyvsp[(1) - (3)].k), (yyvsp[(3) - (3)].k));}
     break;
 
   case 34:
 /* Line 1787 of yacc.c  */
-#line 167 "parser.y"
+#line 172 "parser.y"
     { (yyval.k) = make_node(P_OP_OR, NULL, 2, (yyvsp[(1) - (3)].k), (yyvsp[(3) - (3)].k));}
     break;
 
   case 35:
 /* Line 1787 of yacc.c  */
-#line 169 "parser.y"
+#line 174 "parser.y"
     { (yyval.k) = make_node(P_OP_AND, NULL, 2, (yyvsp[(1) - (3)].k), (yyvsp[(3) - (3)].k));}
     break;
 
   case 36:
 /* Line 1787 of yacc.c  */
-#line 171 "parser.y"
+#line 176 "parser.y"
     { (yyval.k) = make_node(P_OP_BINOR, NULL, 2, (yyvsp[(1) - (3)].k), (yyvsp[(3) - (3)].k));}
     break;
 
   case 37:
 /* Line 1787 of yacc.c  */
-#line 173 "parser.y"
+#line 178 "parser.y"
     { (yyval.k) = make_node(P_OP_BINXOR, NULL, 2, (yyvsp[(1) - (3)].k), (yyvsp[(3) - (3)].k)); }
     break;
 
   case 38:
 /* Line 1787 of yacc.c  */
-#line 175 "parser.y"
+#line 180 "parser.y"
     { (yyval.k) = make_node(P_OP_BINAND, NULL, 2, (yyvsp[(1) - (3)].k), (yyvsp[(3) - (3)].k));}
     break;
 
   case 39:
 /* Line 1787 of yacc.c  */
-#line 177 "parser.y"
+#line 182 "parser.y"
     { (yyval.k) = make_node(P_OP_EQUAL, NULL, 2, (yyvsp[(1) - (3)].k), (yyvsp[(3) - (3)].k)); }
     break;
 
   case 40:
 /* Line 1787 of yacc.c  */
-#line 179 "parser.y"
+#line 184 "parser.y"
     { (yyval.k) = make_node(P_OP_NOTEQUAL, NULL, 2, (yyvsp[(1) - (3)].k), (yyvsp[(3) - (3)].k)); }
     break;
 
   case 41:
 /* Line 1787 of yacc.c  */
-#line 181 "parser.y"
+#line 186 "parser.y"
     { (yyval.k) = make_node(P_OP_GREATERTHAN, NULL, 2, (yyvsp[(1) - (3)].k), (yyvsp[(3) - (3)].k));}
     break;
 
   case 42:
 /* Line 1787 of yacc.c  */
-#line 183 "parser.y"
+#line 188 "parser.y"
     { (yyval.k) = make_node(P_OP_LESSTHAN, NULL, 2, (yyvsp[(1) - (3)].k), (yyvsp[(3) - (3)].k));}
     break;
 
   case 43:
 /* Line 1787 of yacc.c  */
-#line 185 "parser.y"
+#line 190 "parser.y"
     { (yyval.k) = make_node(P_OP_GREATER, NULL, 2, (yyvsp[(1) - (3)].k), (yyvsp[(3) - (3)].k));}
     break;
 
   case 44:
 /* Line 1787 of yacc.c  */
-#line 187 "parser.y"
+#line 192 "parser.y"
     { (yyval.k) = make_node(P_OP_LESS, NULL, 2, (yyvsp[(1) - (3)].k), (yyvsp[(3) - (3)].k));}
     break;
 
   case 45:
 /* Line 1787 of yacc.c  */
-#line 189 "parser.y"
+#line 194 "parser.y"
     { (yyval.k) = make_node(P_OP_LEFTSHIFT, NULL, 2, (yyvsp[(1) - (3)].k), (yyvsp[(3) - (3)].k));}
     break;
 
   case 46:
 /* Line 1787 of yacc.c  */
-#line 191 "parser.y"
+#line 196 "parser.y"
     { (yyval.k) = make_node(P_OP_RIGHTSHIFT, NULL, 2, (yyvsp[(1) - (3)].k), (yyvsp[(3) - (3)].k));}
     break;
 
   case 47:
 /* Line 1787 of yacc.c  */
-#line 193 "parser.y"
+#line 198 "parser.y"
     { (yyval.k) = make_node(P_OP_PLUS, NULL, 2, (yyvsp[(1) - (3)].k), (yyvsp[(3) - (3)].k));}
     break;
 
   case 48:
 /* Line 1787 of yacc.c  */
-#line 195 "parser.y"
+#line 200 "parser.y"
     { (yyval.k) = make_node(P_OP_MINUS, NULL, 2, (yyvsp[(1) - (3)].k), (yyvsp[(3) - (3)].k));}
     break;
 
   case 49:
 /* Line 1787 of yacc.c  */
-#line 197 "parser.y"
+#line 202 "parser.y"
     { (yyval.k) = make_node(P_OP_MUL, NULL, 2, (yyvsp[(1) - (3)].k), (yyvsp[(3) - (3)].k));}
     break;
 
   case 50:
 /* Line 1787 of yacc.c  */
-#line 199 "parser.y"
+#line 204 "parser.y"
     { (yyval.k) = make_node(P_OP_DIV, NULL, 2, (yyvsp[(1) - (3)].k), (yyvsp[(3) - (3)].k));}
     break;
 
   case 51:
 /* Line 1787 of yacc.c  */
-#line 201 "parser.y"
+#line 206 "parser.y"
     { (yyval.k) = make_node(P_OP_MOD, NULL, 2, (yyvsp[(1) - (3)].k), (yyvsp[(3) - (3)].k));}
     break;
 
   case 52:
 /* Line 1787 of yacc.c  */
-#line 203 "parser.y"
+#line 208 "parser.y"
     { (yyval.k) = make_node(P_OP_POW, NULL, 2, (yyvsp[(1) - (3)].k), (yyvsp[(3) - (3)].k));}
     break;
 
   case 53:
 /* Line 1787 of yacc.c  */
-#line 205 "parser.y"
+#line 210 "parser.y"
     { (yyval.k) = make_node(P_OP_UMINUS, NULL, 1, (yyvsp[(2) - (2)].k));}
     break;
 
   case 54:
 /* Line 1787 of yacc.c  */
-#line 207 "parser.y"
+#line 212 "parser.y"
     { (yyval.k) = make_node(P_OP_COMPL, NULL, 1, (yyvsp[(2) - (2)].k));}
     break;
 
   case 55:
 /* Line 1787 of yacc.c  */
-#line 209 "parser.y"
+#line 214 "parser.y"
     { (yyval.k) = make_node(P_OP_NOT, NULL,1,  (yyvsp[(2) - (2)].k));}
     break;
 
   case 56:
 /* Line 1787 of yacc.c  */
-#line 211 "parser.y"
+#line 216 "parser.y"
     { (yyval.k) = make_node(P_OP_LSTCONST, NULL, 1, (yyvsp[(1) - (1)].k));}
     break;
 
   case 57:
 /* Line 1787 of yacc.c  */
-#line 213 "parser.y"
+#line 218 "parser.y"
     { (yyval.k) = make_node(P_OP_STRDEF, NULL, 1, (yyvsp[(1) - (1)].k));}
     break;
 
   case 58:
 /* Line 1787 of yacc.c  */
-#line 215 "parser.y"
+#line 220 "parser.y"
     { (yyval.k) = make_node(NUMBER, (yyvsp[(1) - (1)].v), 0); }
     break;
 
   case 59:
 /* Line 1787 of yacc.c  */
-#line 217 "parser.y"
+#line 222 "parser.y"
     { (yyval.k) = make_node(STRING, (yyvsp[(1) - (1)].v), 0); }
     break;
 
   case 60:
 /* Line 1787 of yacc.c  */
-#line 219 "parser.y"
+#line 224 "parser.y"
     { (yyval.k) = make_node(TRUE, (yyvsp[(1) - (1)].v), 0); }
     break;
 
   case 61:
 /* Line 1787 of yacc.c  */
-#line 221 "parser.y"
+#line 226 "parser.y"
     { (yyval.k) = make_node(INT, (yyvsp[(1) - (1)].v), 0); }
     break;
 
   case 62:
 /* Line 1787 of yacc.c  */
-#line 223 "parser.y"
+#line 228 "parser.y"
     { (yyval.k) = make_node(FALSE, (yyvsp[(1) - (1)].v), 0); }
     break;
 
   case 63:
 /* Line 1787 of yacc.c  */
-#line 225 "parser.y"
+#line 230 "parser.y"
     { (yyval.k) = make_node(P_OP_EVEXP, NULL, 1, (yyvsp[(1) - (1)].k)); }
     break;
 
   case 64:
 /* Line 1787 of yacc.c  */
-#line 229 "parser.y"
+#line 234 "parser.y"
     { (yyval.k) = make_node(P_OP_FCEXP, NULL, 1, (yyvsp[(1) - (1)].k));}
     break;
 
   case 65:
 /* Line 1787 of yacc.c  */
-#line 231 "parser.y"
+#line 236 "parser.y"
     { (yyval.k) = make_node(P_OP_FCRC, NULL, 1, (yyvsp[(1) - (1)].k));}
     break;
 
   case 66:
 /* Line 1787 of yacc.c  */
-#line 233 "parser.y"
+#line 238 "parser.y"
     { (yyval.k) = make_node(P_OP_VAREXP, NULL, 1, (yyvsp[(1) - (1)].k));}
     break;
 
   case 67:
 /* Line 1787 of yacc.c  */
-#line 235 "parser.y"
+#line 240 "parser.y"
     { (yyval.k) = make_node(P_OP_CALL, NULL, 1, (yyvsp[(1) - (1)].k));}
     break;
 
   case 68:
 /* Line 1787 of yacc.c  */
-#line 237 "parser.y"
+#line 242 "parser.y"
     { (yyval.k) = make_node(P_OP_EXP, NULL, 1, (yyvsp[(2) - (3)].k)); }
     break;
 
   case 69:
 /* Line 1787 of yacc.c  */
-#line 241 "parser.y"
+#line 246 "parser.y"
     { (yyval.k) = make_node(P_OP_EVEXP, NULL, 2, (yyvsp[(1) - (2)].k), (yyvsp[(2) - (2)].k)); }
     break;
 
   case 70:
 /* Line 1787 of yacc.c  */
-#line 245 "parser.y"
+#line 250 "parser.y"
     { (yyval.k) = make_node(ID, (yyvsp[(1) - (1)].v), 0); }
     break;
 
   case 71:
 /* Line 1787 of yacc.c  */
-#line 247 "parser.y"
+#line 252 "parser.y"
     { (yyval.k) = make_node(P_OP_SEL, NULL, 2, (yyvsp[(1) - (4)].k), (yyvsp[(3) - (4)].k));}
     break;
 
   case 72:
 /* Line 1787 of yacc.c  */
-#line 251 "parser.y"
+#line 256 "parser.y"
     {(yyval.k) = make_node(P_OP_PARLST, NULL, 2, (yyvsp[(3) - (4)].k), (yyvsp[(4) - (4)].k));}
     break;
 
   case 73:
 /* Line 1787 of yacc.c  */
-#line 253 "parser.y"
+#line 258 "parser.y"
     {(yyval.k) = make_node(P_OP_PARLSTHK, NULL, 3, (yyvsp[(3) - (5)].k), (yyvsp[(4) - (5)].k), (yyvsp[(5) - (5)].k));}
     break;
 
   case 74:
 /* Line 1787 of yacc.c  */
-#line 255 "parser.y"
+#line 260 "parser.y"
     {(yyval.k) = make_node(P_OP_PARLSTHK, NULL, 3, (yyvsp[(3) - (5)].k), (yyvsp[(4) - (5)].k), (yyvsp[(5) - (5)].k));}
     break;
 
   case 75:
 /* Line 1787 of yacc.c  */
-#line 259 "parser.y"
+#line 264 "parser.y"
     { (yyval.k) = make_node(P_OP_HKDEF, NULL, 1, (yyvsp[(3) - (3)].k)); }
     break;
 
   case 76:
 /* Line 1787 of yacc.c  */
-#line 263 "parser.y"
+#line 268 "parser.y"
     { (yyval.k) = make_node(P_OP_HSDEF, NULL, 1, (yyvsp[(3) - (3)].k)); }
     break;
 
   case 77:
 /* Line 1787 of yacc.c  */
-#line 267 "parser.y"
+#line 272 "parser.y"
     { (yyval.k) = make_node(0, NULL, 0); }
     break;
 
   case 78:
 /* Line 1787 of yacc.c  */
-#line 269 "parser.y"
+#line 274 "parser.y"
     { (yyval.k) = make_node(0, NULL, 0); }
     break;
 
   case 79:
 /* Line 1787 of yacc.c  */
-#line 273 "parser.y"
+#line 278 "parser.y"
     { (yyval.k) = make_node(P_OP_FFICAST, (yyvsp[(1) - (1)].v), 0);}
     break;
 
   case 80:
 /* Line 1787 of yacc.c  */
-#line 275 "parser.y"
+#line 280 "parser.y"
     { (yyval.k) = make_node(P_OP_FFICAST, (yyvsp[(1) - (1)].v), 0);}
     break;
 
   case 81:
 /* Line 1787 of yacc.c  */
-#line 277 "parser.y"
+#line 282 "parser.y"
     { (yyval.k) = make_node(P_OP_FFICAST, (yyvsp[(1) - (1)].v), 0);}
     break;
 
   case 82:
 /* Line 1787 of yacc.c  */
-#line 279 "parser.y"
+#line 284 "parser.y"
     { (yyval.k) = make_node(P_OP_FFICAST, (yyvsp[(1) - (1)].v), 0);}
     break;
 
   case 83:
 /* Line 1787 of yacc.c  */
-#line 281 "parser.y"
+#line 286 "parser.y"
     { (yyval.k) = make_node(P_OP_FFICAST, (yyvsp[(1) - (1)].v), 0);}
     break;
 
   case 84:
 /* Line 1787 of yacc.c  */
-#line 283 "parser.y"
+#line 288 "parser.y"
     { (yyval.k) = make_node(P_OP_FFICAST, (yyvsp[(1) - (1)].v), 0);}
     break;
 
   case 85:
 /* Line 1787 of yacc.c  */
-#line 285 "parser.y"
+#line 290 "parser.y"
     { (yyval.k) = make_node(P_OP_FFICAST, (yyvsp[(1) - (1)].v), 0);}
     break;
 
   case 86:
 /* Line 1787 of yacc.c  */
-#line 287 "parser.y"
+#line 292 "parser.y"
     { (yyval.k) = make_node(P_OP_FFICAST, (yyvsp[(1) - (1)].v), 0);}
     break;
 
   case 87:
 /* Line 1787 of yacc.c  */
-#line 289 "parser.y"
+#line 294 "parser.y"
     { (yyval.k) = make_node(P_OP_FFICAST, (yyvsp[(1) - (1)].v), 0);}
     break;
 
   case 88:
 /* Line 1787 of yacc.c  */
-#line 293 "parser.y"
+#line 298 "parser.y"
     { (yyval.k) = make_node(P_OP_LSTCONST, NULL, 0); }
     break;
 
   case 89:
 /* Line 1787 of yacc.c  */
-#line 295 "parser.y"
+#line 300 "parser.y"
     { (yyval.k) = make_node(P_OP_LSTCONST, NULL, 1, (yyvsp[(2) - (3)].k)); }
     break;
 
   case 90:
 /* Line 1787 of yacc.c  */
-#line 299 "parser.y"
+#line 304 "parser.y"
     { (yyval.k) = make_node(P_OP_ASSIGN, NULL, 1, (yyvsp[(1) - (2)].k)); }
     break;
 
   case 91:
 /* Line 1787 of yacc.c  */
-#line 301 "parser.y"
+#line 306 "parser.y"
     { (yyval.k) = make_node(P_OP_BREAK, NULL, 0); }
     break;
 
   case 92:
 /* Line 1787 of yacc.c  */
-#line 303 "parser.y"
+#line 308 "parser.y"
     { (yyval.k) = make_node(P_OP_CONTINUE, NULL, 0); }
     break;
 
   case 93:
 /* Line 1787 of yacc.c  */
-#line 305 "parser.y"
+#line 310 "parser.y"
     { (yyval.k) = make_node(P_OP_INC, NULL, 1, (yyvsp[(2) - (3)].k)); }
     break;
 
   case 94:
 /* Line 1787 of yacc.c  */
-#line 307 "parser.y"
+#line 312 "parser.y"
     { (yyval.k) = make_node(P_OP_DEC, NULL, 1, (yyvsp[(2) - (3)].k)); }
     break;
 
   case 95:
 /* Line 1787 of yacc.c  */
-#line 309 "parser.y"
+#line 314 "parser.y"
     { (yyval.k) = make_node(P_OP_PRINT, NULL, 1, (yyvsp[(2) - (3)].k)); }
     break;
 
   case 96:
 /* Line 1787 of yacc.c  */
-#line 311 "parser.y"
+#line 316 "parser.y"
     { (yyval.k) = make_node(P_OP_BLOCK, NULL, 1, (yyvsp[(1) - (1)].k)); }
     break;
 
   case 97:
 /* Line 1787 of yacc.c  */
-#line 313 "parser.y"
+#line 318 "parser.y"
     { (yyval.k) = make_node(P_OP_CALL, NULL, 1, (yyvsp[(1) - (2)].k)); }
     break;
 
   case 98:
 /* Line 1787 of yacc.c  */
-#line 315 "parser.y"
+#line 320 "parser.y"
     { (yyval.k) = make_node(P_OP_FDEF, NULL, 1, (yyvsp[(1) - (1)].k)); }
     break;
 
   case 99:
 /* Line 1787 of yacc.c  */
-#line 317 "parser.y"
+#line 322 "parser.y"
     { }
     break;
 
   case 100:
 /* Line 1787 of yacc.c  */
-#line 319 "parser.y"
+#line 324 "parser.y"
     { }
     break;
 
   case 101:
 /* Line 1787 of yacc.c  */
-#line 321 "parser.y"
+#line 326 "parser.y"
     { (yyval.k) = make_node(P_OP_IF, NULL, 2, (yyvsp[(3) - (5)].k), (yyvsp[(5) - (5)].k)); }
     break;
 
   case 102:
 /* Line 1787 of yacc.c  */
-#line 323 "parser.y"
+#line 328 "parser.y"
     { (yyval.k) = make_node(P_OP_ELSE, NULL, 3, (yyvsp[(3) - (7)].k), (yyvsp[(5) - (7)].k), (yyvsp[(7) - (7)].k)); }
     break;
 
   case 103:
 /* Line 1787 of yacc.c  */
-#line 326 "parser.y"
+#line 331 "parser.y"
     { /* TODO */ }
     break;
 
   case 104:
 /* Line 1787 of yacc.c  */
-#line 329 "parser.y"
+#line 334 "parser.y"
     { (yyval.k) = make_node(P_OP_FOR, NULL, 4, (yyvsp[(3) - (9)].k), (yyvsp[(5) - (9)].k), (yyvsp[(7) - (9)].k), (yyvsp[(9) - (9)].k)); }
     break;
 
   case 105:
 /* Line 1787 of yacc.c  */
-#line 331 "parser.y"
+#line 336 "parser.y"
     { (yyval.k) = make_node(P_OP_FORIN, NULL, 3, (yyvsp[(2) - (5)].k), (yyvsp[(4) - (5)].k), (yyvsp[(5) - (5)].k));}
     break;
 
   case 106:
 /* Line 1787 of yacc.c  */
-#line 333 "parser.y"
+#line 338 "parser.y"
     { (yyval.k) = make_node(P_OP_WHILE, NULL, 2, (yyvsp[(3) - (5)].k), (yyvsp[(5) - (5)].k)); }
     break;
 
   case 107:
 /* Line 1787 of yacc.c  */
-#line 335 "parser.y"
+#line 340 "parser.y"
     { (yyval.k) = make_node(P_OP_DOWH, NULL, 2, (yyvsp[(2) - (7)].k), (yyvsp[(5) - (7)].k));}
     break;
 
   case 108:
 /* Line 1787 of yacc.c  */
-#line 337 "parser.y"
+#line 342 "parser.y"
     { (yyval.k) = make_node(P_OP_SWITCH, NULL, 2, (yyvsp[(3) - (5)].k), (yyvsp[(5) - (5)].k)); }
     break;
 
   case 109:
 /* Line 1787 of yacc.c  */
-#line 339 "parser.y"
+#line 344 "parser.y"
     { (yyval.k) = make_node(P_OP_FCEB, NULL, 1, (yyvsp[(1) - (1)].k)); }
     break;
 
   case 110:
 /* Line 1787 of yacc.c  */
-#line 341 "parser.y"
+#line 346 "parser.y"
     { printf("Invalid Statement. Skipping until semicolon\n");
 							yyerrok; }
     break;
 
   case 111:
 /* Line 1787 of yacc.c  */
-#line 346 "parser.y"
+#line 351 "parser.y"
     { (yyval.k) = make_node(P_OP_FCEB, (yyvsp[(2) - (3)].v), 0); }
     break;
 
   case 112:
 /* Line 1787 of yacc.c  */
-#line 350 "parser.y"
+#line 355 "parser.y"
     { (yyval.k) = make_node(P_OP_FCEXP, (yyvsp[(5) - (5)].v), 0); }
     break;
 
   case 113:
 /* Line 1787 of yacc.c  */
-#line 354 "parser.y"
+#line 359 "parser.y"
     { (yyval.k) = make_node(P_OP_FCRC, (yyvsp[(5) - (5)].v), 0); }
     break;
 
 
 /* Line 1787 of yacc.c  */
-#line 2485 "wetparse.c"
+#line 2490 "wetparse.c"
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -2713,6 +2718,6 @@ yyreturn:
 
 
 /* Line 2050 of yacc.c  */
-#line 357 "parser.y"
+#line 362 "parser.y"
 
 

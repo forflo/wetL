@@ -1,7 +1,18 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "parser.h"
-#include "wetparse.h"
-#include "iwetparse.h"
+
+extern int wetdebug;
+extern int iwetdebug;
+
+extern void wetset_in(FILE *f, void *scan);
+extern void iwetset_in(FILE *f, void *scan);
+extern int iwetlex_init(void *wet);
+extern int wetlex_init(void *wet);
+extern int iwetlex_destroy(void *wet);
+extern int wetlex_destroy(void *wet);
+extern int iwetparse(struct nary_node **r, void *scan);
+extern int wetparse(struct nary_node **r, void *scan);
 
 static int callback(void *c, void *u){
 	if(!(c == NULL))
@@ -12,18 +23,22 @@ static int callback(void *c, void *u){
 
 int main(int argc, char **argv){
 	FILE *pfile;
+	struct nary_node *root;
 
 	if(parse_args(argc,argv)){
 		con_log("The arguments of the interpreter could not be parsed", 
-				"main()", LOG_ERROR)
+				"main()", LOG_ERROR);
 		exit(EXIT_FAILURE);
 	}
 #ifdef DEBUG
-	yydebug = 1;
+	wetdebug = 1;
+	iwetdebug = 1;
 #endif
 
 	/* decide if we are running in interactive mode */
-	if(get_interactive()){
+	if(get_flgInteractive()){
+		con_log("Starting interactive interpreter",
+				"main()", LOG_ERROR);
 		int first = 1;
 		/* initialize the interactive scanner. See
 			http://flex.sourceforge.net/manual/Reentrant-Detail.html#Reentrant-Detail
@@ -35,14 +50,14 @@ int main(int argc, char **argv){
 					"main()", LOG_ERROR);
 			exit(EXIT_FAILURE);
 		}
-		iwetset_in(stdin, scanner);
+		iwetset_in(stdin, iwetscan);
 
 		interpreter_init();
 
 		/* Simple Read-eval-print loop */
 		for(;;){
 			printf("%s", get_prompt());
-			if(iwetparse(iwetscan)){
+			if(iwetparse(&root, iwetscan)){
 				printf("Ein Syntaxfehler ist aufgetreten!\n");
 				continue;
 			}
@@ -66,17 +81,20 @@ int main(int argc, char **argv){
 				perror("main()");
 				exit(EXIT_FAILURE);
 			}
-			wetlex_in(pfile, wetscan);
+			wetset_in(pfile, wetscan);
 	 	} else {
 			wetset_in(stdin, wetscan);
 		}
 
 		interpreter_init();
-		if(wetparse(wetscan)){
+		if(wetparse(&root, wetscan)){
 			con_log("Parser exitcode != 0", "main()", LOG_ERROR);
 			exit(EXIT_FAILURE);
 		}
 
+		printf("Pointer zum Root: %p\n", root);
+		traverse_preorder(root, callback, NULL);
+		parse_program(root);
 		interpreter_cleanup();
 		wetlex_destroy(wetscan);
 	}

@@ -49,9 +49,9 @@ extern int wetdebug;
 #endif
 /* "%code requires" blocks.  */
 /* Line 2053 of yacc.c  */
-#line 25 "parser.y"
+#line 30 "parser.y"
 
-#define YYSTYPE IWETSTYPE
+#define YYSTYPE WETSTYPE
 
 
 /* Line 2053 of yacc.c  */
@@ -157,7 +157,7 @@ extern int wetdebug;
 typedef union WETSTYPE
 {
 /* Line 2053 of yacc.c  */
-#line 7 "parser.y"
+#line 12 "parser.y"
 
 	struct value *v;
 	struct nary_node *k;

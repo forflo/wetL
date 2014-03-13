@@ -409,6 +409,9 @@ void iwetfree (void * ,yyscan_t yyscanner );
 /* %% [1.0] yytext/yyin/yyout/yy_state_type/yylineno etc. def's & init go here */
 /* Begin user sect3 */
 
+#define iwetwrap(yyscanner) 1
+#define YY_SKIP_YYWRAP
+
 #define FLEX_DEBUG
 
 typedef unsigned char YY_CHAR;
@@ -705,16 +708,16 @@ static yyconst flex_int16_t yy_chk[490] =
 
 static yyconst flex_int16_t yy_rule_linenum[94] =
     {   0,
-      144,  180,  181,  182,  185,  186,  187,  188,  190,  191,
-      192,  193,  194,  195,  196,  197,  198,  199,  200,  201,
-      203,  204,  206,  207,  208,  209,  210,  211,  212,  213,
-      214,  215,  216,  217,  219,  220,  221,  222,  223,  224,
-      225,  226,  227,  229,  230,  231,  232,  233,  234,  235,
-      236,  237,  238,  239,  240,  241,  242,  243,  244,  245,
+      154,  190,  191,  192,  195,  196,  197,  198,  200,  201,
+      202,  203,  204,  205,  206,  207,  208,  209,  210,  211,
+      213,  214,  216,  217,  218,  219,  220,  221,  222,  223,
+      224,  225,  226,  227,  229,  230,  231,  232,  233,  234,
+      235,  236,  237,  239,  240,  241,  242,  243,  244,  245,
       246,  247,  248,  249,  250,  251,  252,  253,  254,  255,
-      256,  257,  258,  259,  260,  261,  263,  264,  265,  266,
-      267,  268,  269,  270,  271,  273,  277,  279,  284,  289,
-      294,  299,  300
+      256,  257,  258,  259,  260,  261,  262,  263,  264,  265,
+      266,  267,  268,  269,  270,  271,  273,  274,  275,  276,
+      277,  278,  279,  280,  281,  283,  287,  289,  294,  299,
+      304,  309,  310
 
     } ;
 
@@ -727,6 +730,15 @@ static yyconst flex_int16_t yy_rule_linenum[94] =
 #define YY_RESTORE_YY_MORE_OFFSET
 #line 1 "iscanner.l"
 
+/* The following ensures, that we generate 
+	the function wetlex(YYSTYPE *lvalp, wetscan_t scanner); 
+	which is needet for proper bison interaction. See
+	http://flex.sourceforge.net/manual/Bison-Bridge.html,
+	http://www.lemoda.net/c/reentrant-parser/index.html and
+	http://www.phpcompiler.org/articles/reentrantparser.html
+	for the gory details */
+/* We can't use the standard impl
+					and we don't need it either */
 /* [Operators] Arithmetic */
 /* [Operators] Assignment */
 /* [Operators] Logical */
@@ -740,7 +752,7 @@ static yyconst flex_int16_t yy_rule_linenum[94] =
 /* String is either quoted with single or double quotes */
 /* Exclusive start conditions */
 
-#line 744 "iwetlex.c"
+#line 756 "iwetlex.c"
 
 #define INITIAL 0
 #define blockcomment 1
@@ -1044,10 +1056,10 @@ YY_DECL
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 
 /* %% [7.0] user's declarations go here */
-#line 142 "iscanner.l"
+#line 152 "iscanner.l"
 
 
-#line 1051 "iwetlex.c"
+#line 1063 "iwetlex.c"
 
     yylval = yylval_param;
 
@@ -1165,7 +1177,7 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 144 "iscanner.l"
+#line 154 "iscanner.l"
 { 
 	/** 
 	 * Token: FCECODE
@@ -1179,7 +1191,7 @@ YY_RULE_SETUP
 	dyn_string_t *buffer = ds_get_string("");
 
 	do {
-		next = input();
+		next = input(yylval_param);
 		if(next == ']') 
 			c++;
 		else 
@@ -1193,9 +1205,9 @@ YY_RULE_SETUP
 	} while(!feof(yyin));
 
 	/* Passes the FCE-Code as value to the parser for further processing */
-	yylval.v = (struct value *) malloc(sizeof(struct value));
-	yylval.v->c = (void *) buffer->data;
-	yylval.v->type = P_TYPE_STRING;
+	yylval_param->v = (struct value *) malloc(sizeof(struct value));
+	yylval_param->v->c = (void *) buffer->data;
+	yylval_param->v->type = P_TYPE_STRING;
 
 	free(buffer);
 	return(FCEB_CODE);
@@ -1204,489 +1216,489 @@ YY_RULE_SETUP
 /* skip line comments */
 case 2:
 YY_RULE_SETUP
-#line 180 "iscanner.l"
+#line 190 "iscanner.l"
 {BEGIN(linecomment);}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 181 "iscanner.l"
+#line 191 "iscanner.l"
 
 	YY_BREAK
 case 4:
 /* rule 4 can match eol */
 YY_RULE_SETUP
-#line 182 "iscanner.l"
+#line 192 "iscanner.l"
 {BEGIN(INITIAL);}
 	YY_BREAK
 /* skip block comments */
 case 5:
 YY_RULE_SETUP
-#line 185 "iscanner.l"
+#line 195 "iscanner.l"
 {BEGIN(blockcomment);}
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 186 "iscanner.l"
+#line 196 "iscanner.l"
 {BEGIN(INITIAL); } 
 	YY_BREAK
 case 7:
 /* rule 7 can match eol */
 YY_RULE_SETUP
-#line 187 "iscanner.l"
+#line 197 "iscanner.l"
 /* eat everything except * */
 	YY_BREAK
 case 8:
 /* rule 8 can match eol */
 YY_RULE_SETUP
-#line 188 "iscanner.l"
+#line 198 "iscanner.l"
 /* eat every * not followed by */
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 190 "iscanner.l"
+#line 200 "iscanner.l"
 {return(PLUS);}
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 191 "iscanner.l"
+#line 201 "iscanner.l"
 {return(MINUS);}
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 192 "iscanner.l"
+#line 202 "iscanner.l"
 {return(MUL);}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 193 "iscanner.l"
+#line 203 "iscanner.l"
 {return(DIV);}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 194 "iscanner.l"
+#line 204 "iscanner.l"
 {return(MOD);}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 195 "iscanner.l"
+#line 205 "iscanner.l"
 {return(POW);}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 196 "iscanner.l"
+#line 206 "iscanner.l"
 {return(COMPL);}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 197 "iscanner.l"
+#line 207 "iscanner.l"
 {return(BINAND);}
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 198 "iscanner.l"
+#line 208 "iscanner.l"
 {return(BINOR);}
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 199 "iscanner.l"
+#line 209 "iscanner.l"
 {return(BINXOR);}
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 200 "iscanner.l"
+#line 210 "iscanner.l"
 {return(LEFTSHIFT);}
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 201 "iscanner.l"
+#line 211 "iscanner.l"
 {return(RIGHTSHIFT);}
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 203 "iscanner.l"
+#line 213 "iscanner.l"
 {return(INC);}
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 204 "iscanner.l"
+#line 214 "iscanner.l"
 {return(DEC);}
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 206 "iscanner.l"
+#line 216 "iscanner.l"
 {return(ASSOP);}
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 207 "iscanner.l"
+#line 217 "iscanner.l"
 {return(ASPLUS);}
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 208 "iscanner.l"
+#line 218 "iscanner.l"
 {return(ASMINUS);}
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 209 "iscanner.l"
+#line 219 "iscanner.l"
 {return(ASMUL);}
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 210 "iscanner.l"
+#line 220 "iscanner.l"
 {return(ASDIV);}
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 211 "iscanner.l"
+#line 221 "iscanner.l"
 {return(ASMOD);}
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 212 "iscanner.l"
+#line 222 "iscanner.l"
 {return(ASPOW);}
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 213 "iscanner.l"
+#line 223 "iscanner.l"
 {return(ASBINOR);}
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 214 "iscanner.l"
+#line 224 "iscanner.l"
 {return(ASBINAND);}
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 215 "iscanner.l"
+#line 225 "iscanner.l"
 {return(ASBINXOR);}
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 216 "iscanner.l"
+#line 226 "iscanner.l"
 {return(ASRIGHTSHIFT);}
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 217 "iscanner.l"
+#line 227 "iscanner.l"
 {return(ASLEFTSHIFT);}
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 219 "iscanner.l"
+#line 229 "iscanner.l"
 {return(NOT);}
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 220 "iscanner.l"
+#line 230 "iscanner.l"
 {return(AND);}
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 221 "iscanner.l"
+#line 231 "iscanner.l"
 {return(OR);}
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 222 "iscanner.l"
+#line 232 "iscanner.l"
 {return(EQUAL);}
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 223 "iscanner.l"
+#line 233 "iscanner.l"
 {return(NOTEQUAL);}
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 224 "iscanner.l"
+#line 234 "iscanner.l"
 {return(GREATERTHAN);}
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 225 "iscanner.l"
+#line 235 "iscanner.l"
 {return(LESSTHAN);}
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 226 "iscanner.l"
+#line 236 "iscanner.l"
 {return(GREATER);}
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 227 "iscanner.l"
+#line 237 "iscanner.l"
 {return(LESS);}
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 229 "iscanner.l"
+#line 239 "iscanner.l"
 {return(IF);}
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 230 "iscanner.l"
+#line 240 "iscanner.l"
 {return(ELSE);}
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 231 "iscanner.l"
+#line 241 "iscanner.l"
 {return(ELIF);}
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 232 "iscanner.l"
+#line 242 "iscanner.l"
 {return(CONTINUE);}
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 233 "iscanner.l"
+#line 243 "iscanner.l"
 {return(BREAK);}
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 234 "iscanner.l"
+#line 244 "iscanner.l"
 {return(TRUE);}
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 235 "iscanner.l"
+#line 245 "iscanner.l"
 {return(FALSE);}
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 236 "iscanner.l"
+#line 246 "iscanner.l"
 {return(FOR);}
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
-#line 237 "iscanner.l"
+#line 247 "iscanner.l"
 {return(IN);}
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 238 "iscanner.l"
+#line 248 "iscanner.l"
 {return(DO);}
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
-#line 239 "iscanner.l"
+#line 249 "iscanner.l"
 {return(WHILE);}
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-#line 240 "iscanner.l"
+#line 250 "iscanner.l"
 {return(FUNCTION);}
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
-#line 241 "iscanner.l"
+#line 251 "iscanner.l"
 {return(GLOBAL);}
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
-#line 242 "iscanner.l"
+#line 252 "iscanner.l"
 {return(SWITCH);}
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
-#line 243 "iscanner.l"
+#line 253 "iscanner.l"
 {return(CASE);}
 	YY_BREAK
 case 59:
 YY_RULE_SETUP
-#line 244 "iscanner.l"
+#line 254 "iscanner.l"
 {return(HOTSTRING);}
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
-#line 245 "iscanner.l"
+#line 255 "iscanner.l"
 {return(KEYSTROKE);}
 	YY_BREAK
 case 61:
 YY_RULE_SETUP
-#line 246 "iscanner.l"
+#line 256 "iscanner.l"
 {return(EXTERNAL);}
 	YY_BREAK
 case 62:
 YY_RULE_SETUP
-#line 247 "iscanner.l"
+#line 257 "iscanner.l"
 {return(UTIL);}
 	YY_BREAK
 case 63:
 YY_RULE_SETUP
-#line 248 "iscanner.l"
+#line 258 "iscanner.l"
 {return(RET);}
 	YY_BREAK
 case 64:
 YY_RULE_SETUP
-#line 249 "iscanner.l"
+#line 259 "iscanner.l"
 {return(CURLOPEN);}
 	YY_BREAK
 case 65:
 YY_RULE_SETUP
-#line 250 "iscanner.l"
+#line 260 "iscanner.l"
 {return(CURLCLOSE);}
 	YY_BREAK
 case 66:
 YY_RULE_SETUP
-#line 251 "iscanner.l"
+#line 261 "iscanner.l"
 {return(PAROPEN);}
 	YY_BREAK
 case 67:
 YY_RULE_SETUP
-#line 252 "iscanner.l"
+#line 262 "iscanner.l"
 {return(PARCLOSE);}
 	YY_BREAK
 case 68:
 YY_RULE_SETUP
-#line 253 "iscanner.l"
+#line 263 "iscanner.l"
 {return(BOXOPEN);}
 	YY_BREAK
 case 69:
 YY_RULE_SETUP
-#line 254 "iscanner.l"
+#line 264 "iscanner.l"
 {return(BOXCLOSE);}
 	YY_BREAK
 case 70:
 YY_RULE_SETUP
-#line 255 "iscanner.l"
+#line 265 "iscanner.l"
 {return(SEMI);}
 	YY_BREAK
 case 71:
 YY_RULE_SETUP
-#line 256 "iscanner.l"
+#line 266 "iscanner.l"
 {return(DP);}
 	YY_BREAK
 case 72:
 YY_RULE_SETUP
-#line 257 "iscanner.l"
+#line 267 "iscanner.l"
 {return(COMMA);}
 	YY_BREAK
 case 73:
 YY_RULE_SETUP
-#line 258 "iscanner.l"
+#line 268 "iscanner.l"
 {return(POINT);}
 	YY_BREAK
 case 74:
 YY_RULE_SETUP
-#line 259 "iscanner.l"
+#line 269 "iscanner.l"
 {return(SHARP);}
 	YY_BREAK
 case 75:
 YY_RULE_SETUP
-#line 260 "iscanner.l"
+#line 270 "iscanner.l"
 {return(DOLLAR);}
 	YY_BREAK
 case 76:
 YY_RULE_SETUP
-#line 261 "iscanner.l"
+#line 271 "iscanner.l"
 {return(QMARK);}
 	YY_BREAK
 case 77:
 YY_RULE_SETUP
-#line 263 "iscanner.l"
+#line 273 "iscanner.l"
 {return(FFI_CHAR);}
 	YY_BREAK
 case 78:
 YY_RULE_SETUP
-#line 264 "iscanner.l"
+#line 274 "iscanner.l"
 {return(FFI_SHORT);}
 	YY_BREAK
 case 79:
 YY_RULE_SETUP
-#line 265 "iscanner.l"
+#line 275 "iscanner.l"
 {return(FFI_INT);}
 	YY_BREAK
 case 80:
 YY_RULE_SETUP
-#line 266 "iscanner.l"
+#line 276 "iscanner.l"
 {return(FFI_LONG);}
 	YY_BREAK
 case 81:
 YY_RULE_SETUP
-#line 267 "iscanner.l"
+#line 277 "iscanner.l"
 {return(FFI_LONG_LONG);}
 	YY_BREAK
 case 82:
 YY_RULE_SETUP
-#line 268 "iscanner.l"
+#line 278 "iscanner.l"
 {return(FFI_DOUBLE);}
 	YY_BREAK
 case 83:
 YY_RULE_SETUP
-#line 269 "iscanner.l"
+#line 279 "iscanner.l"
 {return(FFI_FLOAT);}
 	YY_BREAK
 case 84:
 YY_RULE_SETUP
-#line 270 "iscanner.l"
+#line 280 "iscanner.l"
 {return(FFI_LONG_DOUBLE);}
 	YY_BREAK
 case 85:
 YY_RULE_SETUP
-#line 271 "iscanner.l"
+#line 281 "iscanner.l"
 {return(FFI_VOIDPTR);}
 	YY_BREAK
 case 86:
 YY_RULE_SETUP
-#line 273 "iscanner.l"
+#line 283 "iscanner.l"
 {return(PRINT);}
 	YY_BREAK
 /* has to be placed before id, because of the
  	standard flex rules precedence */
 case 87:
 YY_RULE_SETUP
-#line 277 "iscanner.l"
+#line 287 "iscanner.l"
 {return(FCELANG);} 
 	YY_BREAK
 case 88:
 YY_RULE_SETUP
-#line 279 "iscanner.l"
+#line 289 "iscanner.l"
 {
-	yylval.v = make_valueStr(yytext);
+	yylval_param->v = make_valueStr(yytext);
 	return(STRING);
 }
 	YY_BREAK
 case 89:
 YY_RULE_SETUP
-#line 284 "iscanner.l"
+#line 294 "iscanner.l"
 {
-	yylval.v = make_valueInt(atoi(yytext));
+	yylval_param->v = make_valueInt(atoi(yytext));
 	return (INT);
 }
 	YY_BREAK
 case 90:
 YY_RULE_SETUP
-#line 289 "iscanner.l"
+#line 299 "iscanner.l"
 {
-	yylval.v = make_valueDbl(strtod(yytext, NULL));
+	yylval_param->v = make_valueDbl(strtod(yytext, NULL));
 	return(NUMBER);
 }
 	YY_BREAK
 case 91:
 YY_RULE_SETUP
-#line 294 "iscanner.l"
+#line 304 "iscanner.l"
 {
-	yylval.v = make_valueId(yytext);
+	yylval_param->v = make_valueId(yytext);
 	return(ID);
 } 
 	YY_BREAK
 case 92:
 YY_RULE_SETUP
-#line 299 "iscanner.l"
+#line 309 "iscanner.l"
 {}
 	YY_BREAK
 case 93:
 /* rule 93 can match eol */
 YY_RULE_SETUP
-#line 300 "iscanner.l"
+#line 310 "iscanner.l"
 {return(NL);}
 	YY_BREAK
 case 94:
 YY_RULE_SETUP
-#line 302 "iscanner.l"
+#line 312 "iscanner.l"
 ECHO;
 	YY_BREAK
-#line 1690 "iwetlex.c"
+#line 1702 "iwetlex.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(blockcomment):
 case YY_STATE_EOF(linecomment):
@@ -2986,7 +2998,7 @@ void iwetfree (void * ptr , yyscan_t yyscanner)
 
 /* %ok-for-header */
 
-#line 302 "iscanner.l"
+#line 312 "iscanner.l"
 
 
 

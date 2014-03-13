@@ -345,6 +345,8 @@ struct settings {
 	char *prompt;
 };
 
+int parse_args(int argc, char **argv);
+
 int get_ec();
 void set_ec(int e);
 int get_loglevel();
@@ -373,3 +375,4 @@ struct value *mem_next();
 struct value *mem_nextValInt();
 struct value *mem_nextValDbl();
 struct value *mem_nextValX(int byte);
+

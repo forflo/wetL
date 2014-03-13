@@ -1,6 +1,11 @@
 %{
 #include "parser.h"
 #include <stdlib.h>
+#include <stdio.h>
+
+void yyerror(struct nary_node **root, void *scanner, const char *str){
+	fprintf(stderr, "[Non-Interactive] %s\n", str);
+}
 
 %}
 
@@ -71,7 +76,7 @@
 %%
 
 program 			: statement 
-						{ root = make_node(P_OP_STMT, NULL, 1, $1); YYACCEPT; }
+						{ *root = make_node(P_OP_STMT, NULL, 1, $1); YYACCEPT; }
 					;
 
 block 				: CURLOPEN stmtlist CURLCLOSE 
@@ -355,3 +360,4 @@ fceexp_rc			: PAROPEN QMARK FCELANG PARCLOSE FCEB_CODE
 					;
 
 %%
+

@@ -1,6 +1,11 @@
 %{
 #include "parser.h"
+#include <stdio.h>
 #include <stdlib.h>
+
+void yyerror(struct nary_node **root, void *scanner, const char *str){
+	fprintf(stderr, "[Non-Interactive] %s\n", str);
+}
 
 %}
 
@@ -21,6 +26,10 @@
 %parse-param {struct nary_node **root}
 %parse-param {void *scan}
 %lex-param {void *scan}
+
+%code requires {
+#define YYSTYPE WETSTYPE
+}
 
 /* Operators, their precedence and associativity */
 %left OR
@@ -68,7 +77,7 @@
 %%
 
 program 			: statement 
-						{ root = make_node(P_OP_STMT, NULL, 1, $1); YYACCEPT; }
+						{ *root = make_node(P_OP_STMT, NULL, 1, $1); YYACCEPT; }
 					;
 
 block 				: CURLOPEN stmtlist CURLCLOSE 

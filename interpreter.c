@@ -64,6 +64,7 @@ int interpreter_cleanup(){
 }
 
 void parse_program(struct nary_node *node){
+	con_log("Begin parsing program", "parse_program()", LOG_DEBUG);
 	struct id_tab *newtab = tab_init();
 	if(sstack_push(id_table_stack, (void*) newtab)){
 		con_log("new id table could not be pushed", 

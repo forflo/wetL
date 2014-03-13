@@ -8,7 +8,17 @@
 %option reentrant
 %option outfile="iwetlex.c"
 %option prefix="iwet"
+/* The following ensures, that we generate 
+	the function wetlex(YYSTYPE *lvalp, wetscan_t scanner); 
+	which is needet for proper bison interaction. See
+	http://flex.sourceforge.net/manual/Bison-Bridge.html,
+	http://www.lemoda.net/c/reentrant-parser/index.html and
+	http://www.phpcompiler.org/articles/reentrantparser.html
+	for the gory details */
 %option bison-bridge
+%option noyywrap 
+/* We can't use the standard impl
+					and we don't need it either */
 
 /* [Operators] Arithmetic */
 
@@ -154,7 +164,7 @@ print print
 	dyn_string_t *buffer = ds_get_string("");
 
 	do {
-		next = input();
+		next = input(yylval_param);
 		if(next == ']') 
 			c++;
 		else 
@@ -168,9 +178,9 @@ print print
 	} while(!feof(yyin));
 
 	/* Passes the FCE-Code as value to the parser for further processing */
-	yylval.v = (struct value *) malloc(sizeof(struct value));
-	yylval.v->c = (void *) buffer->data;
-	yylval.v->type = P_TYPE_STRING;
+	yylval_param->v = (struct value *) malloc(sizeof(struct value));
+	yylval_param->v->c = (void *) buffer->data;
+	yylval_param->v->type = P_TYPE_STRING;
 
 	free(buffer);
 	return(FCEB_CODE);
@@ -277,22 +287,22 @@ print print
 {fcelanguage} {return(FCELANG);} 
 
 {string} {
-	yylval.v = make_valueStr(yytext);
+	yylval_param->v = make_valueStr(yytext);
 	return(STRING);
 }
 
 {integer} {
-	yylval.v = make_valueInt(atoi(yytext));
+	yylval_param->v = make_valueInt(atoi(yytext));
 	return (INT);
 }
 
 {number} {
-	yylval.v = make_valueDbl(strtod(yytext, NULL));
+	yylval_param->v = make_valueDbl(strtod(yytext, NULL));
 	return(NUMBER);
 }
 
 {id} {
-	yylval.v = make_valueId(yytext);
+	yylval_param->v = make_valueId(yytext);
 	return(ID);
 } 
 

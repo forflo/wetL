@@ -104,6 +104,55 @@ void parse_stmtlist(struct nary_node *node){
 	}
 }
 
+void parse_case_stmtlist(struct nary_node *node, struct value *val){
+	if(get_operation(node) == P_OP_CASELST){
+		parse_case_stmtlist(node->nodes[0], val);
+		struct nary_node *cstmt = node->nodes[1];
+		struct value *exp = parse_expression(cstmt->nodes[0]);
+	} else {
+		struct nary_node *cstmt = node->nodes[1];
+		struct value *exp = parse_expression(cstmt->nodes[0]);
+
+		if((exp->type == P_TYPE_INT || exp->type == P_TYPE_DOUBLE) &&
+			(val->type == P_TYPE_INT || val->type == P_TYPE_DOUBLE)) {
+
+			if(exp->type == P_TYPE_INT && val->type == P_TYPE_INT) {
+				if(*((int*)exp->c) == *((int *)val->c))
+					parse_stmtlist(cstmt->nodes[1]);
+			} else if(exp->type == P_TYPE_INT && val->type == P_TYPE_DOUBLE) {
+				if(*((int*)exp->c) == *((double *)val->c))
+					parse_stmtlist(cstmt->nodes[1]);
+			} else if(exp->type == P_TYPE_DOUBLE && val->type == P_TYPE_INT) {
+				if(*((double*)exp->c) == *((int *)val->c))
+					parse_stmtlist(cstmt->nodes[1]);
+			} else {
+				if(*((double*)exp->c) == *((double *)val->c))
+					parse_stmtlist(cstmt->nodes[1]);
+			}
+
+		} else {
+			con_log("This type of value is currently unsupported",
+					"parse_case_stmtlist()", LOG_ERROR);
+		}
+	}
+}
+
+/* Traverts an elif block list. 
+	See the grammar for more details. */
+void parse_elif_block_list(struct nary_node *node, int *jumpflag){
+	if(get_operation(node) == P_OP_ELIFLST){
+		parse_elif_block_list(node->nodes[0], jumpflag);
+		/* If jumpflag is set, then we have had a match in
+		 	one of the elif expressions, which means, that
+			an immediate return is necessary. In this case
+			the remaining nodes are skipped */
+		if(!(*jumpflag))
+			parse_elif_block(node->nodes[1], jumpflag);
+	} else {
+		parse_elif_block(node->nodes[0], jumpflag);
+	}
+}
+
 struct dyn_arr *parse_explist(struct nary_node *node){
 	if(get_operation(node) == P_OP_EXPLST) {
 		struct dyn_arr *temp = parse_explist(node->nodes[0]);
@@ -243,9 +292,18 @@ void parse_print(struct nary_node *node){
 }
 
 void parse_if(struct nary_node *node){
+#ifdef DEBUG
+	printf("Entering ini\n");
+#endif
 	struct value *tf = parse_expression(node->nodes[0]);
 	if(tf->type == P_TYPE_INT && *((int *) tf->c))
 		parse_block(node->nodes[1]);
+
+	/* prevents a memory leak */
+	if(tf->flag == P_FLAG_NONE){
+		mem_reset();
+		free(tf->c);
+	}
 }
 
 void parse_else(struct nary_node *node){
@@ -254,6 +312,53 @@ void parse_else(struct nary_node *node){
 		parse_block(node->nodes[1]);
 	else 
 		parse_block(node->nodes[2]);
+
+	if(tf->flag == P_FLAG_NONE){
+		mem_reset();
+		free(tf->c);
+	}
+}
+
+void parse_elif(struct nary_node *node){
+	/* 3 nodes meands that we have an 
+	 if(exp){
+	 }elif{
+	 }elif{
+	 ...
+	 }elif{}
+	 construct with omited else at the end
+	 */
+	int jumpflag = 0;
+	if(node->nnode == 3){
+		struct value *tf = parse_expression(node->nodes[0]);
+		if(tf->type == P_TYPE_INT && *((int *) tf->c))
+			parse_block(node->nodes[1]);
+		else
+			parse_elif_block_list(node->nodes[2], &jumpflag);
+	} else {
+		struct value *tf = parse_expression(node->nodes[0]);
+		if(tf->type == P_TYPE_INT && *((int *) tf->c))
+			parse_block(node->nodes[1]);
+		else
+			parse_elif_block_list(node->nodes[2], &jumpflag);
+		/* jumplfag == 0 means that there was no match in the
+		 	elif block list */
+		if(jumpflag == 0){
+			parse_block(node->nodes[3]);
+		}
+	}
+}
+
+void parse_switch(struct nary_node *node){
+	int jumpflag = 0;
+	struct value *tf = parse_expression(node->nodes[0]);
+	if(tf == NULL){
+		con_log("There was an error in the expression",
+				"parse_switch()", LOG_ERROR);
+		return;
+	}
+
+	parse_switchblock(node, tf);	
 }
 
 void parse_forin(struct nary_node *node);
@@ -335,7 +440,9 @@ void parse_dowhile(struct nary_node *node){
 #ifdef DEBUG
 	printf("++Entering Do-while\n");
 #endif
-	struct nary_node *tmp = node->nodes[1];
+	/* tmp points to the subtree representing a 
+	   	statementlist */
+	struct nary_node *tmp = node->nodes[0];
 	struct value *eval = mem_nextValInt();
 
 	struct id_tab *newtab = tab_init();
@@ -351,7 +458,7 @@ void parse_dowhile(struct nary_node *node){
 			free(eval->c);
 			mem_reset();
 		}
-		eval = parse_expression(node->nodes[0]);
+		eval = parse_expression(node->nodes[1]);
 	} while(*((int *) eval->c));
 
 	sstack_pop(id_table_stack, &rc);
@@ -367,7 +474,6 @@ void parse_dowhile(struct nary_node *node){
 
 void parse_switch(struct nary_node *node);
 void parse_fceblock(struct nary_node *node); 
-
 
 void parse_stmt(struct nary_node *node){
 	switch(get_operation(node)){
@@ -400,6 +506,10 @@ void parse_stmt(struct nary_node *node){
 			break;
 		case P_OP_ELSE:
 			parse_else(node);
+			break;
+		case P_OP_ELIF:
+			parse_elif(node);
+			break;
 		case P_OP_FOR:
 			parse_for(node);
 			break;
@@ -413,13 +523,13 @@ void parse_stmt(struct nary_node *node){
 			parse_dowhile(node);
 			break;
 		case P_OP_SWITCH:
-
+			parse_switch(node);
 			break;
 		case P_OP_FCEB:
 
 			break;
 		case P_OP_NOOP:
-			/* No operation used int interactie mode*/
+			/* No operation used in interactie mode */
 			break;
 		default:
 			break;
@@ -1244,6 +1354,28 @@ void parse_block(struct nary_node *node){
 				"parse_block()", LOG_ERROR);
 		return;
 	}
+}
+
+void parse_elif_block(struct nary_node *node, int *jumpflag){
+#ifdef DEBUG
+	printf("Entering elif block\n");
+#endif
+	struct value *tf = parse_expression(node->nodes[0]);
+	if(tf->type == P_TYPE_INT && *((int *) tf->c))
+		parse_block(node->nodes[1]);
+
+	/* jump out of elif block list*/
+
+	if(tf->flag == P_FLAG_NONE){
+		mem_reset();
+		free(tf->c);
+	}
+	
+	*jumpflag = 1;
+}
+
+void parse_switchblock(struct nary_node *node, struct value *val){
+	parse_case_stmtlist(node->nodes[0], val);
 }
 
 int get_operation(struct nary_node *node){

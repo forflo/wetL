@@ -68,9 +68,11 @@ void yyerror(struct nary_node **root, void *scanner, const char *str){
 %type <v> STRING ID FCELANG FCEB_CODE
 %type <k> functioncall expression evalexpression fceexp fceexp_rc 
 %type <k> listconstructor ffi_struct_def var_exp block stmtlist statement 
-%type <k> fceblock assignment functiondef explist idlist labeled_statement 
-%type <k> switchblock labeled_stmtlist arglist parlist hotstringdef varlist
+%type <k> fceblock assignment functiondef explist idlist 
+%type <k> switchblock arglist parlist hotstringdef varlist
 %type <k> hotkeydef exp_cast_list program ffi_cast
+%type <k> elif_block_list elif_block
+%type <k> case_stmtlist case_statement
 
 %start program
 
@@ -84,18 +86,28 @@ block 				: CURLOPEN stmtlist CURLCLOSE
 						{$$ = make_node(P_OP_STMTLST, NULL, 1, $2);}
 					;
 
-switchblock			: CURLOPEN labeled_stmtlist CURLCLOSE 
+elif_block			: ELIF PAROPEN expression PARCLOSE block
+						{$$ = make_node(P_OP_ELIFBLK, NULL, 2, $3, $5);}
+					;
+
+elif_block_list		: elif_block_list elif_block
+						{$$ = make_node(P_OP_ELIFLST, NULL, 2, $1, $2); }
+					| elif_block
+						{$$ = make_node(P_OP_ELIFBLK, NULL, 1, $1);}
+					;
+
+switchblock			: CURLOPEN case_stmtlist CURLCLOSE 
 						{$$ = make_node(P_OP_SWBLOCK, NULL, 1, $2);}
 					;
 
-labeled_stmtlist	: labeled_statement 
-						{$$ = make_node(P_OP_LBSTMTLST, NULL, 1, $1);}
-					| labeled_stmtlist labeled_statement 
-						{$$ = make_node(P_OP_LBSTMTLST, NULL, 2, $1, $2);}
+case_stmtlist		: case_statement
+						{$$ = make_node(P_OP_CASESTMT, NULL, 1, $1);}
+					| case_stmtlist case_statement 
+						{$$ = make_node(P_OP_CASELST, NULL, 2, $1, $2);}
 					;
 
-labeled_statement	: CASE PAROPEN expression PARCLOSE stmtlist 
-						{$$ = make_node(P_OP_LBSTMT, NULL, 2, $3, $5);}
+case_statement		: CASE PAROPEN expression PARCLOSE stmtlist 
+						{$$ = make_node(P_OP_CASESTMT, NULL, 2, $3, $5);}
 					;
 
 explist				: expression 

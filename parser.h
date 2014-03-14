@@ -38,6 +38,8 @@ struct node_content {
 /*
  ---operations and node types---
  */
+#define P_OP_ELIFLST 470
+#define P_OP_ELIFBLK 471
 #define P_OP_ELIF 472
 #define P_OP_ELSE 473
 #define P_OP_PARLSTHS 474
@@ -51,10 +53,10 @@ struct node_content {
 #define P_OP_LSTCONST 482
 #define P_OP_FLST 483
 #define P_OP_ECASTLST 484
-#define P_OP_LBSTMTLST 485
+#define P_OP_CASELST 485
 #define P_OP_SWBLOCK 486
 #define P_OP_STMTLST 487
-#define P_OP_LBSTMT 488
+#define P_OP_CASESTMT 488
 #define P_OP_EXPLST 489
 #define P_OP_IDLST 491
 #define P_OP_ARGLST 492
@@ -271,7 +273,11 @@ void parse_program(struct nary_node *node);
 void parse_program_interactive(struct nary_node *node, int *first);
 void parse_stmtlist(struct nary_node *node);
 void parse_block(struct nary_node *node);
+void parse_switchblock(struct nary_node *node, struct value *val);
+void parse_case_stmtlist(struct nary_node *node, struct value *val);
 void parse_stmt(struct nary_node *node);
+void parse_elif_block_list(struct nary_node *node, int *jumpflag);
+void parse_elif_block(struct nary_node *node, int *jumpflag);
 
 struct dyn_arr *parse_explist(struct nary_node *node);
 struct dyn_arr *parse_exp_cast_list(struct nary_node *node);
@@ -296,7 +302,10 @@ void parse_break(struct nary_node *node);
 void parse_print(struct nary_node *node);
 void parse_continue(struct nary_node *node);
 void parse_functiondef(struct nary_node *node);
+void parse_switch_case(struct nary_node *node);
 void parse_if(struct nary_node *node);
+void parse_else(struct nary_node *node);
+void parse_elif(struct nary_node *node);
 void parse_forin(struct nary_node *node);
 void parse_for(struct nary_node *node);
 void parse_while(struct nary_node *node);

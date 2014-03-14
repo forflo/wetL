@@ -1,0 +1,385 @@
+Starting parse
+Entering state 0
+Reading a token: Next token is token IF ()
+Shifting token IF ()
+Entering state 2
+Reading a token: Next token is token PAROPEN ()
+Shifting token PAROPEN ()
+Entering state 32
+Reading a token: Next token is token INT ()
+Shifting token INT ()
+Entering state 52
+Reducing stack by rule 63 (line 237):
+   $1 = token INT ()
+-> $$ = nterm expression ()
+Stack now 0 2 32
+Entering state 88
+Reading a token: Next token is token PARCLOSE ()
+Shifting token PARCLOSE ()
+Entering state 149
+Reading a token: Next token is token CURLOPEN ()
+Shifting token CURLOPEN ()
+Entering state 16
+Reading a token: Next token is token PRINT ()
+Shifting token PRINT ()
+Entering state 10
+Reading a token: Next token is token INT ()
+Shifting token INT ()
+Entering state 52
+Reducing stack by rule 63 (line 237):
+   $1 = token INT ()
+-> $$ = nterm expression ()
+Stack now 0 2 32 88 149 16 10
+Entering state 55
+Reading a token: Next token is token SEMI ()
+Shifting token SEMI ()
+Entering state 123
+Reducing stack by rule 97 (line 325):
+   $1 = token PRINT ()
+   $2 = nterm expression ()
+   $3 = token SEMI ()
+-> $$ = nterm statement ()
+Stack now 0 2 32 88 149 16
+Entering state 27
+Reducing stack by rule 22 (line 150):
+   $1 = nterm statement ()
+-> $$ = nterm stmtlist ()
+Stack now 0 2 32 88 149 16
+Entering state 64
+Reading a token: Next token is token CURLCLOSE ()
+Shifting token CURLCLOSE ()
+Entering state 129
+Reducing stack by rule 2 (line 85):
+   $1 = token CURLOPEN ()
+   $2 = nterm stmtlist ()
+   $3 = token CURLCLOSE ()
+-> $$ = nterm block ()
+Stack now 0 2 32 88 149
+Entering state 199
+Reading a token: Next token is token ELSE ()
+Shifting token ELSE ()
+Entering state 216
+Reading a token: Next token is token CURLOPEN ()
+Shifting token CURLOPEN ()
+Entering state 16
+Reading a token: Next token is token PRINT ()
+Shifting token PRINT ()
+Entering state 10
+Reading a token: Next token is token INT ()
+Shifting token INT ()
+Entering state 52
+Reducing stack by rule 63 (line 237):
+   $1 = token INT ()
+-> $$ = nterm expression ()
+Stack now 0 2 32 88 149 199 216 16 10
+Entering state 55
+Reading a token: Next token is token SEMI ()
+Shifting token SEMI ()
+Entering state 123
+Reducing stack by rule 97 (line 325):
+   $1 = token PRINT ()
+   $2 = nterm expression ()
+   $3 = token SEMI ()
+-> $$ = nterm statement ()
+Stack now 0 2 32 88 149 199 216 16
+Entering state 27
+Reducing stack by rule 22 (line 150):
+   $1 = nterm statement ()
+-> $$ = nterm stmtlist ()
+Stack now 0 2 32 88 149 199 216 16
+Entering state 64
+Reading a token: Next token is token CURLCLOSE ()
+Shifting token CURLCLOSE ()
+Entering state 129
+Reducing stack by rule 2 (line 85):
+   $1 = token CURLOPEN ()
+   $2 = nterm stmtlist ()
+   $3 = token CURLCLOSE ()
+-> $$ = nterm block ()
+Stack now 0 2 32 88 149 199 216
+Entering state 228
+Reducing stack by rule 104 (line 339):
+   $1 = token IF ()
+   $2 = token PAROPEN ()
+   $3 = nterm expression ()
+   $4 = token PARCLOSE ()
+   $5 = nterm block ()
+   $6 = token ELSE ()
+   $7 = nterm block ()
+-> $$ = nterm statement ()
+Stack now 0
+Entering state 27
+Reducing stack by rule 22 (line 150):
+   $1 = nterm statement ()
+-> $$ = nterm stmtlist ()
+Stack now 0
+Entering state 21
+Reading a token: Next token is token IF ()
+Shifting token IF ()
+Entering state 2
+Reading a token: Next token is token PAROPEN ()
+Shifting token PAROPEN ()
+Entering state 32
+Reading a token: Next token is token INT ()
+Shifting token INT ()
+Entering state 52
+Reducing stack by rule 63 (line 237):
+   $1 = token INT ()
+-> $$ = nterm expression ()
+Stack now 0 21 2 32
+Entering state 88
+Reading a token: Next token is token PARCLOSE ()
+Shifting token PARCLOSE ()
+Entering state 149
+Reading a token: Next token is token CURLOPEN ()
+Shifting token CURLOPEN ()
+Entering state 16
+Reading a token: Next token is token PRINT ()
+Shifting token PRINT ()
+Entering state 10
+Reading a token: Next token is token STRING ()
+Shifting token STRING ()
+Entering state 50
+Reducing stack by rule 61 (line 233):
+   $1 = token STRING ()
+-> $$ = nterm expression ()
+Stack now 0 21 2 32 88 149 16 10
+Entering state 55
+Reading a token: Next token is token SEMI ()
+Shifting token SEMI ()
+Entering state 123
+Reducing stack by rule 97 (line 325):
+   $1 = token PRINT ()
+   $2 = nterm expression ()
+   $3 = token SEMI ()
+-> $$ = nterm statement ()
+Stack now 0 21 2 32 88 149 16
+Entering state 27
+Reducing stack by rule 22 (line 150):
+   $1 = nterm statement ()
+-> $$ = nterm stmtlist ()
+Stack now 0 21 2 32 88 149 16
+Entering state 64
+Reading a token: Next token is token CURLCLOSE ()
+Shifting token CURLCLOSE ()
+Entering state 129
+Reducing stack by rule 2 (line 85):
+   $1 = token CURLOPEN ()
+   $2 = nterm stmtlist ()
+   $3 = token CURLCLOSE ()
+-> $$ = nterm block ()
+Stack now 0 21 2 32 88 149
+Entering state 199
+Reading a token: Next token is token ELIF ()
+Shifting token ELIF ()
+Entering state 217
+Reading a token: Next token is token PAROPEN ()
+Shifting token PAROPEN ()
+Entering state 229
+Reading a token: Next token is token INT ()
+Shifting token INT ()
+Entering state 52
+Reducing stack by rule 63 (line 237):
+   $1 = token INT ()
+-> $$ = nterm expression ()
+Stack now 0 21 2 32 88 149 199 217 229
+Entering state 237
+Reading a token: Next token is token PARCLOSE ()
+Shifting token PARCLOSE ()
+Entering state 241
+Reading a token: Next token is token CURLOPEN ()
+Shifting token CURLOPEN ()
+Entering state 16
+Reading a token: Next token is token PRINT ()
+Shifting token PRINT ()
+Entering state 10
+Reading a token: Next token is token STRING ()
+Shifting token STRING ()
+Entering state 50
+Reducing stack by rule 61 (line 233):
+   $1 = token STRING ()
+-> $$ = nterm expression ()
+Stack now 0 21 2 32 88 149 199 217 229 237 241 16 10
+Entering state 55
+Reading a token: Next token is token SEMI ()
+Shifting token SEMI ()
+Entering state 123
+Reducing stack by rule 97 (line 325):
+   $1 = token PRINT ()
+   $2 = nterm expression ()
+   $3 = token SEMI ()
+-> $$ = nterm statement ()
+Stack now 0 21 2 32 88 149 199 217 229 237 241 16
+Entering state 27
+Reducing stack by rule 22 (line 150):
+   $1 = nterm statement ()
+-> $$ = nterm stmtlist ()
+Stack now 0 21 2 32 88 149 199 217 229 237 241 16
+Entering state 64
+Reading a token: Next token is token CURLCLOSE ()
+Shifting token CURLCLOSE ()
+Entering state 129
+Reducing stack by rule 2 (line 85):
+   $1 = token CURLOPEN ()
+   $2 = nterm stmtlist ()
+   $3 = token CURLCLOSE ()
+-> $$ = nterm block ()
+Stack now 0 21 2 32 88 149 199 217 229 237 241
+Entering state 244
+Reducing stack by rule 3 (line 89):
+   $1 = token ELIF ()
+   $2 = token PAROPEN ()
+   $3 = nterm expression ()
+   $4 = token PARCLOSE ()
+   $5 = nterm block ()
+-> $$ = nterm elif_block ()
+Stack now 0 21 2 32 88 149 199
+Entering state 218
+Reducing stack by rule 5 (line 95):
+   $1 = nterm elif_block ()
+-> $$ = nterm elif_block_list ()
+Stack now 0 21 2 32 88 149 199
+Entering state 219
+Reading a token: Next token is token ELIF ()
+Shifting token ELIF ()
+Entering state 217
+Reading a token: Next token is token PAROPEN ()
+Shifting token PAROPEN ()
+Entering state 229
+Reading a token: Next token is token INT ()
+Shifting token INT ()
+Entering state 52
+Reducing stack by rule 63 (line 237):
+   $1 = token INT ()
+-> $$ = nterm expression ()
+Stack now 0 21 2 32 88 149 199 219 217 229
+Entering state 237
+Reading a token: Next token is token PARCLOSE ()
+Shifting token PARCLOSE ()
+Entering state 241
+Reading a token: Next token is token CURLOPEN ()
+Shifting token CURLOPEN ()
+Entering state 16
+Reading a token: Next token is token PRINT ()
+Shifting token PRINT ()
+Entering state 10
+Reading a token: Next token is token STRING ()
+Shifting token STRING ()
+Entering state 50
+Reducing stack by rule 61 (line 233):
+   $1 = token STRING ()
+-> $$ = nterm expression ()
+Stack now 0 21 2 32 88 149 199 219 217 229 237 241 16 10
+Entering state 55
+Reading a token: Next token is token SEMI ()
+Shifting token SEMI ()
+Entering state 123
+Reducing stack by rule 97 (line 325):
+   $1 = token PRINT ()
+   $2 = nterm expression ()
+   $3 = token SEMI ()
+-> $$ = nterm statement ()
+Stack now 0 21 2 32 88 149 199 219 217 229 237 241 16
+Entering state 27
+Reducing stack by rule 22 (line 150):
+   $1 = nterm statement ()
+-> $$ = nterm stmtlist ()
+Stack now 0 21 2 32 88 149 199 219 217 229 237 241 16
+Entering state 64
+Reading a token: Next token is token CURLCLOSE ()
+Shifting token CURLCLOSE ()
+Entering state 129
+Reducing stack by rule 2 (line 85):
+   $1 = token CURLOPEN ()
+   $2 = nterm stmtlist ()
+   $3 = token CURLCLOSE ()
+-> $$ = nterm block ()
+Stack now 0 21 2 32 88 149 199 219 217 229 237 241
+Entering state 244
+Reducing stack by rule 3 (line 89):
+   $1 = token ELIF ()
+   $2 = token PAROPEN ()
+   $3 = nterm expression ()
+   $4 = token PARCLOSE ()
+   $5 = nterm block ()
+-> $$ = nterm elif_block ()
+Stack now 0 21 2 32 88 149 199 219
+Entering state 231
+Reducing stack by rule 4 (line 93):
+   $1 = nterm elif_block_list ()
+   $2 = nterm elif_block ()
+-> $$ = nterm elif_block_list ()
+Stack now 0 21 2 32 88 149 199
+Entering state 219
+Reading a token: Next token is token ELSE ()
+Shifting token ELSE ()
+Entering state 230
+Reading a token: Next token is token CURLOPEN ()
+Shifting token CURLOPEN ()
+Entering state 16
+Reading a token: Next token is token PRINT ()
+Shifting token PRINT ()
+Entering state 10
+Reading a token: Next token is token STRING ()
+Shifting token STRING ()
+Entering state 50
+Reducing stack by rule 61 (line 233):
+   $1 = token STRING ()
+-> $$ = nterm expression ()
+Stack now 0 21 2 32 88 149 199 219 230 16 10
+Entering state 55
+Reading a token: Next token is token SEMI ()
+Shifting token SEMI ()
+Entering state 123
+Reducing stack by rule 97 (line 325):
+   $1 = token PRINT ()
+   $2 = nterm expression ()
+   $3 = token SEMI ()
+-> $$ = nterm statement ()
+Stack now 0 21 2 32 88 149 199 219 230 16
+Entering state 27
+Reducing stack by rule 22 (line 150):
+   $1 = nterm statement ()
+-> $$ = nterm stmtlist ()
+Stack now 0 21 2 32 88 149 199 219 230 16
+Entering state 64
+Reading a token: Next token is token CURLCLOSE ()
+Shifting token CURLCLOSE ()
+Entering state 129
+Reducing stack by rule 2 (line 85):
+   $1 = token CURLOPEN ()
+   $2 = nterm stmtlist ()
+   $3 = token CURLCLOSE ()
+-> $$ = nterm block ()
+Stack now 0 21 2 32 88 149 199 219 230
+Entering state 238
+Reducing stack by rule 105 (line 341):
+   $1 = token IF ()
+   $2 = token PAROPEN ()
+   $3 = nterm expression ()
+   $4 = token PARCLOSE ()
+   $5 = nterm block ()
+   $6 = nterm elif_block_list ()
+   $7 = token ELSE ()
+   $8 = nterm block ()
+-> $$ = nterm statement ()
+Stack now 0 21
+Entering state 82
+Reducing stack by rule 23 (line 152):
+   $1 = nterm stmtlist ()
+   $2 = nterm statement ()
+-> $$ = nterm stmtlist ()
+Stack now 0
+Entering state 21
+Reading a token: Now at end of input.
+Reducing stack by rule 1 (line 81):
+   $1 = nterm stmtlist ()
+-> $$ = nterm program ()
+Stack now 0
+Entering state 18
+Now at end of input.
+Shifting token $end ()
+Entering state 68
+Stack now 0 18 68
+Cleanup: popping token $end ()
+Cleanup: popping nterm program ()

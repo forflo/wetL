@@ -315,8 +315,6 @@ listconstructor 	: BOXOPEN BOXCLOSE
 
 statement			: assignment SEMI NL
 						{ $$ = make_node(P_OP_ASSIGN, NULL, 1, $1); }
-					| assignment SEMI
-						{ $$ = make_node(P_OP_ASSIGN, NULL, 1, $1); }
 					| BREAK SEMI NL
 						{ $$ = make_node(P_OP_BREAK, NULL, 0); }
 					| CONTINUE SEMI NL
@@ -361,11 +359,11 @@ statement			: assignment SEMI NL
 					| NL 
 						{ $$ = make_node(P_OP_NOOP, NULL, 0); }
 					| error SEMI
-						{ printf("Invalid Statement. Skipping until semicolon\n");
-							YYABORT; }
+						{ printf("Invalid Statement. Skipping until semicolon\n"); 
+							yyerrok; }
 					| error NL
 						{ printf("Invalid Statement. Skipping until newline\n");
-							YYABORT; }
+							yyerrok; }
 					;
 
 fceblock 			: EXTERNAL FCELANG FCEB_CODE 

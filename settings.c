@@ -29,7 +29,7 @@ int parse_args(int argc, char **argv){
 		return -1;
 	s->loglevel = LOG_DEBUG;
 	s->interactive = 0;
-	s->prompt = NULL;
+	s->prompt = "wetL>> ";
 	s->file = NULL;
 	static struct option opts[] = {
 		{"interactive", no_argument, 0, 'i'},

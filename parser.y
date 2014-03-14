@@ -78,8 +78,8 @@ void yyerror(struct nary_node **root, void *scanner, const char *str){
 
 %%
 
-program 			: statement 
-						{ *root = make_node(P_OP_STMT, NULL, 1, $1); YYACCEPT; }
+program 			: stmtlist 
+						{ *root = make_node(P_OP_STMT, NULL, 1, $1); }
 					;
 
 block 				: CURLOPEN stmtlist CURLCLOSE 
@@ -338,9 +338,10 @@ statement			: assignment SEMI
 						{ $$ = make_node(P_OP_IF, NULL, 2, $3, $5); }
 					| IF PAROPEN expression PARCLOSE block ELSE block 
 						{ $$ = make_node(P_OP_ELSE, NULL, 3, $3, $5, $7); }
-					| IF PAROPEN expression PARCLOSE block ELIF PAROPEN 
-						expression PARCLOSE block 
-						{ /* TODO */ }
+					| IF PAROPEN expression PARCLOSE block elif_block_list ELSE block
+						{ $$ = make_node(P_OP_ELIF, NULL, 4, $3,$5,$6,$8); }
+					| IF PAROPEN expression PARCLOSE block elif_block_list
+						{ $$ = make_node(P_OP_ELIF, NULL, 3, $3,$5,$6); }
 					| FOR PAROPEN assignment SEMI expression SEMI 
 						assignment PARCLOSE block 
 						{ $$ = make_node(P_OP_FOR, NULL, 4, $3, $5, $7, $9); }

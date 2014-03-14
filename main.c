@@ -57,7 +57,7 @@ int main(int argc, char **argv){
 		interpreter_init();
 
 		/* Simple Read-eval-print loop */
-		for(;;){
+		while(!feof(stdin)){
 			printf("%s", get_prompt());
 			if(iwetparse(&root, iwetscan)){
 				printf("Ein Syntaxfehler ist aufgetreten!\n");

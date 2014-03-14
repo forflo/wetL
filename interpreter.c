@@ -104,36 +104,55 @@ void parse_stmtlist(struct nary_node *node){
 	}
 }
 
+/* Val has to be a valid pointer to a value structure.
+ 	This structure must be obtained before calling this
+ 	function. It represents the evaluation of the expression
+ 	in an switch(exp){...} control structure */
 void parse_case_stmtlist(struct nary_node *node, struct value *val){
+#ifdef DEBUG
+	printf("Entering the Function parse_case_stmtlist\n");
+#endif
 	if(get_operation(node) == P_OP_CASELST){
 		parse_case_stmtlist(node->nodes[0], val);
-		struct nary_node *cstmt = node->nodes[1];
-		struct value *exp = parse_expression(cstmt->nodes[0]);
+		parse_case_statement(node->nodes[1], val, NULL);
 	} else {
-		struct nary_node *cstmt = node->nodes[1];
-		struct value *exp = parse_expression(cstmt->nodes[0]);
+		parse_case_statement(node->nodes[0], val, NULL);
+	}
+}
 
-		if((exp->type == P_TYPE_INT || exp->type == P_TYPE_DOUBLE) &&
+void parse_case_statement(struct nary_node *node, struct value *val, int *jumpflag){
+	struct value *exp = parse_expression(node->nodes[0]);
+
+#ifdef DEBUG
+	printf("Caseexpression");
+	printf(" type: %d\n", exp->type);
+#endif
+
+	if((exp->type == P_TYPE_INT || exp->type == P_TYPE_DOUBLE) &&
 			(val->type == P_TYPE_INT || val->type == P_TYPE_DOUBLE)) {
 
-			if(exp->type == P_TYPE_INT && val->type == P_TYPE_INT) {
-				if(*((int*)exp->c) == *((int *)val->c))
-					parse_stmtlist(cstmt->nodes[1]);
-			} else if(exp->type == P_TYPE_INT && val->type == P_TYPE_DOUBLE) {
-				if(*((int*)exp->c) == *((double *)val->c))
-					parse_stmtlist(cstmt->nodes[1]);
-			} else if(exp->type == P_TYPE_DOUBLE && val->type == P_TYPE_INT) {
-				if(*((double*)exp->c) == *((int *)val->c))
-					parse_stmtlist(cstmt->nodes[1]);
-			} else {
-				if(*((double*)exp->c) == *((double *)val->c))
-					parse_stmtlist(cstmt->nodes[1]);
-			}
-
+		if(exp->type == P_TYPE_INT && val->type == P_TYPE_INT) {
+			if(*((int*)exp->c) == *((int *)val->c))
+				parse_stmtlist(node->nodes[1]);
+		} else if(exp->type == P_TYPE_INT && val->type == P_TYPE_DOUBLE) {
+			if(*((int*)exp->c) == *((double *)val->c))
+				parse_stmtlist(node->nodes[1]);
+		} else if(exp->type == P_TYPE_DOUBLE && val->type == P_TYPE_INT) {
+			if(*((double*)exp->c) == *((int *)val->c))
+				parse_stmtlist(node->nodes[1]);
 		} else {
-			con_log("This type of value is currently unsupported",
-					"parse_case_stmtlist()", LOG_ERROR);
+			if(*((double*)exp->c) == *((double *)val->c))
+				parse_stmtlist(node->nodes[1]);
 		}
+
+	} else {
+		con_log("This type of value is currently unsupported",
+				"parse_case_stmtlist()", LOG_ERROR);
+	}
+
+	if(exp->flag == P_FLAG_NONE){
+		mem_reset();
+		free(exp->c);
 	}
 }
 
@@ -335,6 +354,10 @@ void parse_elif(struct nary_node *node){
 			parse_block(node->nodes[1]);
 		else
 			parse_elif_block_list(node->nodes[2], &jumpflag);
+
+		if(jumpflag == 0){
+			parse_block(node->nodes[3]);
+		}
 	} else {
 		struct value *tf = parse_expression(node->nodes[0]);
 		if(tf->type == P_TYPE_INT && *((int *) tf->c))
@@ -350,15 +373,28 @@ void parse_elif(struct nary_node *node){
 }
 
 void parse_switch(struct nary_node *node){
-	int jumpflag = 0;
+	int jumpflag = 0, rc;
+	struct id_tab *newtab = tab_init();
+	if(sstack_push(id_table_stack, (void*) newtab)){
+		con_log("new id table could not be pushed", 
+				"parse_while()", LOG_ERROR);
+		return;
+	}
+
 	struct value *tf = parse_expression(node->nodes[0]);
 	if(tf == NULL){
 		con_log("There was an error in the expression",
 				"parse_switch()", LOG_ERROR);
 		return;
 	}
+	parse_switchblock(node->nodes[1], tf);	
 
-	parse_switchblock(node, tf);	
+	sstack_pop(id_table_stack, &rc);
+	if(rc){
+		con_log("new id table could not be popped", 
+				"parse_while()", LOG_ERROR);
+		return;
+	}
 }
 
 void parse_forin(struct nary_node *node);
@@ -1236,9 +1272,12 @@ struct value *parse_expression(struct nary_node *node){
 		case P_OP_EVEXP:
 			return parse_evalexpression(node->nodes[0]);
 			break;
-		default:		
+		default:
 			con_log("Somethin went wrong", 
 					"parse_expression()", LOG_ERROR);
+#ifdef DEBUG
+		printf("Typ: %d\n", get_operation(node));
+#endif
 			return NULL;
 			break;
 	}

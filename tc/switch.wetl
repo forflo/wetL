@@ -1,0 +1,7 @@
+a=13;
+switch(a){
+	case(10)
+		print 10;
+	case(13)
+		print 13;
+}

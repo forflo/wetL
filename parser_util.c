@@ -1,4 +1,3 @@
-#include "util.h"
 #include "parser.h"
 #include <stdlib.h>
 #include <stdarg.h>

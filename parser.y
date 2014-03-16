@@ -44,6 +44,7 @@ void yyerror(struct nary_node **root, void *scanner, const char *str){
 %left MUL DIV MOD
 %left POW
 %left COMPL NOT UMINUS
+%left CAST
 
 /* Assignment operators */
 %token ASSOP ASPLUS ASMINUS ASMUL ASDIV ASMOD ASPOW ASBINOR ASBINAND 
@@ -70,7 +71,7 @@ void yyerror(struct nary_node **root, void *scanner, const char *str){
 %type <k> listconstructor ffi_struct_def var_exp block stmtlist statement 
 %type <k> fceblock assignment functiondef explist idlist 
 %type <k> switchblock arglist parlist hotstringdef varlist
-%type <k> hotkeydef exp_cast_list program ffi_cast
+%type <k> hotkeydef castlist program ffi_cast complex_cast 
 %type <k> elif_block_list elif_block
 %type <k> case_stmtlist case_statement
 
@@ -122,8 +123,10 @@ varlist 			: var_exp
 						{$$ = make_node(P_OP_VARLST, NULL, 2, $1, $3);}	
 					;
 
-exp_cast_list		: { }
-					| exp_cast_list ffi_cast expression COMMA 
+castlist			: castlist COMMA ffi_cast
+					| castlist COMMA complex_cast
+					| ffi_cast
+					| complex_cast
 					;
 
 parlist 			: PAROPEN idlist PARCLOSE 
@@ -240,6 +243,7 @@ expression			: expression OR expression
 						{ $$ = make_node(FALSE, $1, 0); }
 					| evalexpression	
 						{ $$ = make_node(P_OP_EVEXP, NULL, 1, $1); }
+					| complex_cast %prec OR expression
 					;
 
 evalexpression		: fceexp 
@@ -280,30 +284,36 @@ hotstringdef		: ON HOTSTRING expression
 						{ $$ = make_node(P_OP_HSDEF, NULL, 1, $3); } 
 					;
 
-ffi_struct_def		: CURLOPEN exp_cast_list CURLCLOSE 
+ffi_struct_def		: CURLOPEN explist CURLCLOSE 
 						{ $$ = make_node(0, NULL, 0); }
-					| MUL CURLOPEN exp_cast_list CURLCLOSE 
+					| MUL CURLOPEN explist CURLCLOSE 
 						{ $$ = make_node(0, NULL, 0); }
 					;
 
 ffi_cast 			: FFI_CHAR  
-						{ $$ = make_node(P_OP_FFICAST, $1, 0);}
+						{ $$ = make_node(P_OP_FFICHAR, $1, 0);}
 					| FFI_SHORT 
-						{ $$ = make_node(P_OP_FFICAST, $1, 0);} 
+						{ $$ = make_node(P_OP_FFISHORT, $1, 0);} 
 					| FFI_INT   
-						{ $$ = make_node(P_OP_FFICAST, $1, 0);}
+						{ $$ = make_node(P_OP_FFIINT, $1, 0);}
 					| FFI_LONG  
-						{ $$ = make_node(P_OP_FFICAST, $1, 0);}
+						{ $$ = make_node(P_OP_FFILONG, $1, 0);}
 					| FFI_LONG_LONG 
-						{ $$ = make_node(P_OP_FFICAST, $1, 0);}
+						{ $$ = make_node(P_OP_FFILONGLONG, $1, 0);}
 					| FFI_DOUBLE 	
-						{ $$ = make_node(P_OP_FFICAST, $1, 0);}
+						{ $$ = make_node(P_OP_FFIDOUBLE, $1, 0);}
 					| FFI_FLOAT 	
-						{ $$ = make_node(P_OP_FFICAST, $1, 0);}
+						{ $$ = make_node(P_OP_FFIFLOAT, $1, 0);}
 					| FFI_LONG_DOUBLE 
-						{ $$ = make_node(P_OP_FFICAST, $1, 0);}
+						{ $$ = make_node(P_OP_FFILONGDOUBLE, $1, 0);}
 					| FFI_VOIDPTR 	  
-						{ $$ = make_node(P_OP_FFICAST, $1, 0);}
+						{ $$ = make_node(P_OP_FFIVOIDPTR, $1, 0);}
+					;
+
+complex_cast		: PAROPEN castlist PARCLOSE 
+						{ $$ = $2; }
+					| MUL PARCLOSE castlist PAROPEN 
+						{ $$ = $3; }
 					;
 
 listconstructor 	: BOXOPEN BOXCLOSE 

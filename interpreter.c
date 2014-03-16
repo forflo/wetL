@@ -156,15 +156,15 @@ void parse_case_statement(struct nary_node *node, struct value *val, int *jumpfl
 	}
 }
 
-/* Traverts an elif block list. 
-	See the grammar for more details. */
+/* Traverts through an elif block list. 
+	Check the grammar for more details. */
 void parse_elif_block_list(struct nary_node *node, int *jumpflag){
 	if(get_operation(node) == P_OP_ELIFLST){
 		parse_elif_block_list(node->nodes[0], jumpflag);
 		/* If jumpflag is set, then we have had a match in
 		 	one of the elif expressions, which means, that
 			an immediate return is necessary. In this case
-			the remaining nodes are skipped */
+			interpreting of the remaining nodes will be skipped */
 		if(!(*jumpflag))
 			parse_elif_block(node->nodes[1], jumpflag);
 	} else {
@@ -1402,17 +1402,16 @@ void parse_elif_block(struct nary_node *node, int *jumpflag){
 	printf("Entering elif block\n");
 #endif
 	struct value *tf = parse_expression(node->nodes[0]);
-	if(tf->type == P_TYPE_INT && *((int *) tf->c))
+	if(tf->type == P_TYPE_INT && *((int *) tf->c)) {
 		parse_block(node->nodes[1]);
-
-	/* jump out of elif block list*/
+		/* We only want to call this Function once */
+		*jumpflag = 1;
+	}
 
 	if(tf->flag == P_FLAG_NONE){
 		mem_reset();
 		free(tf->c);
 	}
-	
-	*jumpflag = 1;
 }
 
 void parse_switchblock(struct nary_node *node, struct value *val){

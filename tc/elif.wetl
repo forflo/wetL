@@ -1,15 +1,20 @@
-if(1){
-	print 1;
-} else {
-	print 2;
-}
-
 if(0){
 	print "if";
 } elif(0){
 	print "elif1";
 } elif(1){
-	print "elif2";
+	print "awaited result";
 } else {
 	print "else";
+}
+
+a=100;
+if(0){
+	print "if";
+} elif(0){
+	print "elif1";
+} elif(a){
+	print "awaited result";
+} elif(0) {
+	print "elif3";
 }

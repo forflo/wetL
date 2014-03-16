@@ -350,24 +350,26 @@ void parse_elif(struct nary_node *node){
 	int jumpflag = 0;
 	if(node->nnode == 3){
 		struct value *tf = parse_expression(node->nodes[0]);
-		if(tf->type == P_TYPE_INT && *((int *) tf->c))
+		if(tf->type == P_TYPE_INT && *((int *) tf->c)){
 			parse_block(node->nodes[1]);
-		else
+		} else {
 			parse_elif_block_list(node->nodes[2], &jumpflag);
 
-		if(jumpflag == 0){
-			parse_block(node->nodes[3]);
+			if(jumpflag == 0){
+				parse_block(node->nodes[3]);
+			}
 		}
 	} else {
 		struct value *tf = parse_expression(node->nodes[0]);
-		if(tf->type == P_TYPE_INT && *((int *) tf->c))
+		if(tf->type == P_TYPE_INT && *((int *) tf->c)){
 			parse_block(node->nodes[1]);
-		else
+		} else {
 			parse_elif_block_list(node->nodes[2], &jumpflag);
-		/* jumplfag == 0 means that there was no match in the
-		 	elif block list */
-		if(jumpflag == 0){
-			parse_block(node->nodes[3]);
+			/* jumplfag == 0 means that there was no match in the
+			   elif block list */
+			if(jumpflag == 0){
+				parse_block(node->nodes[3]);
+			}
 		}
 	}
 }

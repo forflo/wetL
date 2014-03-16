@@ -38,6 +38,15 @@ struct node_content {
 /*
  ---operations and node types---
  */
+#define P_OP_FFILONGDOUBLE 461
+#define P_OP_FFIVOIDPTR 462
+#define P_OP_FFIFLOAT 463
+#define P_OP_FFIDOUBLE 464
+#define P_OP_FFILONGLONG 465
+#define P_OP_FFILONG 466
+#define P_OP_FFIINT 467
+#define P_OP_FFISHORT 468
+#define P_OP_FFICHAR 469
 #define P_OP_ELIFLST 470
 #define P_OP_ELIFBLK 471
 #define P_OP_ELIF 472

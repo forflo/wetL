@@ -1,6 +1,6 @@
 SCA = scanner.l iscanner.l
 PAR = parser.y iparser.y
-CFLAGS = -lfl
+CFLAGS = -lfl -lm
 YFLAGS = $(CFLAGS) -ly
 DS = dyn_arr.c str_dyn.c id_table.c sl_stack.c sl_list.c nary_tree.c
 UTIL = logger.c parser_util.c scanner_util.c mem_alloc.c settings.c

@@ -96,8 +96,10 @@ int main(int argc, char **argv){
 			exit(EXIT_FAILURE);
 		}
 
+#ifdef DEBUG
 		printf("Pointer zum Root: %p\n", root);
 		traverse_preorder(root, callback, NULL);
+#endif
 		parse_program(root);
 		interpreter_cleanup();
 		wetlex_destroy(wetscan);

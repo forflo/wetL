@@ -100,6 +100,8 @@ elif_block_list		: elif_block_list elif_block
 
 switchblock			: CURLOPEN case_stmtlist CURLCLOSE 
 						{$$ = make_node(P_OP_SWBLOCK, NULL, 1, $2);}
+					| CURLOPEN case_stmtlist DEFAULT stmtlist CURLCLOSE
+						{$$ = make_node(P_OP_SWBLOCK, NULL, 2, $2, $4);}
 					;
 
 case_stmtlist		: case_statement

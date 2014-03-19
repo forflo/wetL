@@ -108,19 +108,21 @@ void parse_stmtlist(struct nary_node *node){
  	This structure must be obtained before calling this
  	function. It represents the evaluation of the expression
  	in an switch(exp){...} control structure */
-void parse_case_stmtlist(struct nary_node *node, struct value *val){
+void parse_case_stmtlist(struct nary_node *node, struct value *val, int *jumpflag){
 #ifdef DEBUG
 	printf("Entering the Function parse_case_stmtlist\n");
 #endif
 	if(get_operation(node) == P_OP_CASELST){
-		parse_case_stmtlist(node->nodes[0], val);
-		parse_case_statement(node->nodes[1], val, NULL);
+		parse_case_stmtlist(node->nodes[0], val, jumpflag);
+		if(!(*jumpflag))
+			parse_case_statement(node->nodes[1], val, jumpflag);
 	} else {
-		parse_case_statement(node->nodes[0], val, NULL);
+		parse_case_statement(node->nodes[0], val, jumpflag);
 	}
 }
 
-void parse_case_statement(struct nary_node *node, struct value *val, int *jumpflag){
+void parse_case_statement(struct nary_node *node, 
+						struct value *val, int *jumpflag){
 	struct value *exp = parse_expression(node->nodes[0]);
 
 #ifdef DEBUG
@@ -1416,7 +1418,11 @@ void parse_elif_block(struct nary_node *node, int *jumpflag){
 }
 
 void parse_switchblock(struct nary_node *node, struct value *val){
-	parse_case_stmtlist(node->nodes[0], val);
+	int jumpflag;
+	parse_case_stmtlist(node->nodes[0], val, &jumpflag);
+	if(node->nnode == 2 && jumpflag == 0){
+		parse_stmtlist(node->nodes[1]);
+	}
 }
 
 int get_operation(struct nary_node *node){

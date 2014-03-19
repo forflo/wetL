@@ -283,7 +283,7 @@ void parse_program_interactive(struct nary_node *node, int *first);
 void parse_stmtlist(struct nary_node *node);
 void parse_block(struct nary_node *node);
 void parse_switchblock(struct nary_node *node, struct value *val);
-void parse_case_stmtlist(struct nary_node *node, struct value *val);
+void parse_case_stmtlist(struct nary_node *node, struct value *val, int *jumpflag);
 void parse_case_statement(struct nary_node *node, struct value *val, int *jumpflag);
 void parse_stmt(struct nary_node *node);
 void parse_elif_block_list(struct nary_node *node, int *jumpflag);

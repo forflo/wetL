@@ -8,7 +8,7 @@
 #endif
 
 #ifdef TEST
-#include 
+#include <stdio.h>
 #include <CUnit/Cunit.h>
 #include <Cunit/Basic.h>
 #endif

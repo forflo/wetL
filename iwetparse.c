@@ -114,7 +114,7 @@ void yyerror(struct nary_node **root, void *scanner, const char *str){
 #   define IWETDEBUG 0
 #  endif
 # else /* ! defined YYDEBUG */
-#  define IWETDEBUG 0
+#  define IWETDEBUG 1
 # endif /* ! defined YYDEBUG */
 #endif  /* ! defined IWETDEBUG */
 #if IWETDEBUG

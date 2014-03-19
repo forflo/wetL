@@ -312,7 +312,7 @@ void parse_print(struct nary_node *node){
 
 void parse_if(struct nary_node *node){
 #ifdef DEBUG
-	printf("Entering ini\n");
+	printf("Entering if\n");
 #endif
 	struct value *tf = parse_expression(node->nodes[0]);
 	if(tf->type == P_TYPE_INT && *((int *) tf->c))
@@ -481,7 +481,8 @@ void parse_dowhile(struct nary_node *node){
 	/* tmp points to the subtree representing a 
 	   	statementlist */
 	struct nary_node *tmp = node->nodes[0];
-	struct value *eval = mem_nextValInt();
+	struct value *eval = mem_next();
+	eval->c = NULL;
 
 	struct id_tab *newtab = tab_init();
 	if(sstack_push(id_table_stack, (void*) newtab)){
@@ -491,11 +492,11 @@ void parse_dowhile(struct nary_node *node){
 	}
 
 	do {
-		parse_stmtlist(tmp->nodes[0]);
 		if(eval->flag == P_FLAG_NONE){
 			free(eval->c);
 			mem_reset();
 		}
+		parse_stmtlist(tmp->nodes[0]);
 		eval = parse_expression(node->nodes[1]);
 	} while(*((int *) eval->c));
 
@@ -1134,7 +1135,7 @@ struct value *parse_expression(struct nary_node *node){
 			ops[0] = parse_expression(node->nodes[0]);
 			ops[1] = parse_expression(node->nodes[1]);
 			if(ops[0]->flag == P_FLAG_RO) {
-				result = mem_nextValDbl();
+				result = mem_nextValInt();
 			} else {
 				result = ops[0];
 			}

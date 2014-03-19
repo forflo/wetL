@@ -1,9 +1,6 @@
-a,c=0,0;
-while(1){
-	a = 2 + 3 * (45 > 46);
-	c = 35 * 2;
-	d = a**c;
-	print a;
-	print c;
-	print d;
-}
+a = 2 + 3 * (45 > 46);
+c = 35 * 2;
+d = a**c;
+print a;
+print c;
+print d;

@@ -1,0 +1,15 @@
+b,a=0,1000000;
+while(a){
+	a=a-1;
+	if(a%100==0){
+		print a;
+	}
+}
+
+print b;
+do {
+	b=b+1;
+	if(b%100==0){
+		print b;
+	}
+} while(b!=1000000);

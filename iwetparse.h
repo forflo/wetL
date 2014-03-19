@@ -41,7 +41,7 @@
 #   define IWETDEBUG 0
 #  endif
 # else /* ! defined YYDEBUG */
-#  define IWETDEBUG 1
+#  define IWETDEBUG 0
 # endif /* ! defined YYDEBUG */
 #endif  /* ! defined IWETDEBUG */
 #if IWETDEBUG

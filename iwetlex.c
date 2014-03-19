@@ -995,7 +995,7 @@ YY_RULE_SETUP
 	dyn_string_t *buffer = ds_get_string("");
 
 	do {
-		next = input(yylval_param);
+		next = input(yyscanner);
 		if(next == ']') 
 			c++;
 		else 

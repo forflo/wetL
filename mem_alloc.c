@@ -81,14 +81,18 @@ struct value *mem_next(){
 
 struct value *mem_nextValInt(){
 	struct value *temp = mem_next();
-	temp->c = (void *) malloc(sizeof(int));
+	temp->c = (int *) malloc(sizeof(int));
+#ifdef DEBUG
+	printf("mem_nextValInt. Pointer c: %p\n", temp->c);
+	printf("mem_nextValInt. usagecounter: %d\n", usage_counter);
+#endif
 	temp->type = P_TYPE_INT;
 	return temp;
 }
 
 struct value *mem_nextValDbl(){
 	struct value *temp = mem_next();
-	temp->c = (void *) malloc(sizeof(double));
+	temp->c = (double *) malloc(sizeof(double));
 	temp->type = P_TYPE_DOUBLE;
 	return temp;
 }

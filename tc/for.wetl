@@ -1,3 +1,19 @@
+print "simple for";
 for(i=0;i<1000000;i=i+1){
-	print i;
+	if(i==999999){
+		print "last Iteration";
+	}
 }
+
+print "more compley for";
+for(i=0; i<3; i=i+1){
+	for(j=0; j<2; j=j+1){
+		for(k=0; k<4; k=k+1){
+			print "k-Iteration";
+		}
+		print "j-Iteration";
+	}
+	print "i-Iteration";
+}
+
+print "Finished for-Demo";

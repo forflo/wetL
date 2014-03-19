@@ -52,7 +52,8 @@ void yyerror(struct nary_node **root, void *scanner, const char *str){
 /* Hot things */
 %token KEYSTROKE HOTSTRING ON
 /* Statements*/
-%token IF GLOBAL ELSE ELIF CONTINUE BREAK UTIL FOR IN WHILE DO SWITCH PRINT INC DEC
+%token IF GLOBAL ELSE ELIF CONTINUE BREAK UTIL FOR 
+%token IN WHILE DO SWITCH PRINT INC DEC DEFAULT
 %token RET CASE FUNCTION EXTERNAL TRUE FALSE
 /* Literals */
 %token STRING NUMBER ID FCELANG FCEB_CODE INT

@@ -98,6 +98,7 @@ function "function"
 util "utilize"
 global "global"
 external "external"
+default "default"
 ret "return"
 
 /* Symbols */
@@ -250,6 +251,7 @@ print print
 {global} {return(GLOBAL);}
 {switch} {return(SWITCH);}
 {case} {return(CASE);}
+{default} {return(DEFAULT);} 
 {hotstring} {return(HOTSTRING);}
 {keystroke} {return(KEYSTROKE);}
 {external} {return(EXTERNAL);}

@@ -5,7 +5,7 @@ for(i=0;i<1000000;i=i+1){
 	}
 }
 
-print "more compley for";
+print "more complex for";
 for(i=0; i<3; i=i+1){
 	for(j=0; j<2; j=j+1){
 		for(k=0; k<4; k=k+1){

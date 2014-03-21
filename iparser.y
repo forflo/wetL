@@ -99,8 +99,12 @@ elif_block_list		: elif_block_list elif_block
 						{$$ = make_node(P_OP_ELIFBLK, NULL, 1, $1);}
 					;
 
-switchblock			: CURLOPEN case_stmtlist CURLCLOSE 
+switchblock			: CURLOPEN NL case_stmtlist CURLCLOSE 
+						{$$ = make_node(P_OP_SWBLOCK, NULL, 1, $3);}
+					| CURLOPEN case_stmtlist CURLCLOSE 
 						{$$ = make_node(P_OP_SWBLOCK, NULL, 1, $2);}
+					| CURLOPEN NL case_stmtlist DEFAULT stmtlist CURLCLOSE
+						{$$ = make_node(P_OP_SWBLOCK, NULL, 2, $3, $5);}
 					| CURLOPEN case_stmtlist DEFAULT stmtlist CURLCLOSE
 						{$$ = make_node(P_OP_SWBLOCK, NULL, 2, $2, $4);}
 					;

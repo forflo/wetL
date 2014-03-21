@@ -66,15 +66,15 @@ less "<"
 
 /* FFI Keywords */
 
-char "(char)"
-short "(short)"
-int "(int)"
-long "(long)"
-longlong "(longlong)"
-double "(double)"
-float "(float)"
-longdouble "(longdouble)"
-voidptr "(void*)"
+char "char"
+short "short"
+int "int"
+long "long"
+longlong "longlong"
+double "double"
+float "float"
+longdouble "longdouble"
+voidptr "void*"
 
 /* Keywords */
 
@@ -91,13 +91,14 @@ do "do"
 while "while"
 switch "switch"
 case "case"
-at "at"
+on "on"
 hotstring "hotstring"
 keystroke "keystroke"
 function "function"
 util "utilize"
 global "global"
 external "external"
+default "default"
 ret "return"
 
 /* Symbols */
@@ -251,6 +252,7 @@ print print
 {global} {return(GLOBAL);}
 {switch} {return(SWITCH);}
 {case} {return(CASE);}
+{default} {return(DEFAULT);} 
 {hotstring} {return(HOTSTRING);}
 {keystroke} {return(KEYSTROKE);}
 {external} {return(EXTERNAL);}
@@ -269,6 +271,7 @@ print print
 {sharp} {return(SHARP);}
 {dollar} {return(DOLLAR);}
 {qmark} {return(QMARK);}
+{on} {return(ON);}
 
 {char} {return(FFI_CHAR);}
 {short} {return(FFI_SHORT);}

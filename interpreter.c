@@ -134,17 +134,25 @@ void parse_case_statement(struct nary_node *node,
 			(val->type == P_TYPE_INT || val->type == P_TYPE_DOUBLE)) {
 
 		if(exp->type == P_TYPE_INT && val->type == P_TYPE_INT) {
-			if(*((int*)exp->c) == *((int *)val->c))
+			if(*((int*)exp->c) == *((int *)val->c)){
 				parse_stmtlist(node->nodes[1]);
+				*jumpflag = 1;
+			}
 		} else if(exp->type == P_TYPE_INT && val->type == P_TYPE_DOUBLE) {
-			if(*((int*)exp->c) == *((double *)val->c))
+			if(*((int*)exp->c) == *((double *)val->c)){
 				parse_stmtlist(node->nodes[1]);
+				*jumpflag = 1;
+			}
 		} else if(exp->type == P_TYPE_DOUBLE && val->type == P_TYPE_INT) {
-			if(*((double*)exp->c) == *((int *)val->c))
+			if(*((double*)exp->c) == *((int *)val->c)){
 				parse_stmtlist(node->nodes[1]);
+				*jumpflag = 1;
+			}
 		} else {
-			if(*((double*)exp->c) == *((double *)val->c))
+			if(*((double*)exp->c) == *((double *)val->c)){
 				parse_stmtlist(node->nodes[1]);
+				*jumpflag = 1;
+			}
 		}
 
 	} else {
@@ -377,7 +385,7 @@ void parse_elif(struct nary_node *node){
 }
 
 void parse_switch(struct nary_node *node){
-	int jumpflag = 0, rc;
+	int rc;
 	struct id_tab *newtab = tab_init();
 	if(sstack_push(id_table_stack, (void*) newtab)){
 		con_log("new id table could not be pushed", 
@@ -1418,7 +1426,7 @@ void parse_elif_block(struct nary_node *node, int *jumpflag){
 }
 
 void parse_switchblock(struct nary_node *node, struct value *val){
-	int jumpflag;
+	int jumpflag = 0;
 	parse_case_stmtlist(node->nodes[0], val, &jumpflag);
 	if(node->nnode == 2 && jumpflag == 0){
 		parse_stmtlist(node->nodes[1]);

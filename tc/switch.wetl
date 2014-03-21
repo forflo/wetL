@@ -3,5 +3,34 @@ switch(a){
 	case(10)
 		print 10;
 	case(13)
-		print 13;
+		print "awaited result";
+}
+
+/* The following shows, that no break
+	statement is necessary (and allowed)
+	inside of switch-case construct */
+switch(100){
+	case(1)
+		print 1;
+	case(2)
+		print 2;
+	case(3)
+		print 3;
+	default
+		for(i=0; i<10; i=i+1){
+			print "Iteration Nummer:";
+			print i;
+		}
+		print "Awaited result!";
+		ufda=1;
+		b=ufda;
+	
+		switch(b){
+			case(100)
+				print "fail";
+			case(ufda)
+				print "success";
+			default
+				print "fail";
+		}
 }

@@ -10,4 +10,4 @@ if(1){
 }
 
 2) Im interaktiven Modus kann nur eine Anweisung pro Zeile eingegeben werden
-
+3) Memory leak in Funtion parse_block(). Beim Verlassen eines Scopes wird der Speicherplatz der ID-Tabelle wieder freigegeben.

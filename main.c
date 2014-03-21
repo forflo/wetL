@@ -7,6 +7,9 @@
 extern int wetdebug;
 extern int iwetdebug;
 
+/* We cannot use the header iwetparse.h or 
+ 	wetparse.h because they would cause some name
+ 	conflicts */
 extern void wetset_in(FILE *f, void *scan);
 extern void iwetset_in(FILE *f, void *scan);
 extern int iwetlex_init(void *wet);
@@ -16,6 +19,7 @@ extern int wetlex_destroy(void *wet);
 extern int iwetparse(struct nary_node **r, void *scan);
 extern int wetparse(struct nary_node **r, void *scan);
 
+/* callback for tree traversing */
 static int callback(void *c, void *u){
 	if(!(c == NULL))
 		printf("Wert des Knotens: %d\n", 

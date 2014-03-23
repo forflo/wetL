@@ -14,3 +14,9 @@ mem_alloc
 parser_util
 testcode
 
+iwetlex.c
+iwetparse.c
+iwetparse.h
+wetlex.c
+wetparse.c
+wetparse.h

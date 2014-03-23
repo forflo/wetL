@@ -13,12 +13,16 @@ void con_log(char *msg, char *src, int level){
 		switch(get_loglevel()){
 			case LOG_DEBUG:
 				printf("DEBUG: [%s] %s \n",  src, msg);
+				break;
 			case LOG_STRONG:
 				printf("STRONG: [%s] %s \n",  src, msg);
+				break;
 			case LOG_MIDDLE:
 				printf("MIDDLE: [%s] %s \n",  src, msg);
+				break;
 			case LOG_ERROR:
 				printf("ERROR: [%s] %s \n",  src, msg);
+				break;
 			case LOG_NONE:
 				break;
 		}

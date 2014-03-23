@@ -27,6 +27,7 @@ struct dyn_string *ds_get(){
 
 /* Initializes a new dynamic string structure and fills it with an
 	initial String
+	Param: str = The initial string the new dynamic string should contain
 	Return: Null on memory failure. Valid pointer on a dyn_string 
 		structure on success */
 struct dyn_string *ds_get_string(char *str){

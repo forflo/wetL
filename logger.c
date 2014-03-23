@@ -1,7 +1,11 @@
 #include <stdio.h>
 #include "parser.h"
 
-/* Logs message to stdout */
+/* Logs message to stdout 
+ 	Param: msg = The log message
+ 		src = The source of the message
+ 		level = The log level
+ 	Return: void */
 void con_log(char *msg, char *src, int level){
 	if(level>get_loglevel())
 		return;

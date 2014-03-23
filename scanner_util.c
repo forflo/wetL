@@ -71,7 +71,9 @@ struct value *make_valueId(const char *str){
 	return ret;
 }
 
-/* Returns a copy of the given structure value. */
+/* Returns a copy of the given structure value. 
+ 	Param: The value structure to copy
+ 	Return: A valid pointer to the copy or NULL on failure */
 struct value *make_valueCpy(struct value *org){
 	struct value *temp;
 	switch (org->type){

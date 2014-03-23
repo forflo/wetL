@@ -11,7 +11,7 @@ static int ret_code = 0; //global
 static void usage();
 static struct settings *s = NULL;
 
-/* Parses the programs arguments only one time. 
+/* Parses the given arguments only one time. 
  	Subsequent calls will produce the returncode -1.
  	This configuration system is implemented as singleton 
  	as long as you can call it like that in C.
@@ -65,6 +65,7 @@ int parse_args(int argc, char **argv){
 	return 0;
 }
 
+/* Getter for the configuration values */
 void set_ec(int e){
 	ret_code = e;
 }
@@ -92,6 +93,7 @@ int get_loglevel(){
 		return s->loglevel;
 }
 
+/* A debugging statement */
 void print_args(){
 	printf("-i: %d -f: %s -p: %s -l: %d", 
 			s->interactive, 
@@ -100,6 +102,7 @@ void print_args(){
 			s->loglevel);	
 }
 
+/* Prints the programs usage */
 static void usage(){
 	printf("Dummy usage: ... \n");
 }

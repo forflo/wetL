@@ -13,7 +13,7 @@
 #include <Cunit/Basic.h>
 #endif
 
-/* Caching purposes*/
+/* Caching purposes */
 
 /* One dimensional array. Through usage of a single char array speedup
 	is expectet because a Array of struct value pointers would require
@@ -22,6 +22,10 @@ static char *mem_val = NULL;
 static int mem_cnt = 2;
 static int usage_counter;
 
+/* Initializes the static module field mem_val. Memory for
+ 	MAX_INIT value structures is reserved
+ 	Param: void
+ 	Return: 0 on success and -1 on failure */
 int mem_init(){
 	int i;
 	mem_val = (char *) malloc(sizeof(struct value) * MAX_INIT);
@@ -79,6 +83,10 @@ struct value *mem_next(){
 									sizeof(struct value)));
 }
 
+/* Returns a new cached structure pointer that contains a pointer
+ 	to a valid int field
+ 	Param: void
+ 	Return: see above. */
 struct value *mem_nextValInt(){
 	struct value *temp = mem_next();
 	temp->c = (int *) malloc(sizeof(int));
@@ -90,6 +98,10 @@ struct value *mem_nextValInt(){
 	return temp;
 }
 
+/* Returns a new cached structure pointer that contains a pointer
+ 	to a valid double field
+ 	Param: void
+ 	Return: see above. */
 struct value *mem_nextValDbl(){
 	struct value *temp = mem_next();
 	temp->c = (double *) malloc(sizeof(double));
@@ -97,6 +109,10 @@ struct value *mem_nextValDbl(){
 	return temp;
 }
 
+/* Returns a new cached structure pointer that contains a pointer
+ 	to a valid memory field with byte bytes
+ 	Param: bytes = the number of bytes to allocate
+ 	Return: see above. */
 struct value *mem_nextValX(int byte){
 	struct value *temp = mem_next();
 	temp->c = (void *) malloc(byte);

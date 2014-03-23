@@ -8,7 +8,7 @@ switch(a){
 
 /* The following shows, that no break
 	statement is necessary (and allowed)
-	inside of switch-case construct */
+	inside of switch-case construct *
 switch(100){
 	case(1)
 		print 1;

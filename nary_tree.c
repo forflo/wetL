@@ -27,6 +27,9 @@ int destroy_tree(struct nary_node *tree){
 	return 0;
 }
 
+/* traverses a given nary_tree preorder
+ 	Param: node = The tree to traverse
+ 	Return 0 on success, -1 on failure */
 int traverse_preorder(struct nary_node *node, 
 						int (*callback)(void *content, void *userparam), 
 						void *userparam){
@@ -39,6 +42,9 @@ int traverse_preorder(struct nary_node *node,
 	return 0;
 }
 
+/* traverses a given nary_tree postorder
+ 	Param: node = The tree to traverse
+ 	Return 0 on success, -1 on failure */
 int traverse_postorder(struct nary_node *node, 
 						int (*callback)(void *content, void *userparam), 
 						void *userparam){
@@ -67,7 +73,9 @@ struct nary_node *new_node(void *content){
 	return r;
 }
 
-/* Deletes a node childs remain intact */
+/* Deletes a node childs remain intact 
+ 	Param: node = The node to delete 
+ 	Return 0 on success */
 int free_node(struct nary_node *node){
 	int i;
 	free(node->content);
@@ -77,6 +85,10 @@ int free_node(struct nary_node *node){
 	return 0;
 }
 
+/* Adds a new node to a given one. The new node will contain
+ 	the content content 
+ 	Param: parent = The node to add another to 
+ 	Return: 0 on success, -1 on failure */
 int add_node(struct nary_node *parent, void *content){
 	/* allocate memory for new node in the node vector */
 	if(parent->nodes == NULL){
@@ -101,6 +113,10 @@ int add_node(struct nary_node *parent, void *content){
 	return 0;	
 }
 
+/* Adds a new node to parent.
+ 	Param: parent = The parent node
+ 		child = The node to add to parent
+ 	Return -1 on failure, 0 on success */
 int add_child(struct nary_node *parent, struct nary_node *child){
 	/* allocate memory for new node in the node vector */
 	if(parent->nodes == NULL){

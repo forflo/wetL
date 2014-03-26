@@ -1,13 +1,14 @@
-1) Newlinezeichen im interaktiven modus
+1) Newlinezeichen im interaktiven Modus.
+Der folgende Code produziert einen Fehler.
 
-Code:
 if(1){
-
 
 
 } else {
 	print 12;
 }
 
-2) Im interaktiven Modus kann nur eine Anweisung pro Zeile eingegeben werden
-3) Memory leak in Funtion parse_block(). Beim Verlassen eines Scopes wird der Speicherplatz der ID-Tabelle wieder freigegeben.
+2) Im interaktiven Modus kann nur eine Anweisung pro Zeile eingegeben werden.
+3) Memory leak in der Funtion parse_block(). 
+Beim Verlassen eines Scopes wird der Speicherplatz
+der ID-Tabelle nicht wieder freigegeben.

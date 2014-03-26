@@ -1,4 +1,5 @@
 /*
+ * Author: Florian Mayer
  ---begin parser type declarations---
  */
 struct value {

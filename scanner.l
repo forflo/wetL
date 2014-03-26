@@ -1,5 +1,7 @@
 %top{
-
+/*
+ * Author: Florian Mayer
+ */
 #include "wetparse.h" 
 #include "parser.h"
 

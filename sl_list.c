@@ -1,5 +1,6 @@
 /*
- 0-Software. Implements singly linked lists
+ * Author: Florian Mayer
+ * 0-Software. Implements singly linked lists
  */
 
 #include <stdlib.h>

@@ -1,6 +1,7 @@
-/* 
-   0-Software
-   Implements basic functionality for nary trees 
+/*
+ * Author: Florian Mayer
+ * 0-Software
+ * Implements basic functionality for nary trees 
  */
 #include "parser.h"
 #include <stdlib.h>

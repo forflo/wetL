@@ -1,5 +1,6 @@
 /*
- provides functions for dynamically growing strings
+ * Author: Florian Mayer
+ * provides functions for dynamically growing strings
  */
 #include <stdlib.h>
 #include <string.h>

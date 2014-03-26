@@ -1,3 +1,7 @@
+/*
+ * Author: Florian Mayer
+ */
+
 #include <stdio.h>
 #include "wetparse.h"
 #include <stdlib.h>

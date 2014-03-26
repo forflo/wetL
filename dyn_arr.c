@@ -1,4 +1,8 @@
 /*
+Author: Florian Mayer
+ */
+
+/*
  0-Software. Implements dynamically growing arrays with arbitrary content
  */
 

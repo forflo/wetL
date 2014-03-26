@@ -1,3 +1,7 @@
+/*
+ * Author: Florian Mayer
+ */
+
 #include "parser.h"
 #include <string.h>
 #include <stdlib.h>

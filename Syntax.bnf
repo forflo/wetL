@@ -1,0 +1,193 @@
+(*
++-----------------------------------+
+| Komplette Syntax von WETL in EBNF |
+| Datum: 23.Feb 2013                |
+| Version: 0.6.1                    |
++-----------------------------------+
+*)
+
+(* Blöcke *)
+program ::= stmtlist (*program ist das Axiom*)
+block ::= "{" stmtlist "}";
+switchblock ::= 
+	  "{" { "case" "(" expression ")" stmtlist } "}"
+	| "{" { "case" "(" expression ")" stmtlist } "default" stmtlist }";
+elifblock ::= "else" "if" "(" expression ")" block
+(* Eventuell in die Definition von Block integrieren *)
+
+(* Listen *)
+explist ::= 
+	  expression 
+	| explist "," expression;
+parlist ::= "(" idlist ")" | "()";
+arglist ::= "(" explist ")" | "()";
+idlist ::= id {"," id};
+varlist ::= var | varlist "," var;
+stmtlist ::= statement { statement };
+castlist ::= 
+	  castlist ffi_cast
+	| castlist complex_cast
+	| ffi_cast
+	| complex_cast;
+
+elifblocklist ::= elifblocklist elifblock
+	| elifblock;
+
+(* Zuweisungs- und Ausdruckdefinition; Variablen *)
+assignment ::= varlist assop explist;
+(* Ein valider Listenkonstruktor evaluiert immer zu true! *)
+expression ::=	
+	  expression binop expression 
+		(* Operatorenpriorität im Bison-Quellcode definiert *)
+	| unop expression
+	| listconstructor 
+	| ffi_struct_def 
+	| evalexpression ;
+	| "true" 
+	| "false" 
+	| number 
+	| functiondef
+	| complex_cast expression (* niedrigste Priorität *)
+	| string;
+
+evalexpression ::= 
+	  fceexp 
+	| fceexp_rc
+	| var_exp
+		(* var ist entweder ein Bezeichner oder eine n-Dimensionale Liste *)
+	| functioncall
+	| "(" expression ")"
+	;
+
+(* Ermöglicht den Aufruf anonymer Funktionen *)
+functioncall ::= 
+	  evalexpression arglist
+
+var_exp ::= 
+	  id 
+	| evalexpression "[" expression "]" ;
+
+functiondef ::= function id parlist block  
+	| function parlist block
+	| function id parlist hotkeydef block
+	| function id parlist hotstringdef block;
+
+ffi_struct_def ::= [ "*" ] "{" explist "}" ;
+
+ffi_cast ::= "char" | "int" | "long" | [...] | "void*";
+complex_cast ::= ["*"] "(" castlist ")" 
+(* Ein entstehender Ausdruck ist z.B.
+	a = (int, char, (long, double)) get_struct();
+	a Enthält nun eine Struktur mit folgendem Aussehen:
+		struct anon {
+			int x;
+			char x;
+			struct x {
+				long x;
+				double x;
+			}
+		}
+*)
+
+hotkeydef ::= "on keystroke" expression; 
+	(* Expression muss auf einen String oder eine Liste von Strings 
+	evaluieren, der bzw. die einen bzw. mehrere gültige/n Hotkey/s 
+	repräsentiert/en *)
+
+hotstringdef ::= "on hotstring" expression; 
+	(* Expression muss auf einen String oder eine Stringliste evaluieren *)
+
+(* Listen und Tabellen *)
+listconstructor ::= "[" [ explist ] "]";
+
+(* Hauptteil *)
+statement ::= 
+	  assignment semi
+	| "utilize" type":"string_syms semi
+	| break semi
+	| continue semi
+	| block semi 
+	| functioncall semi
+	| functiondef 
+	| "global" assignment semi
+	| "global" functiondef 
+	| "if" "(" expression ")" block 
+	| "if" "(" expression ")" block "else" block
+	| "if" "(" expression ")" elifblocklist
+	| "if" "(" expresison ")" elifblocklist "else" block
+	| "for" "(" assignment semi expression semi assignment ")" block
+	| "for" idlist "in" explist block
+	| "while" "(" expression ")" block 
+	| "do" block "while" "(" expression ")" semi 
+		(* Wie in C mit dem Semikolon abgeschlossen *)
+	| "switch" "(" expression ")" switchblock
+	| fceblock 
+	;
+
+(* Operatoren *)
+assop ::= "=" | "+=" | "-=" | "*=" | "/=" | "**=" | "|=" | "&="|
+	"^=" | "%=" | "<<=" | ">>="
+logop ::= "!" | "&&" | "||" | "==" | "!=" | "<=" | ">=" | "<" | ">"
+binop ::=  assop | "+" | "-" | "*" | "/" | "%" | "**" | "&" | "|" | 
+	"^" | ">>" | "<<"
+unop ::= "!" | "~" | "-"
+
+(* Rein lexikalische Definitionen *)
+dquote ::= '"';
+squote ::= "'";
+point ::= ".";
+dpoint ::= ":";
+semi ::= ";";
+curlopen ::= "{";
+curlclose ::= "}";
+komma ::= ",";
+equal ::= "=";
+break ::= "break";
+continue ::= "continue";
+return ::= "return" [ explist ] semi;
+function ::= "function";
+type ::= "c" (* momentan nur c für ffi vorgesehen *)
+
+hexdigit ::= digit | "A" | "B" | "C" | "D" | "E" | "F" | "a" | "b" 
+	| "c" | "d" | "e" | "f";
+digit ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" ;
+digit_not_null ::= "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9";
+letter ::= "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I" | "J" | 
+	"K" | "L" | "M" | "N" | "O" | "P" | "Q" | "R" | "S" | "T" | "U" | 
+	"V" | "W" | "X" | "Y" | "Z" | "a" | "b" | "c" | "d" | "e" | "f" | 
+	"g" | "h" | "i" | "j" | "k" | "l" | "m" | "n" | "o" | "p" | "q" | 
+	"r" | "s" | "t" | "u" | "v" | "w" | "x" | "y" | "z" ;
+(* Die im Nichtterminal vorhandenen Symbole sind wörtlich zu nehmen. 
+"\n" repräsentiert also einen String, der zunächst einen Backslash und 
+dann das ASCII-Zeichen "n" enthält. Analog gilt dies für alle anderen 
+Symbole *)
+escapes ::= "\n" | "\t" | "\a" | "\b" | "\r" | "\v" | "\\" | '\"' | 
+	"\'" | "\f" | "\0" | hexcode
+allowed_symbols ::= "!" | '"' | "#" | "$" | "%" | "&" | "'" | "(" | 
+	")" | "*" | "+" | "`" | "´" | "-" | "." | "/" | ":" | ";" | "<" | 
+	">" | "=" | "?" | "@" | "[" | "]" | "^" | "_" | "{" | "}" | "~" | "|";
+
+hexcode ::= ( "\0x" | "\0X" ) hexdigit hexdigit
+number ::= { digit } | { digit } point { digit }
+string_syms ::= letter | escapes | allowed_symbols
+string ::= dquote { letter | escapes | allowed_symbols } dquote |
+			squote { letter | escapes | allowed_symbols } squote ;
+id ::= ( letter | "-" | "_" ) { ( letter | "-" | "_" ) | digit };
+
+language ::= "bash" | "sh" | "python" | "perl" 
+	(* Einfache Erweiterbarkeit außderhalb des Interpretercodes 
+	zunächst nicht vorgesehen *)
+fceblock ::= "external" language fce_code
+fceexp_txt ::= "(!" language ")" fce_code
+fceexp_rc ::= "(?" language ")" fce_code
+fce_code ::= "[[[" <Code ohne "]]]"> "]]]" 
+	(* Lediglich eine Variante von foreignexp, die nicht zu einem String 
+	evaluiert, sondern zu einem Zahlenwert, der den Exitstatus des zuletzt 
+	ausgeführten Kommandos repräsentiert. Es muss noch entschieden werden, 
+	dieses Feature aufzunehmen *)
+clear ::= <everything without "]]]"> 
+	(* Hier wird aus Pragmatismus ein Feature von Lex anstatt eines 
+	regulären Ausdrucks verwendet *)
+comment ::= "/*" ascii without # and newline "*/" 
+	(* Hier wird das flex Feature der Startzustände genutzt! *)
+

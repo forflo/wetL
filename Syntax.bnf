@@ -51,8 +51,8 @@ expression ::=
 	| string;
 
 evalexpression ::= 
-	  fceexp 
-	| fceexp_rc
+	  fceexp_txt (* evaluiert zu einem String *)
+	| fceexp_rc (* evaluiert zu einem Returncode *)
 	| var_exp
 		(* var ist entweder ein Bezeichner oder eine n-Dimensionale Liste *)
 	| functioncall
@@ -103,7 +103,7 @@ listconstructor ::= "[" [ explist ] "]";
 (* Hauptteil *)
 statement ::= 
 	  assignment semi
-	| "utilize" type":"string_syms semi
+	| "utilize" expression":"expression semi
 	| break semi
 	| continue semi
 	| block semi 

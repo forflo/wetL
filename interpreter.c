@@ -1274,10 +1274,10 @@ struct value *parse_expression(struct nary_node *node){
 		case STRING:
 			return get_value(node);
 			break;
-		case TRUE:
+		case TRUEV:
 			return get_value(node);
 			break;
-		case FALSE:
+		case FALSEV:
 			return get_value(node);
 			break;
 		case P_OP_LSTCONST:

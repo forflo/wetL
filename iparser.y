@@ -54,7 +54,7 @@ void yyerror(struct nary_node **root, void *scanner, const char *str){
 /* Statements*/
 %token IF GLOBAL ELSE ELIF CONTINUE BREAK UTIL FOR 
 %token IN WHILE DO SWITCH PRINT INC DEC DEFAULT
-%token RET CASE FUNCTION EXTERNAL TRUE FALSE
+%token RET CASE FUNCTION EXTERNAL TRUEV FALSEV
 /* Literals */
 %token STRING NUMBER ID FCELANG FCEB_CODE INT
 /* Token for FFI */
@@ -67,7 +67,7 @@ void yyerror(struct nary_node **root, void *scanner, const char *str){
 
 %type <v> FFI_CHAR FFI_SHORT FFI_INT FFI_LONG FFI_LONG_LONG FFI_DOUBLE 
 %type <v> FFI_FLOAT FFI_LONG_DOUBLE FFI_VOIDPTR
-%type <v> NUMBER TRUE FALSE INT
+%type <v> NUMBER TRUEV FALSEV INT
 %type <v> STRING ID FCELANG FCEB_CODE
 %type <k> functioncall expression evalexpression fceexp fceexp_rc 
 %type <k> listconstructor ffi_struct_def var_exp block stmtlist statement 
@@ -243,12 +243,12 @@ expression			: expression OR expression
 						{ $$ = make_node(NUMBER, $1, 0); }
 					| STRING 
 						{ $$ = make_node(STRING, $1, 0); }
-					| TRUE 
-						{ $$ = make_node(TRUE, $1, 0); }
+					| TRUEV
+						{ $$ = make_node(TRUEV, $1, 0); }
 					| INT
 						{ $$ = make_node(INT, $1, 0); }
-					| FALSE 
-						{ $$ = make_node(FALSE, $1, 0); }
+					| FALSEV 
+						{ $$ = make_node(FALSEV, $1, 0); }
 					| evalexpression	
 						{ $$ = make_node(P_OP_EVEXP, NULL, 1, $1); }
 					| complex_cast %prec OR expression

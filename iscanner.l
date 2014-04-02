@@ -242,8 +242,8 @@ print print
 {elif} {return(ELIF);}
 {continue} {return(CONTINUE);}
 {break} {return(BREAK);}
-{true} {return(TRUE);}
-{false} {return(FALSE);}
+{true} {return(TRUEV);}
+{false} {return(FALSEV);}
 {for} {return(FOR);}
 {in} {return(IN);}
 {do} {return(DO);}

@@ -1,18 +1,12 @@
-   __        __   _   _
-   \ \      / /__| |_| |
-    \ \ /\ / / _ \ __| |
-     \ V  V /  __/ |_| |___
-      \_/\_/ \___|\__|_____|
-
+# Introduction
 
 This is the source distribution of the 
-programming language WetL. At this point
+programming language wetL. At this point
 the prototype is merely a play language
 that cannot interact with it's environment.
-This might be changed in the future.
 
-The following shows the contained files
-and their meaning.
+
+# Important files
 
 - dyn_arr.c
 	Implements dynamically growing Arrays
